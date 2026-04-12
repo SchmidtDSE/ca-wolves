@@ -18,7 +18,7 @@
     "collections": [
         {
             "collection_id": "ca-wolves",
-            "collection_url": "https://s3-west.nrp-nautilus.io/ca-wolves/stac-collection.json",
+            "collection_url": "https://s3-west.nrp-nautilus.io/public-ca-wolves/stac-collection.json",
             "group": { "name": "Wolf Activity" },
             "assets": [
                 {
@@ -49,7 +49,7 @@
         {
             "_comment": "Snapshots layer — depends on geo-agent selecting latest from glob pattern; keeping disabled until that's supported",
             "_collection_id": "ca-wolves",
-            "_collection_url": "https://s3-west.nrp-nautilus.io/ca-wolves/stac-collection.json",
+            "_collection_url": "https://s3-west.nrp-nautilus.io/public-ca-wolves/stac-collection.json",
             "_assets": [
                 {
                     "id": "snapshots",
@@ -82,7 +82,7 @@
         {
             "_comment": "Temporal trail layer (past 7 days of snapshots, color=pack, opacity=recency) — activate once geo-agent#140 (temporal visualization) lands",
             "_collection_id": "ca-wolves-bins-trail",
-            "_snapshots_url": "https://s3-west.nrp-nautilus.io/ca-wolves/snapshots/",
+            "_snapshots_url": "https://s3-west.nrp-nautilus.io/public-ca-wolves/snapshots/",
             "_lookback_days": 7,
             "_id_field": "pack",
             "_date_field": "most_recent_adj",

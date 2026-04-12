@@ -10,7 +10,7 @@ data:
     set -eu
 
     SOURCE_URL="https://storage.googleapis.com/cdfw-wolf-tracker/wolf_bins.geojson"
-    BUCKET="ca-wolves"
+    BUCKET="public-ca-wolves"
     S3_ENDPOINT="http://rook-ceph-rgw-nautiluss3.rook"
 
     # Get Last-Modified from upstream (used as the snapshot key)
@@ -53,7 +53,7 @@ metadata:
   name: wolf-tracker
   namespace: biodiversity
 spec:
-  schedule: "0 */6 * * *"        # every 6 hours; data updates ~daily at 21:00 UTC
+  schedule: "0 * * * *"           # hourly; CDFW updates roughly every 2 hours
   concurrencyPolicy: Forbid
   successfulJobsHistoryLimit: 3
   failedJobsHistoryLimit: 3
