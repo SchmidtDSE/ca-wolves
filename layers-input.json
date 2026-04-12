@@ -126,33 +126,6 @@
             ]
         },
         {
-            "collection_id": "ghs-pop-2020",
-            "collection_url": "https://s3-west.nrp-nautilus.io/public-high-seas/ghs-pop-2020/stac-collection.json",
-            "group": { "name": "Environment", "collapsed": true },
-            "assets": [
-                {
-                    "id": "ghs-pop-2020-cog",
-                    "display_name": "Population Density (2020)",
-                    "visible": false,
-                    "colormap": "viridis",
-                    "rescale": "0,500"
-                }
-            ]
-        },
-        {
-            "collection_id": "cgls-lc100-2019",
-            "collection_url": "https://s3-west.nrp-nautilus.io/public-land-cover/cgls-lc100-2019/stac-collection.json",
-            "group": { "name": "Environment", "collapsed": true },
-            "assets": [
-                {
-                    "id": "cgls-lc100-2019-cog",
-                    "display_name": "Land Cover (2019)",
-                    "visible": false,
-                    "colormap": "discrete"
-                }
-            ]
-        },
-        {
             "collection_id": "calenviroscreen-5-0",
             "collection_url": "https://s3-west.nrp-nautilus.io/public-calenviroscreen/stac-collection.json",
             "group": { "name": "Environmental Justice", "collapsed": true },
@@ -298,14 +271,7 @@
                         "line-width": 1
                     },
                     "tooltip_fields": ["pack", "most_recent_adj"]
-                }
-            ]
-        },
-        {
-            "collection_id": "ca-wolves",
-            "collection_url": "https://s3-west.nrp-nautilus.io/public-ca-wolves/stac-collection.json",
-            "group": { "name": "Wolf Activity" },
-            "assets": [
+                },
                 {
                     "id": "trail",
                     "display_name": "Movement Trail (30 days)",
