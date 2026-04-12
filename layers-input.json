@@ -1,0 +1,121 @@
+{
+    "catalog": "https://s3-west.nrp-nautilus.io/public-data/stac/catalog.json",
+    "titiler_url": "https://titiler.nrp-nautilus.io",
+    "mcp_url": "https://duckdb-mcp.nrp-nautilus.io/mcp",
+    "view": {
+        "center": [-121.5, 40.5],
+        "zoom": 7
+    },
+    "welcome": {
+        "message": "Hi! I can help you explore California gray wolf territories and pack movement data. Try asking:",
+        "examples": [
+            "Tell me about the wolf datasets available.",
+            "Show only the Whaleback pack territory.",
+            "Which protected lands overlap with wolf territories?",
+            "How have wolf positions changed over the past week?"
+        ]
+    },
+    "collections": [
+        {
+            "_comment": "Wolf territory polygons (Feb 2025 CDFW official map) — activate once geo-agent#139 (GeoJSON source support) lands and STAC collection is registered",
+            "_collection_id": "ca-wolves-territories",
+            "_collection_url": "https://s3-west.nrp-nautilus.io/ca-wolves/stac-collection-territories.json",
+            "_assets": [
+                {
+                    "id": "territories-geojson",
+                    "display_name": "Pack Territories (Feb 2025)",
+                    "group": "Wolf Activity",
+                    "visible": true,
+                    "default_style": {
+                        "fill-color": [
+                            "match", ["get", "pack"],
+                            "Whaleback",        "#E65100",
+                            "Harvey",           "#1565C0",
+                            "Ice Cave",         "#2E7D32",
+                            "Lassen",           "#6A1B9A",
+                            "Diamond/Beyem Seyo","#AD1457",
+                            "Yowlumni",         "#F9A825",
+                            "#888888"
+                        ],
+                        "fill-opacity": 0.55
+                    },
+                    "outline_style": {
+                        "line-color": "#333333",
+                        "line-width": 1.2
+                    },
+                    "tooltip_fields": ["pack", "centroid_lon", "centroid_lat", "source"]
+                }
+            ]
+        },
+        {
+            "_comment": "Daily wolf position hexbins from CDFW live tracker (most recent snapshot) — activate once geo-agent#139 lands",
+            "_collection_id": "ca-wolves-bins-latest",
+            "_collection_url": "https://s3-west.nrp-nautilus.io/ca-wolves/stac-collection-bins-latest.json",
+            "_assets": [
+                {
+                    "id": "bins-geojson",
+                    "display_name": "Current Positions (~6km hexbins)",
+                    "group": "Wolf Activity",
+                    "visible": true,
+                    "default_style": {
+                        "fill-color": [
+                            "match", ["get", "pack"],
+                            "Whaleback 1",       "#E65100",
+                            "Whaleback 2",       "#FF6D00",
+                            "Whaleback 4",       "#FFAB40",
+                            "Whaleback Disperser 1", "#FFD180",
+                            "Whaleback Disperser 2", "#FFE0B2",
+                            "Harvey 1",          "#1565C0",
+                            "Harvey 3",          "#42A5F5",
+                            "Yowlumni Disperser","#F9A825",
+                            "#888888"
+                        ],
+                        "fill-opacity": 0.7
+                    },
+                    "outline_style": {
+                        "line-color": "#333333",
+                        "line-width": 1
+                    },
+                    "tooltip_fields": ["pack", "most_recent_adj"]
+                }
+            ]
+        },
+        {
+            "_comment": "Temporal trail layer (past 7 days of snapshots, color=pack, opacity=recency) — activate once geo-agent#140 (temporal visualization) lands",
+            "_collection_id": "ca-wolves-bins-trail",
+            "_snapshots_url": "https://s3-west.nrp-nautilus.io/ca-wolves/snapshots/",
+            "_lookback_days": 7,
+            "_id_field": "pack",
+            "_date_field": "most_recent_adj",
+            "_color_scheme": "categorical",
+            "_opacity_decay": "linear"
+        },
+        {
+            "collection_id": "pad-us-4.1-fee",
+            "collection_url": "https://s3-west.nrp-nautilus.io/public-padus/padus-4-1/fee/stac-collection.json",
+            "group": { "name": "Protected Areas", "collapsed": true },
+            "assets": [
+                {
+                    "id": "fee-pmtiles",
+                    "display_name": "Protected Lands (PAD-US)",
+                    "visible": false,
+                    "default_style": {
+                        "fill-color": [
+                            "match", ["get", "GAP_Sts"],
+                            "1", "#26633A",
+                            "2", "#3E9C47",
+                            "3", "#7EB3D3",
+                            "4", "#BDBDBD",
+                            "#888888"
+                        ],
+                        "fill-opacity": 0.45
+                    },
+                    "default_filter": [
+                        "match", ["get", "GAP_Sts"], ["1", "2"], true, false
+                    ],
+                    "tooltip_fields": ["Unit_Nm", "GAP_Sts", "Mang_Type"]
+                }
+            ]
+        }
+    ]
+}

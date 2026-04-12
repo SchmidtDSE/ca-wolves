@@ -1,0 +1,104 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: wolf-tracker-script
+  namespace: biodiversity
+data:
+  fetch.sh: |
+    #!/bin/sh
+    set -eu
+
+    SOURCE_URL="https://storage.googleapis.com/cdfw-wolf-tracker/wolf_bins.geojson"
+    BUCKET="ca-wolves"
+    S3_ENDPOINT="http://rook-ceph-rgw-nautiluss3.rook"
+
+    # Get Last-Modified from upstream (used as the snapshot key)
+    LAST_MOD_RAW=$(curl -sI "$SOURCE_URL" | grep -i "^last-modified:" | sed 's/[Ll]ast-[Mm]odified: //;s/\r//')
+    if [ -z "$LAST_MOD_RAW" ]; then
+      echo "ERROR: could not read Last-Modified header" >&2
+      exit 1
+    fi
+
+    # Convert "Fri, 10 Apr 2026 21:00:35 GMT" -> "2026-04-10T21:00:35"
+    TIMESTAMP=$(date -u -d "$LAST_MOD_RAW" +%Y-%m-%dT%H:%M:%S)
+    SNAPSHOT="snapshots/wolf_bins_${TIMESTAMP}.geojson"
+
+    echo "Upstream Last-Modified: $LAST_MOD_RAW"
+    echo "Snapshot key: $SNAPSHOT"
+
+    # Skip if this snapshot already exists in S3
+    if aws s3 ls "s3://${BUCKET}/${SNAPSHOT}" \
+         --endpoint-url "$S3_ENDPOINT" \
+         --region us-east-1 \
+         2>/dev/null | grep -q .; then
+      echo "Snapshot already stored — no new data."
+      exit 0
+    fi
+
+    # Download and upload atomically via pipe
+    echo "New data detected — saving snapshot..."
+    curl -sf "$SOURCE_URL" | \
+      aws s3 cp - "s3://${BUCKET}/${SNAPSHOT}" \
+        --endpoint-url "$S3_ENDPOINT" \
+        --region us-east-1 \
+        --content-type "application/geo+json"
+
+    echo "Saved: s3://${BUCKET}/${SNAPSHOT}"
+
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: wolf-tracker
+  namespace: biodiversity
+spec:
+  schedule: "0 */6 * * *"        # every 6 hours; data updates ~daily at 21:00 UTC
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      backoffLimit: 2
+      ttlSecondsAfterFinished: 10800
+      template:
+        spec:
+          priorityClassName: opportunistic
+          restartPolicy: Never
+          affinity:
+            nodeAffinity:
+              requiredDuringSchedulingIgnoredDuringExecution:
+                nodeSelectorTerms:
+                  - matchExpressions:
+                      - key: feature.node.kubernetes.io/pci-10de.present
+                        operator: NotIn
+                        values: ["true"]
+          containers:
+            - name: wolf-tracker
+              image: ghcr.io/boettiger-lab/datasets:latest
+              command: ["/bin/sh", "/scripts/fetch.sh"]
+              resources:
+                requests:
+                  cpu: "0.1"
+                  memory: "128Mi"
+                limits:
+                  cpu: "0.1"
+                  memory: "128Mi"
+              env:
+                - name: AWS_ACCESS_KEY_ID
+                  valueFrom:
+                    secretKeyRef: {name: aws, key: AWS_ACCESS_KEY_ID}
+                - name: AWS_SECRET_ACCESS_KEY
+                  valueFrom:
+                    secretKeyRef: {name: aws, key: AWS_SECRET_ACCESS_KEY}
+                - name: AWS_DEFAULT_REGION
+                  value: "us-east-1"
+              volumeMounts:
+                - name: script
+                  mountPath: /scripts
+                  readOnly: true
+          volumes:
+            - name: script
+              configMap:
+                name: wolf-tracker-script
+                defaultMode: 0755
