@@ -1,3 +1,9 @@
+# LLM config template — NO SECRETS.
+#
+# The upstream LLM proxy key lives only in the nginx config (see
+# `ca-wolves-nginx` below), which injects the Authorization header
+# server-side via `proxy_set_header`. The browser only sees a relative
+# `/api/llm` endpoint and never holds the key.
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -55,6 +61,10 @@ data:
     }
 
 ---
+# Nginx configuration — reverse-proxies /api/llm/ to open-llm-proxy and
+# injects the Authorization header from ${PROXY_KEY} at container start
+# (the startup command runs envsubst over this file). The browser never
+# receives the key.
 apiVersion: v1
 kind: ConfigMap
 metadata:

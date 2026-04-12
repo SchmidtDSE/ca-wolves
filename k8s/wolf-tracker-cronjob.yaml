@@ -44,7 +44,14 @@ data:
         --region us-east-1 \
         --content-type "application/geo+json"
 
+    # Also write to a fixed key so the map can always load the latest snapshot
+    aws s3 cp "s3://${BUCKET}/${SNAPSHOT}" "s3://${BUCKET}/wolf_bins_latest.geojson" \
+      --endpoint-url "$S3_ENDPOINT" \
+      --region us-east-1 \
+      --content-type "application/geo+json"
+
     echo "Saved: s3://${BUCKET}/${SNAPSHOT}"
+    echo "Updated: s3://${BUCKET}/wolf_bins_latest.geojson"
 
 ---
 apiVersion: batch/v1

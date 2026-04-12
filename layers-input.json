@@ -7,12 +7,14 @@
         "zoom": 7
     },
     "welcome": {
-        "message": "Hi! I can help you explore California gray wolf territories and pack movement data. Try asking:",
+        "message": "Hi! I can help you explore California gray wolf territories, pack movement data, and related environmental and political context. Try asking:",
         "examples": [
             "Tell me about the wolf datasets available.",
             "Show only the Whaleback pack territory.",
             "Which protected lands overlap with wolf territories?",
-            "How have wolf positions changed over the past week?"
+            "How have wolf positions changed over the past week?",
+            "What is the CalEnviroScreen score near wolf territories?",
+            "Which state assembly districts overlap with wolf packs?"
         ]
     },
     "collections": [
@@ -43,18 +45,10 @@
                         "line-width": 1.2
                     },
                     "tooltip_fields": ["pack", "centroid_lon", "centroid_lat", "source"]
-                }
-            ]
-        },
-        {
-            "_comment": "Snapshots layer — depends on geo-agent selecting latest from glob pattern; keeping disabled until that's supported",
-            "_collection_id": "ca-wolves",
-            "_collection_url": "https://s3-west.nrp-nautilus.io/public-ca-wolves/stac-collection.json",
-            "_assets": [
+                },
                 {
-                    "id": "snapshots",
+                    "id": "bins-latest",
                     "display_name": "Current Positions (~6km hexbins)",
-                    "group": "Wolf Activity",
                     "visible": true,
                     "default_style": {
                         "fill-color": [
@@ -80,7 +74,7 @@
             ]
         },
         {
-            "_comment": "Temporal trail layer (past 7 days of snapshots, color=pack, opacity=recency) — activate once geo-agent#140 (temporal visualization) lands",
+            "_comment": "Temporal trail layer — activate once geo-agent#140 (temporal visualization) lands",
             "_collection_id": "ca-wolves-bins-trail",
             "_snapshots_url": "https://s3-west.nrp-nautilus.io/public-ca-wolves/snapshots/",
             "_lookback_days": 7,
@@ -92,11 +86,11 @@
         {
             "collection_id": "pad-us-4.1-fee",
             "collection_url": "https://s3-west.nrp-nautilus.io/public-padus/padus-4-1/fee/stac-collection.json",
-            "group": { "name": "Protected Areas", "collapsed": true },
+            "group": { "name": "Protected & Conserved Lands", "collapsed": true },
             "assets": [
                 {
                     "id": "fee-pmtiles",
-                    "display_name": "Protected Lands (PAD-US)",
+                    "display_name": "Protected Lands (PAD-US Fee)",
                     "visible": false,
                     "default_style": {
                         "fill-color": [
@@ -113,6 +107,161 @@
                         "match", ["get", "GAP_Sts"], ["1", "2"], true, false
                     ],
                     "tooltip_fields": ["Unit_Nm", "GAP_Sts", "Mang_Type"]
+                }
+            ]
+        },
+        {
+            "collection_id": "cced-2025b",
+            "collection_url": "https://s3-west.nrp-nautilus.io/public-cpad/cced-stac-collection.json",
+            "group": { "name": "Protected & Conserved Lands", "collapsed": true },
+            "assets": [
+                {
+                    "id": "cced-pmtiles",
+                    "display_name": "Conservation Easements (CCED)",
+                    "visible": false,
+                    "default_style": {
+                        "fill-color": "#8BC34A",
+                        "fill-opacity": 0.4
+                    },
+                    "outline_style": {
+                        "line-color": "#558B2F",
+                        "line-width": 1
+                    },
+                    "tooltip_fields": ["sitename", "esmthldr", "eholdtyp", "county"]
+                }
+            ]
+        },
+        {
+            "collection_id": "landmark-iplc-poly",
+            "collection_url": "https://s3-west.nrp-nautilus.io/public-indigenous/landmark/iplc-poly-stac.json",
+            "group": { "name": "Protected & Conserved Lands", "collapsed": true },
+            "assets": [
+                {
+                    "id": "iplc-poly-pmtiles",
+                    "display_name": "Indigenous Territories (LandMark)",
+                    "visible": false,
+                    "default_style": {
+                        "fill-color": "#FF7043",
+                        "fill-opacity": 0.35
+                    },
+                    "outline_style": {
+                        "line-color": "#BF360C",
+                        "line-width": 1
+                    },
+                    "default_filter": ["==", ["get", "country"], "United States of America"],
+                    "tooltip_fields": ["name", "identity", "country", "form_rec"]
+                }
+            ]
+        },
+        {
+            "collection_id": "calenviroscreen-5-0",
+            "collection_url": "https://s3-west.nrp-nautilus.io/public-calenviroscreen/stac-collection.json",
+            "group": { "name": "Environmental Justice", "collapsed": true },
+            "assets": [
+                {
+                    "id": "ces5-pmtiles",
+                    "display_name": "CalEnviroScreen 5.0",
+                    "visible": false,
+                    "default_style": {
+                        "fill-color": [
+                            "interpolate", ["linear"], ["get", "CIscore_Pctl"],
+                            0, "#F7FCF5",
+                            25, "#C7E9C0",
+                            50, "#74C476",
+                            75, "#238B45",
+                            100, "#00441B"
+                        ],
+                        "fill-opacity": 0.6
+                    },
+                    "tooltip_fields": ["county", "CIscore", "CIscore_Pctl", "Population"]
+                }
+            ]
+        },
+        {
+            "collection_id": "census-2024-county",
+            "collection_url": "https://s3-west.nrp-nautilus.io/public-census/census-2024/county/stac-collection.json",
+            "group": { "name": "Political Boundaries", "collapsed": true },
+            "assets": [
+                {
+                    "id": "county-pmtiles",
+                    "display_name": "CA Counties",
+                    "visible": false,
+                    "default_style": {
+                        "fill-color": "rgba(0,0,0,0)",
+                        "fill-opacity": 0
+                    },
+                    "outline_style": {
+                        "line-color": "#616161",
+                        "line-width": 1.5
+                    },
+                    "default_filter": ["==", ["get", "STATEFP"], "06"],
+                    "tooltip_fields": ["NAME", "NAMELSAD", "GEOID"]
+                }
+            ]
+        },
+        {
+            "collection_id": "census-2024-cd",
+            "collection_url": "https://s3-west.nrp-nautilus.io/public-census/census-2024/cd/stac-collection.json",
+            "group": { "name": "Political Boundaries", "collapsed": true },
+            "assets": [
+                {
+                    "id": "cd",
+                    "display_name": "Congressional Districts (119th)",
+                    "visible": false,
+                    "default_style": {
+                        "fill-color": "rgba(0,0,0,0)",
+                        "fill-opacity": 0
+                    },
+                    "outline_style": {
+                        "line-color": "#1565C0",
+                        "line-width": 1.5
+                    },
+                    "default_filter": ["==", ["get", "STATEFP"], "06"],
+                    "tooltip_fields": ["NAMELSAD", "GEOID"]
+                }
+            ]
+        },
+        {
+            "collection_id": "census-2025-sldl",
+            "collection_url": "https://s3-west.nrp-nautilus.io/public-census/census-2025/sldl/stac-collection.json",
+            "group": { "name": "Political Boundaries", "collapsed": true },
+            "assets": [
+                {
+                    "id": "sldl-pmtiles",
+                    "display_name": "CA Assembly Districts",
+                    "visible": false,
+                    "default_style": {
+                        "fill-color": "rgba(0,0,0,0)",
+                        "fill-opacity": 0
+                    },
+                    "outline_style": {
+                        "line-color": "#7B1FA2",
+                        "line-width": 1.5
+                    },
+                    "default_filter": ["==", ["get", "STATEFP"], "06"],
+                    "tooltip_fields": ["NAMELSAD", "GEOID"]
+                }
+            ]
+        },
+        {
+            "collection_id": "census-2025-sldu",
+            "collection_url": "https://s3-west.nrp-nautilus.io/public-census/census-2025/sldu/stac-collection.json",
+            "group": { "name": "Political Boundaries", "collapsed": true },
+            "assets": [
+                {
+                    "id": "sldu-pmtiles",
+                    "display_name": "CA Senate Districts",
+                    "visible": false,
+                    "default_style": {
+                        "fill-color": "rgba(0,0,0,0)",
+                        "fill-opacity": 0
+                    },
+                    "outline_style": {
+                        "line-color": "#C62828",
+                        "line-width": 1.5
+                    },
+                    "default_filter": ["==", ["get", "STATEFP"], "06"],
+                    "tooltip_fields": ["NAMELSAD", "GEOID"]
                 }
             ]
         }
