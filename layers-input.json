@@ -19,165 +19,6 @@
     },
     "collections": [
         {
-            "collection_id": "ca-wolves",
-            "collection_url": "https://s3-west.nrp-nautilus.io/public-ca-wolves/stac-collection.json",
-            "group": { "name": "Wolf Activity" },
-            "assets": [
-                {
-                    "id": "territories",
-                    "display_name": "Pack Territories (Feb 2025)",
-                    "visible": true,
-                    "default_style": {
-                        "fill-color": [
-                            "match", ["get", "pack"],
-                            "Whaleback",        "#E65100",
-                            "Harvey",           "#1565C0",
-                            "Ice Cave",         "#2E7D32",
-                            "Lassen",           "#6A1B9A",
-                            "Diamond/Beyem Seyo","#AD1457",
-                            "Yowlumni",         "#F9A825",
-                            "#888888"
-                        ],
-                        "fill-opacity": 0.55
-                    },
-                    "outline_style": {
-                        "line-color": "#333333",
-                        "line-width": 1.2
-                    },
-                    "tooltip_fields": ["pack", "centroid_lon", "centroid_lat", "source"]
-                },
-                {
-                    "id": "bins-latest",
-                    "display_name": "Current Positions (~6km hexbins)",
-                    "visible": true,
-                    "default_style": {
-                        "fill-color": [
-                            "match", ["get", "pack"],
-                            "Whaleback 1",       "#E65100",
-                            "Whaleback 2",       "#FF6D00",
-                            "Whaleback 4",       "#FFAB40",
-                            "Whaleback Disperser 1", "#FFD180",
-                            "Whaleback Disperser 2", "#FFE0B2",
-                            "Harvey 1",          "#1565C0",
-                            "Harvey 3",          "#42A5F5",
-                            "Yowlumni Disperser","#F9A825",
-                            "#888888"
-                        ],
-                        "fill-opacity": 0.7
-                    },
-                    "outline_style": {
-                        "line-color": "#333333",
-                        "line-width": 1
-                    },
-                    "tooltip_fields": ["pack", "most_recent_adj"]
-                }
-            ]
-        },
-        {
-            "_comment": "Temporal trail layer — activate once geo-agent#140 (temporal visualization) lands",
-            "_collection_id": "ca-wolves-bins-trail",
-            "_snapshots_url": "https://s3-west.nrp-nautilus.io/public-ca-wolves/snapshots/",
-            "_lookback_days": 7,
-            "_id_field": "pack",
-            "_date_field": "most_recent_adj",
-            "_color_scheme": "categorical",
-            "_opacity_decay": "linear"
-        },
-        {
-            "collection_id": "pad-us-4.1-fee",
-            "collection_url": "https://s3-west.nrp-nautilus.io/public-padus/padus-4-1/fee/stac-collection.json",
-            "group": { "name": "Protected & Conserved Lands", "collapsed": true },
-            "assets": [
-                {
-                    "id": "fee-pmtiles",
-                    "display_name": "Protected Lands (PAD-US Fee)",
-                    "visible": false,
-                    "default_style": {
-                        "fill-color": [
-                            "match", ["get", "GAP_Sts"],
-                            "1", "#26633A",
-                            "2", "#3E9C47",
-                            "3", "#7EB3D3",
-                            "4", "#BDBDBD",
-                            "#888888"
-                        ],
-                        "fill-opacity": 0.45
-                    },
-                    "default_filter": [
-                        "match", ["get", "GAP_Sts"], ["1", "2"], true, false
-                    ],
-                    "tooltip_fields": ["Unit_Nm", "GAP_Sts", "Mang_Type"]
-                }
-            ]
-        },
-        {
-            "collection_id": "cced-2025b",
-            "collection_url": "https://s3-west.nrp-nautilus.io/public-cpad/cced-stac-collection.json",
-            "group": { "name": "Protected & Conserved Lands", "collapsed": true },
-            "assets": [
-                {
-                    "id": "cced-pmtiles",
-                    "display_name": "Conservation Easements (CCED)",
-                    "visible": false,
-                    "default_style": {
-                        "fill-color": "#8BC34A",
-                        "fill-opacity": 0.4
-                    },
-                    "outline_style": {
-                        "line-color": "#558B2F",
-                        "line-width": 1
-                    },
-                    "tooltip_fields": ["sitename", "esmthldr", "eholdtyp", "county"]
-                }
-            ]
-        },
-        {
-            "collection_id": "landmark-iplc-poly",
-            "collection_url": "https://s3-west.nrp-nautilus.io/public-indigenous/landmark/iplc-poly-stac.json",
-            "group": { "name": "Protected & Conserved Lands", "collapsed": true },
-            "assets": [
-                {
-                    "id": "iplc-poly-pmtiles",
-                    "display_name": "Indigenous Territories (LandMark)",
-                    "visible": false,
-                    "default_style": {
-                        "fill-color": "#FF7043",
-                        "fill-opacity": 0.35
-                    },
-                    "outline_style": {
-                        "line-color": "#BF360C",
-                        "line-width": 1
-                    },
-                    "default_filter": ["==", ["get", "country"], "United States of America"],
-                    "tooltip_fields": ["name", "identity", "country", "form_rec"]
-                }
-            ]
-        },
-        {
-            "collection_id": "calenviroscreen-5-0",
-            "collection_url": "https://s3-west.nrp-nautilus.io/public-calenviroscreen/stac-collection.json",
-            "group": { "name": "Environmental Justice", "collapsed": true },
-            "assets": [
-                {
-                    "id": "ces5-pmtiles",
-                    "display_name": "CalEnviroScreen 5.0",
-                    "visible": false,
-                    "default_style": {
-                        "fill-color": [
-                            "interpolate", ["linear"], ["get", "CIscore_Pctl"],
-                            0, "#F7FCF5",
-                            25, "#C7E9C0",
-                            50, "#74C476",
-                            75, "#238B45",
-                            100, "#00441B"
-                        ],
-                        "fill-opacity": 0.6
-                    },
-                    "tooltip_fields": ["county", "CIscore", "CIscore_Pctl", "Population"]
-                }
-            ]
-        },
-        {
             "collection_id": "census-2024-county",
             "collection_url": "https://s3-west.nrp-nautilus.io/public-census/census-2024/county/stac-collection.json",
             "group": { "name": "Political Boundaries", "collapsed": true },
@@ -264,6 +105,213 @@
                     "tooltip_fields": ["NAMELSAD", "GEOID"]
                 }
             ]
+        },
+        {
+            "collection_id": "wwf-ecoregions-2017",
+            "collection_url": "https://s3-west.nrp-nautilus.io/public-ecoregion/stac-collection.json",
+            "group": { "name": "Environment", "collapsed": true },
+            "assets": [
+                {
+                    "id": "ecoregion-pmtiles",
+                    "display_name": "WWF Ecoregions",
+                    "visible": false,
+                    "default_style": {
+                        "fill-color": ["get", "COLOR_BIO"],
+                        "fill-opacity": 0.4
+                    },
+                    "outline_style": {
+                        "line-color": "#555555",
+                        "line-width": 1
+                    },
+                    "tooltip_fields": ["ECO_NAME", "BIOME_NAME", "REALM", "NNH_NAME"]
+                }
+            ]
+        },
+        {
+            "collection_id": "ghs-pop-2020",
+            "collection_url": "https://s3-west.nrp-nautilus.io/public-high-seas/ghs-pop-2020/stac-collection.json",
+            "group": { "name": "Environment", "collapsed": true },
+            "assets": [
+                {
+                    "id": "ghs-pop-2020-cog",
+                    "display_name": "Population Density (2020)",
+                    "visible": false,
+                    "colormap": "viridis",
+                    "rescale": "0,500"
+                }
+            ]
+        },
+        {
+            "collection_id": "cgls-lc100-2019",
+            "collection_url": "https://s3-west.nrp-nautilus.io/public-land-cover/cgls-lc100-2019/stac-collection.json",
+            "group": { "name": "Environment", "collapsed": true },
+            "assets": [
+                {
+                    "id": "cgls-lc100-2019-cog",
+                    "display_name": "Land Cover (2019)",
+                    "visible": false,
+                    "colormap": "discrete"
+                }
+            ]
+        },
+        {
+            "collection_id": "calenviroscreen-5-0",
+            "collection_url": "https://s3-west.nrp-nautilus.io/public-calenviroscreen/stac-collection.json",
+            "group": { "name": "Environmental Justice", "collapsed": true },
+            "assets": [
+                {
+                    "id": "ces5-pmtiles",
+                    "display_name": "CalEnviroScreen 5.0",
+                    "visible": false,
+                    "default_style": {
+                        "fill-color": [
+                            "interpolate", ["linear"], ["get", "CIscore_Pctl"],
+                            0, "#F7FCF5",
+                            25, "#C7E9C0",
+                            50, "#74C476",
+                            75, "#238B45",
+                            100, "#00441B"
+                        ],
+                        "fill-opacity": 0.6
+                    },
+                    "tooltip_fields": ["county", "CIscore", "CIscore_Pctl", "Population"]
+                }
+            ]
+        },
+        {
+            "collection_id": "pad-us-4.1-fee",
+            "collection_url": "https://s3-west.nrp-nautilus.io/public-padus/padus-4-1/fee/stac-collection.json",
+            "group": { "name": "Protected & Conserved Lands", "collapsed": true },
+            "assets": [
+                {
+                    "id": "fee-pmtiles",
+                    "display_name": "Protected Lands (PAD-US Fee)",
+                    "visible": false,
+                    "default_style": {
+                        "fill-color": [
+                            "match", ["get", "GAP_Sts"],
+                            "1", "#26633A",
+                            "2", "#3E9C47",
+                            "3", "#7EB3D3",
+                            "4", "#BDBDBD",
+                            "#888888"
+                        ],
+                        "fill-opacity": 0.45
+                    },
+                    "default_filter": [
+                        "match", ["get", "GAP_Sts"], ["1", "2"], true, false
+                    ],
+                    "tooltip_fields": ["Unit_Nm", "GAP_Sts", "Mang_Type"]
+                }
+            ]
+        },
+        {
+            "collection_id": "cced-2025b",
+            "collection_url": "https://s3-west.nrp-nautilus.io/public-cpad/cced-stac-collection.json",
+            "group": { "name": "Protected & Conserved Lands", "collapsed": true },
+            "assets": [
+                {
+                    "id": "cced-pmtiles",
+                    "display_name": "Conservation Easements (CCED)",
+                    "visible": false,
+                    "default_style": {
+                        "fill-color": "#8BC34A",
+                        "fill-opacity": 0.4
+                    },
+                    "outline_style": {
+                        "line-color": "#558B2F",
+                        "line-width": 1
+                    },
+                    "tooltip_fields": ["sitename", "esmthldr", "eholdtyp", "county"]
+                }
+            ]
+        },
+        {
+            "collection_id": "landmark-iplc-poly",
+            "collection_url": "https://s3-west.nrp-nautilus.io/public-indigenous/landmark/iplc-poly-stac.json",
+            "group": { "name": "Protected & Conserved Lands", "collapsed": true },
+            "assets": [
+                {
+                    "id": "iplc-poly-pmtiles",
+                    "display_name": "Indigenous Territories (LandMark)",
+                    "visible": false,
+                    "default_style": {
+                        "fill-color": "#FF7043",
+                        "fill-opacity": 0.35
+                    },
+                    "outline_style": {
+                        "line-color": "#BF360C",
+                        "line-width": 1
+                    },
+                    "default_filter": ["==", ["get", "country"], "United States of America"],
+                    "tooltip_fields": ["name", "identity", "country", "form_rec"]
+                }
+            ]
+        },
+        {
+            "collection_id": "ca-wolves",
+            "collection_url": "https://s3-west.nrp-nautilus.io/public-ca-wolves/stac-collection.json",
+            "group": { "name": "Wolf Activity" },
+            "assets": [
+                {
+                    "id": "territories",
+                    "display_name": "Pack Territories (Feb 2025)",
+                    "visible": true,
+                    "default_style": {
+                        "fill-color": [
+                            "match", ["get", "pack"],
+                            "Whaleback",        "#E65100",
+                            "Harvey",           "#1565C0",
+                            "Ice Cave",         "#2E7D32",
+                            "Lassen",           "#6A1B9A",
+                            "Diamond/Beyem Seyo","#AD1457",
+                            "Yowlumni",         "#F9A825",
+                            "#888888"
+                        ],
+                        "fill-opacity": 0.55
+                    },
+                    "outline_style": {
+                        "line-color": "#333333",
+                        "line-width": 1.2
+                    },
+                    "tooltip_fields": ["pack", "centroid_lon", "centroid_lat", "source"]
+                },
+                {
+                    "id": "bins-latest",
+                    "display_name": "Current Positions (~6km hexbins)",
+                    "visible": true,
+                    "default_style": {
+                        "fill-color": [
+                            "match", ["get", "pack"],
+                            "Whaleback 1",       "#E65100",
+                            "Whaleback 2",       "#FF6D00",
+                            "Whaleback 4",       "#FFAB40",
+                            "Whaleback Disperser 1", "#FFD180",
+                            "Whaleback Disperser 2", "#FFE0B2",
+                            "Harvey 1",          "#1565C0",
+                            "Harvey 3",          "#42A5F5",
+                            "Yowlumni Disperser","#F9A825",
+                            "#888888"
+                        ],
+                        "fill-opacity": 0.7
+                    },
+                    "outline_style": {
+                        "line-color": "#333333",
+                        "line-width": 1
+                    },
+                    "tooltip_fields": ["pack", "most_recent_adj"]
+                }
+            ]
+        },
+        {
+            "_comment": "Temporal trail layer — activate once geo-agent#140 (temporal visualization) lands",
+            "_collection_id": "ca-wolves-bins-trail",
+            "_snapshots_url": "https://s3-west.nrp-nautilus.io/public-ca-wolves/snapshots/",
+            "_lookback_days": 7,
+            "_id_field": "pack",
+            "_date_field": "most_recent_adj",
+            "_color_scheme": "categorical",
+            "_opacity_decay": "linear"
         }
     ]
 }
