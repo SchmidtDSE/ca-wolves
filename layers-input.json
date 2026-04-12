@@ -298,8 +298,6 @@
                         "line-width": 1
                     },
                     "tooltip_fields": ["pack", "most_recent_adj"]
-                },
-                    "tooltip_fields": ["pack", "most_recent_adj"]
                 }
             ]
         },
