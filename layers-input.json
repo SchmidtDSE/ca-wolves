@@ -17,14 +17,13 @@
     },
     "collections": [
         {
-            "_comment": "Wolf territory polygons (Feb 2025 CDFW official map) — activate once geo-agent#139 (GeoJSON source support) lands and STAC collection is registered",
-            "_collection_id": "ca-wolves-territories",
-            "_collection_url": "https://s3-west.nrp-nautilus.io/ca-wolves/stac-collection-territories.json",
-            "_assets": [
+            "collection_id": "ca-wolves",
+            "collection_url": "https://s3-west.nrp-nautilus.io/ca-wolves/stac-collection.json",
+            "group": { "name": "Wolf Activity" },
+            "assets": [
                 {
-                    "id": "territories-geojson",
+                    "id": "territories",
                     "display_name": "Pack Territories (Feb 2025)",
-                    "group": "Wolf Activity",
                     "visible": true,
                     "default_style": {
                         "fill-color": [
@@ -48,12 +47,12 @@
             ]
         },
         {
-            "_comment": "Daily wolf position hexbins from CDFW live tracker (most recent snapshot) — activate once geo-agent#139 lands",
-            "_collection_id": "ca-wolves-bins-latest",
-            "_collection_url": "https://s3-west.nrp-nautilus.io/ca-wolves/stac-collection-bins-latest.json",
+            "_comment": "Snapshots layer — depends on geo-agent selecting latest from glob pattern; keeping disabled until that's supported",
+            "_collection_id": "ca-wolves",
+            "_collection_url": "https://s3-west.nrp-nautilus.io/ca-wolves/stac-collection.json",
             "_assets": [
                 {
-                    "id": "bins-geojson",
+                    "id": "snapshots",
                     "display_name": "Current Positions (~6km hexbins)",
                     "group": "Wolf Activity",
                     "visible": true,
