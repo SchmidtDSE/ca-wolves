@@ -298,18 +298,55 @@
                         "line-width": 1
                     },
                     "tooltip_fields": ["pack", "most_recent_adj"]
+                },
+                {
+                    "id": "trail",
+                    "display_name": "Movement Trail (30 days)",
+                    "visible": false,
+                    "default_style": {
+                        "fill-color": [
+                            "match", ["get", "pack"],
+                            "Whaleback 1",       "#E65100",
+                            "Whaleback 2",       "#FF6D00",
+                            "Whaleback 4",       "#FFAB40",
+                            "Whaleback Disperser 1", "#FFD180",
+                            "Whaleback Disperser 2", "#FFE0B2",
+                            "Harvey 1",          "#1565C0",
+                            "Harvey 3",          "#42A5F5",
+                            "Yowlumni Disperser","#F9A825",
+                            "#888888"
+                        ],
+                        "fill-opacity": 0.3
+                    },
+                    "outline_style": {
+                        "line-color": "#555555",
+                        "line-width": 0.5
+                    },
+                    "tooltip_fields": ["pack", "snapshot_ts", "most_recent_adj"]
+                },
+                {
+                    "id": "tracks",
+                    "display_name": "Movement Tracks (30 days)",
+                    "visible": false,
+                    "default_style": {
+                        "line-color": [
+                            "match", ["get", "pack"],
+                            "Whaleback 1",       "#E65100",
+                            "Whaleback 2",       "#FF6D00",
+                            "Whaleback 4",       "#FFAB40",
+                            "Whaleback Disperser 1", "#FFD180",
+                            "Whaleback Disperser 2", "#FFE0B2",
+                            "Harvey 1",          "#1565C0",
+                            "Harvey 3",          "#42A5F5",
+                            "Yowlumni Disperser","#F9A825",
+                            "#888888"
+                        ],
+                        "line-width": 2.5,
+                        "line-opacity": 0.8
+                    },
+                    "tooltip_fields": ["pack", "first_seen", "last_seen", "waypoint_count"]
                 }
             ]
-        },
-        {
-            "_comment": "Temporal trail layer — activate once geo-agent#140 (temporal visualization) lands",
-            "_collection_id": "ca-wolves-bins-trail",
-            "_snapshots_url": "https://s3-west.nrp-nautilus.io/public-ca-wolves/snapshots/",
-            "_lookback_days": 7,
-            "_id_field": "pack",
-            "_date_field": "most_recent_adj",
-            "_color_scheme": "categorical",
-            "_opacity_decay": "linear"
         }
     ]
 }
