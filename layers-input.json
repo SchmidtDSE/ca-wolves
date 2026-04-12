@@ -299,6 +299,15 @@
                     },
                     "tooltip_fields": ["pack", "most_recent_adj"]
                 },
+                    "tooltip_fields": ["pack", "most_recent_adj"]
+                }
+            ]
+        },
+        {
+            "collection_id": "ca-wolves",
+            "collection_url": "https://s3-west.nrp-nautilus.io/public-ca-wolves/stac-collection.json",
+            "group": { "name": "Wolf Activity" },
+            "assets": [
                 {
                     "id": "trail",
                     "display_name": "Movement Trail (30 days)",
