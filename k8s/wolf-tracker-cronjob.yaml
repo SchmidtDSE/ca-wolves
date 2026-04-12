@@ -53,6 +53,117 @@ data:
     echo "Saved: s3://${BUCKET}/${SNAPSHOT}"
     echo "Updated: s3://${BUCKET}/wolf_bins_latest.geojson"
 
+    # Rebuild trail and tracks from all snapshots
+    python3 /scripts/assemble.py
+
+  assemble.py: |
+    #!/usr/bin/env python3
+    """Assemble wolf_trail.geojson and wolf_tracks.geojson from snapshots.
+
+    wolf_trail.geojson  — de-duplicated hexbin polygons with snapshot_ts
+    wolf_tracks.geojson — per-pack LineStrings from hexbin centroids
+    """
+    import json, os, subprocess, sys
+    from datetime import datetime, timedelta
+
+    EP = os.environ.get("S3_ENDPOINT", "http://rook-ceph-rgw-nautiluss3.rook")
+    BUCKET = "public-ca-wolves"
+    LOOKBACK_DAYS = 30
+    cutoff = datetime.now(tz=None) - timedelta(days=LOOKBACK_DAYS)  # naive UTC
+
+    def s3(*args):
+        return subprocess.run(
+            ["aws", "s3"] + list(args) +
+            ["--endpoint-url", EP, "--region", "us-east-1"],
+            capture_output=True, text=True,
+        )
+
+    # List snapshots
+    result = s3("ls", f"s3://{BUCKET}/snapshots/")
+    if result.returncode != 0:
+        print("ERROR listing snapshots:", result.stderr, file=sys.stderr)
+        sys.exit(1)
+
+    files = sorted(l.split()[-1] for l in result.stdout.strip().split("\n") if l.strip())
+
+    # Filter to lookback window
+    recent = []
+    for f in files:
+        ts_str = f.replace("wolf_bins_", "").replace(".geojson", "")
+        try:
+            ts = datetime.fromisoformat(ts_str)
+        except ValueError:
+            continue
+        if ts >= cutoff:
+            recent.append((f, ts_str, ts))
+
+    trail_features = []
+    tracks = {}          # pack -> [{"coords": [lon, lat], "ts": str}]
+    prev_positions = {}  # pack -> (lon, lat) rounded
+
+    for fname, ts_str, _ in recent:
+        r = s3("cp", f"s3://{BUCKET}/snapshots/{fname}", "-")
+        if r.returncode != 0:
+            continue
+        data = json.loads(r.stdout)
+
+        for feat in data["features"]:
+            pack = feat["properties"]["pack"]
+            ring = feat["geometry"]["coordinates"][0]
+            # Centroid of hexbin (skip closing vertex)
+            lons = [c[0] for c in ring[:-1]]
+            lats = [c[1] for c in ring[:-1]]
+            centroid = (sum(lons) / len(lons), sum(lats) / len(lats))
+            pos = (round(centroid[0], 4), round(centroid[1], 4))
+
+            if pack not in prev_positions or prev_positions[pack] != pos:
+                feat["properties"]["snapshot_ts"] = ts_str + "Z"
+                trail_features.append(feat)
+
+                tracks.setdefault(pack, []).append({
+                    "coords": [centroid[0], centroid[1]],
+                    "ts": ts_str + "Z",
+                })
+
+            prev_positions[pack] = pos
+
+    # Build trail
+    trail = {"type": "FeatureCollection", "features": trail_features}
+
+    # Build tracks (only packs with ≥2 waypoints form a line)
+    track_features = []
+    for pack, wpts in sorted(tracks.items()):
+        if len(wpts) < 2:
+            continue
+        track_features.append({
+            "type": "Feature",
+            "properties": {
+                "pack": pack,
+                "timestamps": [w["ts"] for w in wpts],
+                "first_seen": wpts[0]["ts"],
+                "last_seen": wpts[-1]["ts"],
+                "waypoint_count": len(wpts),
+            },
+            "geometry": {
+                "type": "LineString",
+                "coordinates": [w["coords"] for w in wpts],
+            },
+        })
+    track_geojson = {"type": "FeatureCollection", "features": track_features}
+
+    # Upload
+    for name, obj in [("wolf_trail.geojson", trail), ("wolf_tracks.geojson", track_geojson)]:
+        path = f"/tmp/{name}"
+        with open(path, "w") as fh:
+            json.dump(obj, fh)
+        r = s3("cp", path, f"s3://{BUCKET}/{name}",
+               "--content-type", "application/geo+json")
+        if r.returncode != 0:
+            print(f"ERROR uploading {name}: {r.stderr}", file=sys.stderr)
+            sys.exit(1)
+
+    print(f"Trail: {len(trail_features)} features, Tracks: {len(track_features)} packs with movement")
+
 ---
 apiVersion: batch/v1
 kind: CronJob

@@ -10,10 +10,8 @@
         "message": "Hi! I can help you explore California gray wolf territories, pack movement data, and related environmental and political context. Try asking:",
         "examples": [
             "Tell me about the wolf datasets available.",
-            "Show only the Whaleback pack territory.",
+            "Zoom to the Whaleback pack territory.",
             "Which protected lands overlap with wolf territories?",
-            "How have wolf positions changed over the past week?",
-            "What is the CalEnviroScreen score near wolf territories?",
             "Which state assembly districts overlap with wolf packs?"
         ]
     },
