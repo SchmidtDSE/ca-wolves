@@ -24,59 +24,6 @@
     <script src="https://unpkg.com/maplibre-gl@5.22.0/dist/maplibre-gl.js"></script>
     <link href="https://unpkg.com/maplibre-gl@5.22.0/dist/maplibre-gl.css" rel="stylesheet" />
 
-    <!-- Capture map instance before geo-agent module runs -->
-    <script>
-    window.__geoMap = null;
-    const _OrigMap = maplibregl.Map;
-    maplibregl.Map = new Proxy(_OrigMap, {
-      construct(target, args) {
-        const inst = Reflect.construct(target, args);
-        window.__geoMap = inst;
-        return inst;
-      }
-    });
-    </script>
-
-    <!-- Wolf animation controls -->
-    <style>
-    #wolf-anim-controls {
-      position: absolute;
-      bottom: 14px;
-      left: 50px;
-      z-index: 2;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      background: rgba(255, 255, 255, 0.9);
-      backdrop-filter: blur(4px);
-      padding: 5px 10px;
-      border-radius: 5px;
-      border: 1px solid rgba(0, 0, 0, 0.15);
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-      font-size: 12px;
-    }
-    #wolf-play-btn {
-      background: none;
-      border: 1px solid #999;
-      border-radius: 3px;
-      cursor: pointer;
-      padding: 2px 6px;
-      font-size: 12px;
-      line-height: 1;
-    }
-    #wolf-play-btn:hover { background: #eee; }
-    #wolf-time-display {
-      color: #333;
-      min-width: 160px;
-    }
-    #wolf-speed {
-      font-size: 11px;
-      border: 1px solid #ccc;
-      border-radius: 3px;
-      padding: 1px 2px;
-    }
-    </style>
-
     <!-- PMTiles protocol -->
     <script src="https://unpkg.com/pmtiles@3.0.7/dist/pmtiles.js"></script>
 
@@ -92,8 +39,8 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/sql.min.js"></script>
 
     <!-- Core styles from CDN -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/boettiger-lab/geo-agent@35d6df70ad1febd540abc3c9076c8525250d58a5/app/style.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/boettiger-lab/geo-agent@35d6df70ad1febd540abc3c9076c8525250d58a5/app/chat.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/boettiger-lab/geo-agent@1c7b1ffad18b225a1faca869c0f93c0705e16f9d/app/style.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/boettiger-lab/geo-agent@1c7b1ffad18b225a1faca869c0f93c0705e16f9d/app/chat.css">
 </head>
 
 <body>
@@ -120,10 +67,7 @@
     </div>
 
     <!-- Boot from CDN -->
-    <script type="module" src="https://cdn.jsdelivr.net/gh/boettiger-lab/geo-agent@35d6df70ad1febd540abc3c9076c8525250d58a5/app/main.js"></script>
-
-    <!-- Wolf trajectory animation -->
-    <script type="module" src="wolf-animation.js"></script>
+    <script type="module" src="https://cdn.jsdelivr.net/gh/boettiger-lab/geo-agent@1c7b1ffad18b225a1faca869c0f93c0705e16f9d/app/main.js"></script>
 </body>
 
 </html>

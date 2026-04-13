@@ -271,6 +271,46 @@
                         "line-width": 1
                     },
                     "tooltip_fields": ["pack", "most_recent_adj"]
+                },
+                {
+                    "id": "tracks",
+                    "display_name": "Wolf Movement (animated)",
+                    "visible": true,
+                    "animation": {
+                        "type": "trajectory",
+                        "timestamp_field": "timestamps",
+                        "id_field": "pack",
+                        "duration_seconds": 30,
+                        "static_positions_asset": "bins-latest",
+                        "show_track_line": true,
+                        "show_labels": true
+                    },
+                    "default_style": {
+                        "line-color": [
+                            "match", ["get", "pack"],
+                            "Whaleback 1",       "#E65100",
+                            "Whaleback 2",       "#FF6D00",
+                            "Whaleback 4",       "#FFAB40",
+                            "Whaleback Disperser 1", "#FFD180",
+                            "Whaleback Disperser 2", "#FFE0B2",
+                            "Harvey 1",          "#1565C0",
+                            "Harvey 3",          "#42A5F5",
+                            "Yowlumni Disperser","#F9A825",
+                            "#888888"
+                        ],
+                        "circle-color": [
+                            "match", ["get", "pack"],
+                            "Whaleback 1",       "#E65100",
+                            "Whaleback 2",       "#FF6D00",
+                            "Whaleback 4",       "#FFAB40",
+                            "Whaleback Disperser 1", "#FFD180",
+                            "Whaleback Disperser 2", "#FFE0B2",
+                            "Harvey 1",          "#1565C0",
+                            "Harvey 3",          "#42A5F5",
+                            "Yowlumni Disperser","#F9A825",
+                            "#888888"
+                        ]
+                    }
                 }
             ]
         }

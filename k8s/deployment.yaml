@@ -31,7 +31,6 @@ spec:
           cp /tmp/repo/index.html /usr/share/nginx/html/
           cp /tmp/repo/layers-input.json /usr/share/nginx/html/
           cp /tmp/repo/system-prompt.md /usr/share/nginx/html/
-          cp /tmp/repo/wolf-animation.js /usr/share/nginx/html/
         volumeMounts:
         - name: website-content
           mountPath: /usr/share/nginx/html
