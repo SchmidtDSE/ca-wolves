@@ -220,6 +220,55 @@
             ]
         },
         {
+            "collection_id": "fire-perimeters",
+            "collection_url": "https://s3-west.nrp-nautilus.io/public-fire/stac-collection.json",
+            "group": { "name": "Wildfire", "collapsed": true },
+            "assets": [
+                {
+                    "id": "firep-pmtiles",
+                    "display_name": "CAL FIRE Wildfire Perimeters (2024)",
+                    "visible": false,
+                    "default_style": {
+                        "fill-color": [
+                            "interpolate", ["linear"], ["get", "YEAR_"],
+                            1950, "#FFF9C4",
+                            1980, "#FFCC02",
+                            2000, "#FF6D00",
+                            2015, "#D32F2F",
+                            2024, "#7B0000"
+                        ],
+                        "fill-opacity": 0.55
+                    },
+                    "outline_style": {
+                        "line-color": "#B71C1C",
+                        "line-width": 0.8
+                    },
+                    "tooltip_fields": ["FIRE_NAME", "YEAR_", "GIS_ACRES", "AGENCY", "CAUSE", "ALARM_DATE"]
+                },
+                {
+                    "id": "rxburn-pmtiles",
+                    "display_name": "CAL FIRE Prescribed Burns (2024)",
+                    "visible": false,
+                    "default_style": {
+                        "fill-color": [
+                            "interpolate", ["linear"], ["get", "YEAR_"],
+                            1950, "#F1F8E9",
+                            1980, "#AED581",
+                            2000, "#7CB342",
+                            2015, "#33691E",
+                            2024, "#1B5E20"
+                        ],
+                        "fill-opacity": 0.55
+                    },
+                    "outline_style": {
+                        "line-color": "#2E7D32",
+                        "line-width": 0.8
+                    },
+                    "tooltip_fields": ["TREATMENT_NAME", "YEAR_", "GIS_ACRES", "AGENCY", "START_DATE", "END_DATE"]
+                }
+            ]
+        },
+        {
             "collection_id": "ca-wolves",
             "collection_url": "https://s3-west.nrp-nautilus.io/public-ca-wolves/stac-collection.json",
             "group": { "name": "Wolf Activity" },
