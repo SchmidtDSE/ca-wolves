@@ -1,0 +1,199 @@
+{
+    "type": "Collection",
+    "id": "ca-wolves",
+    "stac_version": "1.0.0",
+    "title": "California Gray Wolf Monitoring",
+    "description": "California gray wolf pack territory polygons and GPS collar location snapshots from the CDFW Wolf Program. Territory polygons are convex-hull approximations digitized from the official CDFW Approximate Area of Gray Wolf Activity map (February 2025) for six confirmed packs: Whaleback, Harvey, Ice Cave, Lassen, Diamond/Beyem Seyo, and Yowlumni. Boundary polygons are approximate (\u00b15\u201310 km) and intended for visualization, not legal or management purposes. GPS collar snapshots are collected every 6 hours from the CDFW Wolf Location Map and aggregated by CDFW to ~6 km hexagonal cells sized to match average daily wolf movement; only new data (detected by Last-Modified header) is archived. IMPORTANT SAMPLING LIMITATIONS: (1) Only a subset of wolves in a subset of packs are GPS-collared; packs with higher livestock-conflict potential are prioritized for collaring, so coverage is biased, not representative. (2) Collars typically collect 4 fixes/day (3 dusk-to-dawn, 1 midday); frequency may increase seasonally for research. (3) Transmission can be delayed by weather or dense forest cover. (4) During denning/rendezvous season (April\u2013August), CDFW suppresses cells near den and rendezvous sites to protect sensitive locations; absence of active cells in a known territory does not mean the pack is absent. (5) If a collar stops reporting, the map continues to show its last known location. (6) When multiple collars occupy the same cell, only one cell is shown. This data was designed for livestock-conflict mitigation, not ecological monitoring.",
+    "license": "CC0-1.0",
+    "extent": {
+        "spatial": {
+            "bbox": [
+                [
+                    -122.84,
+                    36.8,
+                    -118.08,
+                    42.13
+                ]
+            ]
+        },
+        "temporal": {
+            "interval": [
+                [
+                    "2025-02-01T00:00:00Z",
+                    null
+                ]
+            ]
+        }
+    },
+    "links": [
+        {
+            "rel": "self",
+            "href": "https://s3-west.nrp-nautilus.io/public-ca-wolves/stac-collection.json",
+            "type": "application/json"
+        },
+        {
+            "rel": "root",
+            "href": "https://s3-west.nrp-nautilus.io/public-data/stac/catalog.json",
+            "type": "application/json"
+        },
+        {
+            "rel": "parent",
+            "href": "https://s3-west.nrp-nautilus.io/public-data/stac/catalog.json",
+            "type": "application/json"
+        },
+        {
+            "rel": "describedby",
+            "href": "https://s3-west.nrp-nautilus.io/public-ca-wolves/README.md",
+            "type": "text/markdown",
+            "title": "Dataset documentation"
+        },
+        {
+            "rel": "related",
+            "href": "https://ca-wolves.nrp-nautilus.io",
+            "title": "Interactive wolf tracking map"
+        },
+        {
+            "rel": "derived_from",
+            "href": "https://wildlife.ca.gov/Conservation/Mammals/Gray-Wolf",
+            "title": "CDFW Gray Wolf Program"
+        },
+        {
+            "rel": "derived_from",
+            "href": "https://wildlife.ca.gov/Conservation/Mammals/Gray-Wolf/Location-Map",
+            "title": "CDFW Wolf Location Automated Mapping System"
+        }
+    ],
+    "assets": {
+        "territories": {
+            "href": "https://s3-west.nrp-nautilus.io/public-ca-wolves/wolf_territories_feb2025.geojson",
+            "type": "application/geo+json",
+            "title": "Wolf pack territory polygons (February 2025)",
+            "description": "Six pack territory polygons digitized from the CDFW Approximate Area of Gray Wolf Activity map (Feb 2025): Whaleback, Harvey, Ice Cave, Lassen, Diamond/Beyem Seyo, Yowlumni. Convex-hull approximations, ~5\u201310 km accuracy. Static reference layer.",
+            "roles": [
+                "data"
+            ],
+            "table:columns": [
+                {
+                    "name": "pack",
+                    "type": "string",
+                    "description": "Pack name"
+                },
+                {
+                    "name": "source",
+                    "type": "string",
+                    "description": "Data source attribution"
+                },
+                {
+                    "name": "note",
+                    "type": "string",
+                    "description": "Digitization method and caveats"
+                },
+                {
+                    "name": "centroid_lon",
+                    "type": "float64",
+                    "description": "Approximate centroid longitude (WGS84)"
+                },
+                {
+                    "name": "centroid_lat",
+                    "type": "float64",
+                    "description": "Approximate centroid latitude (WGS84)"
+                }
+            ]
+        },
+        "bins-latest": {
+            "href": "https://s3-west.nrp-nautilus.io/public-ca-wolves/wolf_bins_latest.geojson",
+            "type": "application/geo+json",
+            "title": "Latest wolf GPS collar hexbins (visualization)",
+            "description": "Most recent CDFW snapshot of wolf positions as ~6 km hexagonal polygons in GeoJSON. Used by the map's current-positions layer. For SQL queries, use trail-hex with `WHERE snapshot_ts = (SELECT MAX(snapshot_ts) FROM trail-hex)` instead \u2014 it has H3 cells for fast joins.",
+            "roles": [
+                "visual"
+            ]
+        },
+        "tracks": {
+            "href": "https://s3-west.nrp-nautilus.io/public-ca-wolves/wolf_tracks.geojson",
+            "type": "application/geo+json",
+            "title": "Wolf movement trajectories (animation, visualization)",
+            "description": "Per-pack LineStrings through hexbin centroids over the past 30 days, used by the map's trajectory animation. Visualization only \u2014 for SQL movement queries, use trail-hex.",
+            "roles": [
+                "visual"
+            ]
+        },
+        "snapshots": {
+            "href": "https://s3-west.nrp-nautilus.io/public-ca-wolves/snapshots/wolf_bins_*.geojson",
+            "type": "application/geo+json",
+            "title": "Raw CDFW snapshot archive",
+            "description": "Time-stamped archive of every distinct CDFW wolf-bins GeoJSON observed by the hourly fetcher. Filename encodes the upstream Last-Modified timestamp (UTC). Provenance / replay use only \u2014 for analytical queries use trail-hex.",
+            "roles": [
+                "data"
+            ]
+        },
+        "trail-hex": {
+            "href": "https://s3-west.nrp-nautilus.io/public-ca-wolves/wolf_trail/hex/h0=*/data_0.parquet",
+            "type": "application/vnd.apache.parquet",
+            "title": "Wolf movement trail (H3 res-8 tiled, h0-partitioned, 30-day rolling)",
+            "description": "PRIMARY ANALYTICAL ASSET. Past 30 days of de-duplicated wolf positions, polyfilled to H3 resolution 8 cells. One row per (pack, snapshot_ts, h8). Hive-partitioned by h0 \u2014 California fits in a single h0 cell, but the column is exposed so dynamic partition pruning works when joining against globally-partitioned catalog datasets. Hash-join on h8 with any other catalog hex asset; prune time windows on snapshot_ts (UTC TIMESTAMP). Rebuilt hourly by overwriting the file in place.",
+            "roles": [
+                "data"
+            ],
+            "table:columns": [
+                {
+                    "name": "_cng_fid",
+                    "type": "int64",
+                    "description": "Synthetic source-feature id (one per CDFW hex polygon at a given snapshot)"
+                },
+                {
+                    "name": "pack",
+                    "type": "string",
+                    "description": "Individual wolf identifier (e.g. 'Whaleback 1', 'Harvey 3', 'Yowlumni Disperser')"
+                },
+                {
+                    "name": "most_recent_adj",
+                    "type": "string",
+                    "description": "CDFW last-fix date (MM/DD/YYYY)"
+                },
+                {
+                    "name": "snapshot_ts",
+                    "type": "timestamp",
+                    "description": "UTC timestamp of the snapshot that captured this position"
+                },
+                {
+                    "name": "h8",
+                    "type": "uint64",
+                    "description": "H3 cell ID at resolution 8 (working resolution)"
+                },
+                {
+                    "name": "h0",
+                    "type": "int64",
+                    "description": "H3 cell ID at resolution 0 (partition key \u2014 enables DPP against global hex datasets)"
+                }
+            ]
+        }
+    },
+    "providers": [
+        {
+            "name": "California Department of Fish and Wildlife (CDFW) Wolf Program",
+            "roles": [
+                "producer"
+            ],
+            "url": "https://wildlife.ca.gov/Conservation/Mammals/Gray-Wolf"
+        },
+        {
+            "name": "Boettiger Lab, UC Berkeley",
+            "roles": [
+                "processor",
+                "host"
+            ],
+            "url": "https://github.com/boettiger-lab/ca-wolves"
+        }
+    ],
+    "keywords": [
+        "California",
+        "gray wolf",
+        "Canis lupus",
+        "wildlife tracking",
+        "GPS collar",
+        "CDFW",
+        "pack territories",
+        "conservation"
+    ]
+}

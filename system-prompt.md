@@ -58,6 +58,8 @@ The map shows data from several sources organized into groups:
 ## SQL query guidelines
 
 - Always use `LIMIT` to keep results manageable
-- Wolf snapshot data is partitioned by date — filter on the date field first to avoid full scans
+- For wolf SQL queries, use the `trail-hex` asset (H3 res-8 tiled, 30-day rolling). Each row is one (pack, snapshot_ts, h8) cell. Latest positions: `WHERE snapshot_ts = (SELECT MAX(snapshot_ts) FROM trail)`. Movement over time: filter on `snapshot_ts` (UTC TIMESTAMP).
+- Overlap with other catalog datasets: hash-join on `h8` against the other dataset's hex parquet — no `ST_Intersects` needed.
+- The `bins-latest` and `tracks` GeoJSON assets are for the map renderer only; do not query them in SQL.
 - Census datasets include STATEFP — always filter to "06" for California queries
 - The Yowlumni territory is in the southern Sierra Nevada (Tulare/Fresno County), spatially separate from the northern packs

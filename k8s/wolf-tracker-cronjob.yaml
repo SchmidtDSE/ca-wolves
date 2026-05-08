@@ -27,48 +27,67 @@ data:
     echo "Upstream Last-Modified: $LAST_MOD_RAW"
     echo "Snapshot key: $SNAPSHOT"
 
-    # Skip if this snapshot already exists in S3
+    # Archive a new snapshot only if upstream has changed; the assemble step
+    # below still runs unconditionally so the 30-day rolling window slides
+    # forward every cron tick.
     if aws s3 ls "s3://${BUCKET}/${SNAPSHOT}" \
          --endpoint-url "$S3_ENDPOINT" \
          --region us-east-1 \
          2>/dev/null | grep -q .; then
-      echo "Snapshot already stored — no new data."
-      exit 0
-    fi
+      echo "Snapshot already stored — no new upstream data."
+    else
+      echo "New data detected — saving snapshot..."
+      curl -sf "$SOURCE_URL" | \
+        aws s3 cp - "s3://${BUCKET}/${SNAPSHOT}" \
+          --endpoint-url "$S3_ENDPOINT" \
+          --region us-east-1 \
+          --content-type "application/geo+json"
 
-    # Download and upload atomically via pipe
-    echo "New data detected — saving snapshot..."
-    curl -sf "$SOURCE_URL" | \
-      aws s3 cp - "s3://${BUCKET}/${SNAPSHOT}" \
+      # Also write to a fixed key so the map can always load the latest snapshot
+      aws s3 cp "s3://${BUCKET}/${SNAPSHOT}" "s3://${BUCKET}/wolf_bins_latest.geojson" \
         --endpoint-url "$S3_ENDPOINT" \
         --region us-east-1 \
         --content-type "application/geo+json"
 
-    # Also write to a fixed key so the map can always load the latest snapshot
-    aws s3 cp "s3://${BUCKET}/${SNAPSHOT}" "s3://${BUCKET}/wolf_bins_latest.geojson" \
-      --endpoint-url "$S3_ENDPOINT" \
-      --region us-east-1 \
-      --content-type "application/geo+json"
+      echo "Saved: s3://${BUCKET}/${SNAPSHOT}"
+      echo "Updated: s3://${BUCKET}/wolf_bins_latest.geojson"
+    fi
 
-    echo "Saved: s3://${BUCKET}/${SNAPSHOT}"
-    echo "Updated: s3://${BUCKET}/wolf_bins_latest.geojson"
-
-    # Rebuild trail and tracks from all snapshots
+    # Always rebuild the trail hex parquet and tracks geojson — even with no
+    # new snapshot, day-31 features age out of the 30-day window.
     python3 /scripts/assemble.py
 
   assemble.py: |
     #!/usr/bin/env python3
-    """Assemble wolf_trail.geojson and wolf_tracks.geojson from snapshots.
+    """Rebuild the queryable trail and the map's UI geojson from raw snapshots.
 
-    wolf_trail.geojson  — de-duplicated hexbin polygons with snapshot_ts
-    wolf_tracks.geojson — per-pack LineStrings from hexbin centroids
+    Outputs (all overwritten in place each run):
+
+      wolf_tracks.geojson        — per-pack LineStrings, used by the map's
+                                   trajectory animation. Visualization only.
+      wolf_trail/hex/h0=*/data_0.parquet
+                                 — canonical analytical asset. Past 30 days of
+                                   (pack, snapshot_ts, hexbin polygon) polyfilled
+                                   to H3 res 8 cells, hive-partitioned by h0.
+                                   Joins against any catalog hex dataset via h8;
+                                   h0 partition column enables DPP against
+                                   global datasets. Built with DuckDB + spatial
+                                   + h3 community extensions, matching the
+                                   convention in cng_datasets/vector/h3_tiling.py.
+
+    wolf_bins_latest.geojson is written by fetch.sh (current snapshot only) and
+    is not touched here. Current positions in SQL are
+    `trail WHERE snapshot_ts = (SELECT MAX(snapshot_ts) FROM trail)`.
     """
-    import json, os, subprocess, sys
+    import json, os, shutil, subprocess, sys
     from datetime import datetime, timedelta
+
+    import duckdb
 
     EP = os.environ.get("S3_ENDPOINT", "http://rook-ceph-rgw-nautiluss3.rook")
     BUCKET = "public-ca-wolves"
     LOOKBACK_DAYS = 30
+    H3_RES = 8  # working resolution; matches public-ecoregion
     cutoff = datetime.now(tz=None) - timedelta(days=LOOKBACK_DAYS)  # naive UTC
 
     def s3(*args):
@@ -100,12 +119,14 @@ data:
     trail_features = []
     tracks = {}          # pack -> [{"coords": [lon, lat], "ts": str}]
     prev_positions = {}  # pack -> (lon, lat) rounded
+    latest_snapshot = None  # most recent snapshot's parsed GeoJSON
 
     for fname, ts_str, _ in recent:
         r = s3("cp", f"s3://{BUCKET}/snapshots/{fname}", "-")
         if r.returncode != 0:
             continue
         data = json.loads(r.stdout)
+        latest_snapshot = data  # `recent` is sorted; final iteration wins
 
         for feat in data["features"]:
             pack = feat["properties"]["pack"]
@@ -151,16 +172,73 @@ data:
         })
     track_geojson = {"type": "FeatureCollection", "features": track_features}
 
-    # Upload
-    for name, obj in [("wolf_trail.geojson", trail), ("wolf_tracks.geojson", track_geojson)]:
-        path = f"/tmp/{name}"
-        with open(path, "w") as fh:
-            json.dump(obj, fh)
-        r = s3("cp", path, f"s3://{BUCKET}/{name}",
-               "--content-type", "application/geo+json")
+    # Stage the trail locally for DuckDB ST_Read; not uploaded as geojson.
+    with open("/tmp/wolf_trail.geojson", "w") as fh:
+        json.dump(trail, fh)
+
+    # Upload tracks.geojson (visualization only — used by the map animation)
+    with open("/tmp/wolf_tracks.geojson", "w") as fh:
+        json.dump(track_geojson, fh)
+    r = s3("cp", "/tmp/wolf_tracks.geojson",
+           f"s3://{BUCKET}/wolf_tracks.geojson",
+           "--content-type", "application/geo+json")
+    if r.returncode != 0:
+        print(f"ERROR uploading wolf_tracks.geojson: {r.stderr}", file=sys.stderr)
+        sys.exit(1)
+
+    # ---- Canonical analytical asset: H3 hex parquet -----------------------
+    # Built fresh each run, overwriting the prior tiles in place. The full
+    # 30-day trail is small (~hundreds of features → ~10K h8 rows → ~100 KB
+    # parquet), so a wholesale overwrite is cheaper than partition surgery.
+    if trail_features:
+        con = duckdb.connect()
+        con.execute("INSTALL spatial; LOAD spatial;")
+        con.execute("INSTALL h3 FROM community; LOAD h3;")
+        con.execute("SET temp_directory='/tmp';")
+        con.execute("SET arrow_large_buffer_size=true;")
+
+        local_dir = "/tmp/wolf_trail_hex"
+        shutil.rmtree(local_dir, ignore_errors=True)
+
+        con.execute(f"""
+            COPY (
+                WITH src AS (
+                    SELECT
+                        row_number() OVER () AS _cng_fid,
+                        pack,
+                        most_recent_adj,
+                        CAST(snapshot_ts AS TIMESTAMP) AS snapshot_ts,
+                        geom
+                    FROM ST_Read('/tmp/wolf_trail.geojson')
+                ),
+                cells AS (
+                    SELECT
+                        _cng_fid, pack, most_recent_adj, snapshot_ts,
+                        UNNEST(h3_polygon_wkt_to_cells(
+                            ST_AsText(ST_Force2D(geom)), {H3_RES}
+                        )) AS h{H3_RES}
+                    FROM src
+                )
+                SELECT
+                    _cng_fid, pack, most_recent_adj, snapshot_ts,
+                    h{H3_RES},
+                    h3_cell_to_parent(h{H3_RES}, 0) AS h0
+                FROM cells
+            )
+            TO '{local_dir}'
+            (FORMAT PARQUET, PARTITION_BY (h0), OVERWRITE_OR_IGNORE,
+             COMPRESSION ZSTD, ROW_GROUP_SIZE 100000)
+        """)
+        con.close()
+
+        # `aws s3 sync --delete` evicts any h0 partition that no longer applies
+        # (e.g. a wolf left a region and its tiles are stale).
+        r = s3("sync", local_dir, f"s3://{BUCKET}/wolf_trail/hex", "--delete")
         if r.returncode != 0:
-            print(f"ERROR uploading {name}: {r.stderr}", file=sys.stderr)
+            print(f"ERROR syncing hex parquet: {r.stderr}", file=sys.stderr)
             sys.exit(1)
+    else:
+        print("No trail features in lookback window — skipping hex parquet.")
 
     print(f"Trail: {len(trail_features)} features, Tracks: {len(track_features)} packs with movement")
 
@@ -197,11 +275,11 @@ spec:
               command: ["/bin/sh", "/scripts/fetch.sh"]
               resources:
                 requests:
-                  cpu: "0.1"
-                  memory: "128Mi"
+                  cpu: "1"
+                  memory: "1Gi"
                 limits:
-                  cpu: "0.1"
-                  memory: "128Mi"
+                  cpu: "1"
+                  memory: "1Gi"
               env:
                 - name: AWS_ACCESS_KEY_ID
                   valueFrom:
