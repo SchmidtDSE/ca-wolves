@@ -17,8 +17,9 @@ The map shows data from several sources organized into groups:
 
 ### Protected & Conserved Lands
 3. **PAD-US Fee** — Federal and state fee-owned protected areas. Filtered to GAP status 1–2 (highest protection) by default.
-4. **Conservation Easements (CCED)** — California Conservation Easement Database 2025b. Easements on private lands held by agencies and nonprofits.
-5. **Indigenous Territories (LandMark)** — Indigenous Peoples' and Local Community land boundaries from LandMark, filtered to the US.
+4. **WCB Approved Projects** — California Wildlife Conservation Board (CDFW BIOS ds672) project footprints from 1949–2025: WCB-funded acquisitions, easements, restoration grants, and public-access grants (3,915 projects). Useful for "which WCB projects overlap a wolf territory?" type questions.
+5. **Conservation Easements (CCED)** — California Conservation Easement Database 2025b. Easements on private lands held by agencies and nonprofits.
+6. **Indigenous Territories (LandMark)** — Indigenous Peoples' and Local Community land boundaries from LandMark, filtered to the US.
 
 ### Environmental Justice
 6. **CalEnviroScreen 5.0** — Cumulative pollution burden and population vulnerability scores for all California census tracts. CES Score = Pollution Burden × Population Characteristics.

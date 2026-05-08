@@ -2,6 +2,12 @@
     "catalog": "https://s3-west.nrp-nautilus.io/public-data/stac/catalog.json",
     "titiler_url": "https://titiler.nrp-nautilus.io",
     "mcp_url": "https://duckdb-mcp.nrp-nautilus.io/mcp",
+    "auto_approve": true,
+    "links": {
+        "docs": "https://californiawolfproject.berkeley.edu/",
+        "carbon": true,
+        "github": "https://github.com/SchmidtDSE/ca-wolves"
+    },
     "view": {
         "center": [-121.5, 40.5],
         "zoom": 7
@@ -173,6 +179,27 @@
                         "match", ["get", "GAP_Sts"], ["1", "2"], true, false
                     ],
                     "tooltip_fields": ["Unit_Nm", "GAP_Sts", "Mang_Type"]
+                }
+            ]
+        },
+        {
+            "collection_id": "wcb-approved-projects",
+            "collection_url": "https://s3-west.nrp-nautilus.io/public-tpl/wcb-approved-projects/stac-collection.json",
+            "group": { "name": "Protected & Conserved Lands", "collapsed": true },
+            "assets": [
+                {
+                    "id": "wcb-approved-projects-pmtiles",
+                    "display_name": "WCB Approved Projects",
+                    "visible": false,
+                    "default_style": {
+                        "fill-color": "#00695C",
+                        "fill-opacity": 0.5
+                    },
+                    "outline_style": {
+                        "line-color": "#004D40",
+                        "line-width": 0.6
+                    },
+                    "tooltip_fields": ["ProjName", "PrimGrante", "County", "Acres", "WCBFunding", "Type", "Program", "dtmBoardAp"]
                 }
             ]
         },
