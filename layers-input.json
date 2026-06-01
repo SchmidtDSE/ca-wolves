@@ -157,6 +157,35 @@
             ]
         },
         {
+            "collection_id": "ca-dac-eda-2023",
+            "collection_url": "https://s3-west.nrp-nautilus.io/public-ca-dac/stac-collection.json",
+            "group": { "name": "Environmental Justice", "collapsed": true },
+            "assets": [
+                {
+                    "id": "dac-tract-pmtiles",
+                    "display_name": "Disadvantaged Communities (DAC)",
+                    "visible": false,
+                    "default_style": {
+                        "fill-color": "#C2185B",
+                        "fill-opacity": 0.5
+                    },
+                    "default_filter": ["==", ["get", "DAC23"], "Y"],
+                    "tooltip_fields": ["GEOID20", "DAC23", "MHI23", "Pop23"]
+                },
+                {
+                    "id": "eda-tract-pmtiles",
+                    "display_name": "Economically Distressed Areas (EDA)",
+                    "visible": false,
+                    "default_style": {
+                        "fill-color": "#F57C00",
+                        "fill-opacity": 0.5
+                    },
+                    "default_filter": ["==", ["get", "Flag_MHI_P"], "Y"],
+                    "tooltip_fields": ["GEOID20", "Flag_MHI_P", "MHI23", "PopDensity"]
+                }
+            ]
+        },
+        {
             "collection_id": "pad-us-4.1-fee",
             "collection_url": "https://s3-west.nrp-nautilus.io/public-padus/padus-4-1/fee/stac-collection.json",
             "group": { "name": "Protected & Conserved Lands", "collapsed": true },

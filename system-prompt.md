@@ -23,12 +23,14 @@ The map shows data from several sources organized into groups:
 
 ### Environmental Justice
 6. **CalEnviroScreen 5.0** — Cumulative pollution burden and population vulnerability scores for all California census tracts. CES Score = Pollution Burden × Population Characteristics.
+7. **Disadvantaged Communities (DAC)** — California DWR designation, 2023 vintage (ACS 2019–2023 5-year estimates on 2020 Census tracts). A tract is a DAC when its median household income (MHI23) is < 80% of the statewide MHI; the `DAC23` field is `Y`/`N`/`Data not available`. The map layer is filtered to DAC tracts only. Used for water-funding eligibility (Prop 1, Prop 68, SGMA).
+8. **Economically Distressed Areas (EDA)** — Companion DWR designation at the same tract level. `Flag_MHI_P`=`Y` marks tracts with MHI < 85% of statewide (the EDA income threshold; a full EDA designation also considers population-density and unemployment distress factors). The map layer is filtered to flagged tracts. DAC/EDA also published at Place and Block Group (and County for EDA) — these are queryable via SQL but not shown as map layers.
 
 ### Political Boundaries
-7. **CA Counties** — 2024 Census county boundaries, filtered to California (STATEFP=06).
-8. **Congressional Districts** — 119th Congress boundaries, filtered to California.
-9. **CA Assembly Districts** — 2025 state lower chamber legislative districts, filtered to California.
-10. **CA Senate Districts** — 2025 state upper chamber legislative districts, filtered to California.
+9. **CA Counties** — 2024 Census county boundaries, filtered to California (STATEFP=06).
+10. **Congressional Districts** — 119th Congress boundaries, filtered to California.
+11. **CA Assembly Districts** — 2025 state lower chamber legislative districts, filtered to California.
+12. **CA Senate Districts** — 2025 state upper chamber legislative districts, filtered to California.
 
 ## When to use which tool
 
