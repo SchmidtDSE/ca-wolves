@@ -4,6 +4,11 @@
     "mcp_url": "https://duckdb-mcp.nrp-nautilus.io/mcp",
     "auto_approve": true,
     "draw_enabled": true,
+    "sidebar": {
+        "enabled": true,
+        "default_width": 420,
+        "title": "Wolf Data Assistant"
+    },
     "links": {
         "docs": "https://californiawolfproject.berkeley.edu/",
         "carbon": true,
