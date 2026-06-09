@@ -46,6 +46,28 @@
             ]
         },
         {
+            "collection_id": "census-2024-tract",
+            "collection_url": "https://s3-west.nrp-nautilus.io/public-census/census-2024/tract/stac-collection.json",
+            "group": { "name": "Political Boundaries", "collapsed": true },
+            "assets": [
+                {
+                    "id": "tract-pmtiles",
+                    "display_name": "CA Census Tracts",
+                    "visible": false,
+                    "default_style": {
+                        "fill-color": "rgba(0,0,0,0)",
+                        "fill-opacity": 0
+                    },
+                    "outline_style": {
+                        "line-color": "#9E9E9E",
+                        "line-width": 0.5
+                    },
+                    "default_filter": ["==", ["get", "STATEFP"], "06"],
+                    "tooltip_fields": ["NAMELSAD", "GEOID", "COUNTYFP"]
+                }
+            ]
+        },
+        {
             "collection_id": "census-2024-cd",
             "collection_url": "https://s3-west.nrp-nautilus.io/public-census/census-2024/cd/stac-collection.json",
             "group": { "name": "Political Boundaries", "collapsed": true },
@@ -142,14 +164,44 @@
                     "display_name": "Sierra Nevada Geology (CGS Atlas)",
                     "visible": false,
                     "default_style": {
-                        "fill-color": "#8D6E63",
-                        "fill-opacity": 0.3
+                        "fill-color": [
+                            "match", ["get", "GeoMaterial"],
+                            "Alluvial sediment, mostly coarse-grained", "#FFF2AE",
+                            "Alluvial sediment, mostly fine-grained", "#FEF99E",
+                            "Dune sand", "#FFE082",
+                            "Glacial till", "#E3E3E3",
+                            "Lacustrine sediment, mostly fine-grained", "#B5C7D9",
+                            "Marine sediment, mostly fine-grained", "#80AECF",
+                            "Debris flows, landslides, and other localized mass-movement sediment", "#D2B48C",
+                            "Water or ice", "#4A90D9",
+                            "\"Made\" or human-engineered land", "#555555",
+                            "Unmapped area", "#CCCCCC",
+                            "Clastic sedimentary rock", "#F2C880",
+                            "Sedimentary and extrusive igneous material", "#BFA988",
+                            "Sandstone and mudstone", "#E8C170",
+                            "Coarse-grained intrusive igneous rock", "#F08080",
+                            "Coarse-grained, mafic-composition intrusive igneous rock", "#8B3A3A",
+                            "Igneous rock", "#E68A8A",
+                            "Extrusive igneous material", "#B774C8",
+                            "Mafic-composition lava flows", "#6B2D6B",
+                            "Intermediate-composition lava flows", "#A85FBE",
+                            "Felsic-composition pyroclastic flows", "#DCB1E1",
+                            "Metamorphic rock", "#7FC64E",
+                            "Metaigneous rock", "#5FA76C",
+                            "Metasedimentary rock", "#97D080",
+                            "Meta-carbonate rock", "#BCD9A6",
+                            "Meta-mafic rock", "#4F8654",
+                            "Meta-ultramafic rock", "#1F4E2E",
+                            "Medium and high-grade regional metamorphic rock, of unspecified origin", "#6BAB8E",
+                            "#999999"
+                        ],
+                        "fill-opacity": 0.7
                     },
                     "outline_style": {
-                        "line-color": "#5D4037",
-                        "line-width": 0.4
+                        "line-color": "#444444",
+                        "line-width": 0.2
                     },
-                    "tooltip_fields": ["MapUnit", "Label", "Symbol", "IdentityConfidence"]
+                    "tooltip_fields": ["FullName", "MapUnit", "Age", "GeoMaterial", "IdentityConfidence"]
                 }
             ]
         },
@@ -556,7 +608,7 @@
                         "line-color": "#006064",
                         "line-width": 0.8
                     },
-                    "tooltip_fields": ["comname", "sciname", "unitname", "status", "listing_st", "pubdate"]
+                    "tooltip_fields": ["comname", "sciname", "status", "listing_st", "pubdate"]
                 }
             ]
         },
@@ -577,7 +629,7 @@
                         "line-color": "#F57F17",
                         "line-width": 0.8
                     },
-                    "tooltip_fields": ["comname", "sciname", "unitname", "status", "listing_st", "pubdate"]
+                    "tooltip_fields": ["comname", "sciname", "status", "listing_st", "pubdate"]
                 }
             ]
         },
