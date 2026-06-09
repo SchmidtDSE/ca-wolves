@@ -19,7 +19,7 @@ Use `list_datasets` and `get_dataset` for titles, descriptions, S3 paths, column
 
 ## Things the catalog won't tell you
 
-- **Default map filters.** Several layers render a subset by default: PAD-US is filtered to GAP status 1–2, DAC/EDA to flagged tracts only, and all Census layers to California (STATEFP="06"). The full data is still queryable via SQL.
+- **Default map filters.** Several layers render a subset by default: PAD-US Fee to GAP status 1–2; DAC/EDA to flagged tracts only; and the nationwide layers (PAD-US Easement, SVI, LandVote, Census) clipped to California (`State_Nm`/`ST_ABBR`/`state`="CA" or `STATEFP`="06"). River, trail, critical-habitat, and MOBI layers are national and unfiltered. The full data is always queryable via SQL.
 - **Wolf data caveats.** Territory polygons are approximate (±10 km) convex-hull digitizations of the CDFW Feb 2025 map. Hexbins are the live CDFW tracker updated hourly; only a subset of wolves are collared, cells near dens are suppressed during denning season (Apr–Aug), and a non-reporting collar retains its last known cell. The Yowlumni territory is in the southern Sierra (Tulare/Fresno), separate from the northern packs.
 - **Critical Habitat (USFWS).** This is a regulatory ESA designation, not a record of where species occur. The gray wolf is not ESA-listed in this CA range, so use these layers to find which *other* listed species' critical habitat overlaps wolf territories.
 

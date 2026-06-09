@@ -133,6 +133,27 @@
             ]
         },
         {
+            "collection_id": "sierra-nevada-atlas-map-unit-polys",
+            "collection_url": "https://s3-west.nrp-nautilus.io/public-cgs/sierra-nevada-atlas/map-unit-polys/stac-collection.json",
+            "group": { "name": "Environment", "collapsed": true },
+            "assets": [
+                {
+                    "id": "map-unit-polys-pmtiles",
+                    "display_name": "Sierra Nevada Geology (CGS Atlas)",
+                    "visible": false,
+                    "default_style": {
+                        "fill-color": "#8D6E63",
+                        "fill-opacity": 0.3
+                    },
+                    "outline_style": {
+                        "line-color": "#5D4037",
+                        "line-width": 0.4
+                    },
+                    "tooltip_fields": ["MapUnit", "Label", "Symbol", "IdentityConfidence"]
+                }
+            ]
+        },
+        {
             "collection_id": "calenviroscreen-5-0",
             "collection_url": "https://s3-west.nrp-nautilus.io/public-calenviroscreen/stac-collection.json",
             "group": { "name": "Environmental Justice", "collapsed": true },
@@ -182,6 +203,31 @@
                     },
                     "default_filter": ["==", ["get", "Flag_MHI_P"], "Y"],
                     "tooltip_fields": ["GEOID20", "Flag_MHI_P", "MHI23", "PopDensity"]
+                }
+            ]
+        },
+        {
+            "collection_id": "svi-2022",
+            "collection_url": "https://s3-west.nrp-nautilus.io/public-social-vulnerability/2022/stac-collection.json",
+            "group": { "name": "Environmental Justice", "collapsed": true },
+            "assets": [
+                {
+                    "id": "tract-pmtiles",
+                    "display_name": "Social Vulnerability Index (SVI 2022)",
+                    "visible": false,
+                    "default_style": {
+                        "fill-color": [
+                            "interpolate", ["linear"], ["get", "RPL_THEMES"],
+                            0, "#FFFFB2",
+                            0.25, "#FECC5C",
+                            0.5, "#FD8D3C",
+                            0.75, "#F03B20",
+                            1, "#BD0026"
+                        ],
+                        "fill-opacity": 0.6
+                    },
+                    "default_filter": ["==", ["get", "ST_ABBR"], "CA"],
+                    "tooltip_fields": ["COUNTY", "LOCATION", "RPL_THEMES", "E_TOTPOP"]
                 }
             ]
         },
@@ -277,6 +323,92 @@
             ]
         },
         {
+            "collection_id": "cpad-holdings-2025b",
+            "collection_url": "https://s3-west.nrp-nautilus.io/public-cpad/cpad-holdings-stac-collection.json",
+            "group": { "name": "Protected & Conserved Lands", "collapsed": true },
+            "assets": [
+                {
+                    "id": "holdings-pmtiles",
+                    "display_name": "CA Protected Areas (CPAD Holdings)",
+                    "visible": false,
+                    "default_style": {
+                        "fill-color": "#00897B",
+                        "fill-opacity": 0.4
+                    },
+                    "outline_style": {
+                        "line-color": "#004D40",
+                        "line-width": 0.6
+                    },
+                    "tooltip_fields": ["SITE_NAME", "AGNCY_NAME", "MNG_AGNCY", "ACCESS_TYP", "COUNTY", "ACRES"]
+                }
+            ]
+        },
+        {
+            "collection_id": "cpad-units-2025b",
+            "collection_url": "https://s3-west.nrp-nautilus.io/public-cpad/cpad-units-stac-collection.json",
+            "group": { "name": "Protected & Conserved Lands", "collapsed": true },
+            "assets": [
+                {
+                    "id": "units-pmtiles",
+                    "display_name": "CA Protected Areas (CPAD Units)",
+                    "visible": false,
+                    "default_style": {
+                        "fill-color": "rgba(0,0,0,0)",
+                        "fill-opacity": 0
+                    },
+                    "outline_style": {
+                        "line-color": "#00695C",
+                        "line-width": 1
+                    },
+                    "tooltip_fields": ["UNIT_NAME", "AGNCY_NAME", "COUNTY", "ACRES"]
+                }
+            ]
+        },
+        {
+            "collection_id": "pad-us-4.1-easement",
+            "collection_url": "https://s3-west.nrp-nautilus.io/public-padus/padus-4-1/easement/stac-collection.json",
+            "group": { "name": "Protected & Conserved Lands", "collapsed": true },
+            "assets": [
+                {
+                    "id": "easement-pmtiles",
+                    "display_name": "Conservation Easements (PAD-US)",
+                    "visible": false,
+                    "default_style": {
+                        "fill-color": "#AB47BC",
+                        "fill-opacity": 0.4
+                    },
+                    "outline_style": {
+                        "line-color": "#6A1B9A",
+                        "line-width": 0.6
+                    },
+                    "default_filter": ["==", ["get", "State_Nm"], "CA"],
+                    "tooltip_fields": ["Unit_Nm", "EsmtHldr", "Mang_Name", "GAP_Sts", "GIS_Acres"]
+                }
+            ]
+        },
+        {
+            "collection_id": "landvote",
+            "collection_url": "https://s3-west.nrp-nautilus.io/public-tpl/landvote/stac-collection.json",
+            "group": { "name": "Protected & Conserved Lands", "collapsed": true },
+            "assets": [
+                {
+                    "id": "landvote-pmtiles",
+                    "display_name": "Conservation Ballot Measures (LandVote)",
+                    "visible": false,
+                    "default_style": {
+                        "fill-color": "#5E35B1",
+                        "fill-opacity": 0.4
+                    },
+                    "outline_style": {
+                        "line-color": "#311B92",
+                        "line-width": 0.6
+                    },
+                    "default_filter": ["==", ["get", "state"], "CA"],
+                    "tooltip_fields": ["jurisdiction", "year", "status", "purpose", "conservation_funds_approved", "percent_yes"]
+                }
+            ]
+        },
+        {
             "collection_id": "fire-perimeters",
             "collection_url": "https://s3-west.nrp-nautilus.io/public-fire/stac-collection.json",
             "group": { "name": "Wildfire", "collapsed": true },
@@ -322,6 +454,63 @@
                         "line-width": 0.8
                     },
                     "tooltip_fields": ["TREATMENT_NAME", "YEAR_", "GIS_ACRES", "AGENCY", "START_DATE", "END_DATE"]
+                }
+            ]
+        },
+        {
+            "collection_id": "american-rivers-nri-2024",
+            "collection_url": "https://s3-west.nrp-nautilus.io/public-rivers/american-rivers/nri-2024/stac-collection.json",
+            "group": { "name": "Hydrology", "collapsed": true },
+            "assets": [
+                {
+                    "id": "nri-2024-pmtiles",
+                    "display_name": "Nationwide Rivers Inventory (2024)",
+                    "visible": false,
+                    "layer_type": "line",
+                    "default_style": {
+                        "line-color": "#1E88E5",
+                        "line-opacity": 0.7,
+                        "line-width": 1
+                    },
+                    "tooltip_fields": ["River", "Classifica", "GIS_Miles", "State1", "County", "ORV"]
+                }
+            ]
+        },
+        {
+            "collection_id": "american-rivers-wild-scenic-designated",
+            "collection_url": "https://s3-west.nrp-nautilus.io/public-rivers/american-rivers/wild-scenic-designated/stac-collection.json",
+            "group": { "name": "Hydrology", "collapsed": true },
+            "assets": [
+                {
+                    "id": "wild-scenic-designated-pmtiles",
+                    "display_name": "Wild & Scenic Rivers (Designated)",
+                    "visible": false,
+                    "layer_type": "line",
+                    "default_style": {
+                        "line-color": "#00695C",
+                        "line-opacity": 0.85,
+                        "line-width": 1.6
+                    },
+                    "tooltip_fields": ["GNIS_NAME", "CLASSIFICA", "STATE", "AGENCY", "TOTAL_MILE"]
+                }
+            ]
+        },
+        {
+            "collection_id": "federal-trails-2026",
+            "collection_url": "https://s3-west.nrp-nautilus.io/public-trails/federal-trails-2026/stac-collection.json",
+            "group": { "name": "Recreation", "collapsed": true },
+            "assets": [
+                {
+                    "id": "federal-trails-2026-pmtiles",
+                    "display_name": "Federal Trails (USFS / NPS / BLM)",
+                    "visible": false,
+                    "layer_type": "line",
+                    "default_style": {
+                        "line-color": "#6D4C41",
+                        "line-opacity": 0.7,
+                        "line-width": 0.8
+                    },
+                    "tooltip_fields": ["trail_name", "admin_agency", "admin_unit", "trail_type", "length_miles"]
                 }
             ]
         },
@@ -389,6 +578,22 @@
                         "line-width": 0.8
                     },
                     "tooltip_fields": ["comname", "sciname", "unitname", "status", "listing_st", "pubdate"]
+                }
+            ]
+        },
+        {
+            "collection_id": "mobi-species-richness-all",
+            "collection_url": "https://s3-west.nrp-nautilus.io/public-mobi/mobi-species-richness-all/stac-collection.json",
+            "group": { "name": "Wildlife Habitat", "collapsed": true },
+            "assets": [
+                {
+                    "id": "species-richness-all-cog",
+                    "display_name": "Imperiled Species Richness (MOBI)",
+                    "visible": false,
+                    "colormap": "viridis",
+                    "rescale": "0,32",
+                    "nodata": 0,
+                    "legend_label": "Imperiled species (count)"
                 }
             ]
         },
