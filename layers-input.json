@@ -211,6 +211,21 @@
             ]
         },
         {
+            "collection_id": "ca-climate-zones",
+            "collection_url": "https://s3-west.nrp-nautilus.io/public-ca30x30/ca-climate-zones/stac-collection.json",
+            "group": { "name": "Environment", "collapsed": true },
+            "assets": [
+                {
+                    "id": "ca-climate-zones-cog",
+                    "display_name": "California Climate Zones (Ackerly/Kling)",
+                    "visible": false,
+                    "legend_type": "categorical",
+                    "nodata": -9999,
+                    "legend_label": "Climate zone (1–10)"
+                }
+            ]
+        },
+        {
             "collection_id": "calenviroscreen-5-0",
             "collection_url": "https://s3-west.nrp-nautilus.io/public-calenviroscreen/stac-collection.json",
             "group": { "name": "Environmental Justice", "collapsed": true },
@@ -466,6 +481,66 @@
             ]
         },
         {
+            "collection_id": "ca30x30-conserved-areas-terrestrial-2025",
+            "collection_url": "https://s3-west.nrp-nautilus.io/public-ca30x30/conserved-areas-terrestrial-2025/stac-collection.json",
+            "group": { "name": "Protected & Conserved Lands", "collapsed": true },
+            "assets": [
+                {
+                    "id": "conserved-areas-terrestrial-2025-pmtiles",
+                    "display_name": "30x30 Conserved Areas (2025)",
+                    "visible": false,
+                    "default_style": {
+                        "fill-color": [
+                            "match", ["get", "reGAP"],
+                            1, "#26633A",
+                            2, "#3E9C47",
+                            3, "#7EB3D3",
+                            4, "#BDBDBD",
+                            "#888888"
+                        ],
+                        "fill-opacity": 0.45
+                    },
+                    "outline_style": {
+                        "line-color": "#1B4D2B",
+                        "line-width": 0.5
+                    },
+                    "tooltip_fields": ["UNIT_NAME", "MNG_AGENCY", "MNG_AG_LEV", "reGAP", "ACCESS_TYP", "Acres"]
+                }
+            ]
+        },
+        {
+            "collection_id": "fmmp-2022",
+            "collection_url": "https://s3-west.nrp-nautilus.io/public-ca30x30/fmmp-2022/stac-collection.json",
+            "group": { "name": "Working Lands", "collapsed": true },
+            "assets": [
+                {
+                    "id": "fmmp-2022-pmtiles",
+                    "display_name": "Important Farmland & Grazing Land (FMMP 2022)",
+                    "visible": false,
+                    "default_style": {
+                        "fill-color": [
+                            "match", ["get", "polygon_ty"],
+                            "P", "#1B5E20",
+                            "S", "#558B2F",
+                            "U", "#7CB342",
+                            "L", "#AED581",
+                            "G", "#C9A24B",
+                            "D", "#E6D8A8",
+                            "X", "#CFD8DC",
+                            "W", "#90CAF9",
+                            "#BDBDBD"
+                        ],
+                        "fill-opacity": 0.5
+                    },
+                    "outline_style": {
+                        "line-color": "#5D4037",
+                        "line-width": 0.3
+                    },
+                    "tooltip_fields": ["polygon_ty", "County", "polygon_ac", "upd_year"]
+                }
+            ]
+        },
+        {
             "collection_id": "fire-perimeters",
             "collection_url": "https://s3-west.nrp-nautilus.io/public-fire/stac-collection.json",
             "group": { "name": "Wildfire", "collapsed": true },
@@ -572,6 +647,52 @@
             ]
         },
         {
+            "collection_id": "present-day-connectivity-flow",
+            "collection_url": "https://s3-west.nrp-nautilus.io/public-connectivity/present-day-connectivity/flow/stac-collection.json",
+            "group": { "name": "Connectivity", "collapsed": true },
+            "assets": [
+                {
+                    "id": "present-day-connectivity-flow-cog",
+                    "display_name": "Present-day Connectivity — Current Flow (Cameron 2022)",
+                    "visible": false,
+                    "colormap": "magma",
+                    "rescale": "0,100",
+                    "nodata": 128,
+                    "legend_label": "Current flow (0 low – 100 high)"
+                }
+            ]
+        },
+        {
+            "collection_id": "present-day-connectivity-categories",
+            "collection_url": "https://s3-west.nrp-nautilus.io/public-connectivity/present-day-connectivity/categories/stac-collection.json",
+            "group": { "name": "Connectivity", "collapsed": true },
+            "assets": [
+                {
+                    "id": "present-day-connectivity-categories-cog",
+                    "display_name": "Connectivity Categories (Cameron 2022)",
+                    "visible": false,
+                    "legend_type": "categorical",
+                    "nodata": 255,
+                    "legend_label": "Connectivity category"
+                }
+            ]
+        },
+        {
+            "collection_id": "climate-migration-routes",
+            "collection_url": "https://s3-west.nrp-nautilus.io/public-connectivity/climate-migration-routes/stac-collection.json",
+            "group": { "name": "Connectivity", "collapsed": true },
+            "assets": [
+                {
+                    "id": "climate-migration-routes-cog",
+                    "display_name": "Climate Migration Routes (Schloss 2022)",
+                    "visible": false,
+                    "legend_type": "categorical",
+                    "nodata": 65535,
+                    "legend_label": "Climate connectivity class"
+                }
+            ]
+        },
+        {
             "collection_id": "wyoming-ungulate-migration",
             "collection_url": "https://s3-west.nrp-nautilus.io/public-wyoming/ungulate-migration/stac-collection.json",
             "group": { "name": "Wildlife Habitat", "collapsed": true },
@@ -651,6 +772,21 @@
                     "rescale": "0,32",
                     "nodata": 0,
                     "legend_label": "Imperiled species (count)"
+                }
+            ]
+        },
+        {
+            "collection_id": "cwhr13",
+            "collection_url": "https://s3-west.nrp-nautilus.io/public-ca30x30/cwhr13/stac-collection.json",
+            "group": { "name": "Wildlife Habitat", "collapsed": true },
+            "assets": [
+                {
+                    "id": "cwhr13-cog",
+                    "display_name": "CWHR Major Habitat Types (CAL FIRE FVEG)",
+                    "visible": false,
+                    "legend_type": "categorical",
+                    "nodata": 0,
+                    "legend_label": "CWHR major habitat type"
                 }
             ]
         },
