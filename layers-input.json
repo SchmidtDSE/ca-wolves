@@ -10,7 +10,7 @@
         "title": "Wolf Data Assistant"
     },
     "links": {
-        "docs": "https://californiawolfproject.berkeley.edu/",
+        "docs": "/docs.html",
         "carbon": true,
         "github": "https://github.com/SchmidtDSE/ca-wolves"
     },

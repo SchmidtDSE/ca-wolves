@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>About — California Wolf Data Explorer</title>
+<style>
+:root {
+    --ink: #18261f;
+    --ink-soft: #4a5b51;
+    --paper: #f6f8f5;
+    --rule: #dde6df;
+    --accent: #2f6f4e;
+    --accent-dark: #1d4733;
+    --accent-soft: #e3efe7;
+    --link: #2f6f4e;
+    --max: 880px;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+    margin: 0;
+    padding: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+    font-size: 16px;
+    line-height: 1.6;
+}
+
+a { color: var(--link); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+header.hero {
+    background: linear-gradient(135deg, #14301f 0%, var(--accent) 100%);
+    color: #fff;
+    padding: 3.5rem 1.5rem 2.5rem;
+    border-bottom: 1px solid var(--rule);
+}
+.hero-inner { max-width: var(--max); margin: 0 auto; }
+.hero h1 {
+    font-size: 2.1rem;
+    margin: 0 0 0.4rem 0;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+}
+.hero .tag {
+    font-size: 1.05rem;
+    opacity: 0.92;
+    margin: 0 0 1.4rem 0;
+    max-width: 62ch;
+}
+.hero .cta {
+    display: inline-block;
+    background: rgba(255,255,255,0.15);
+    color: #fff;
+    padding: 0.55rem 1.1rem;
+    border-radius: 6px;
+    border: 1px solid rgba(255,255,255,0.35);
+    font-weight: 500;
+    transition: background 0.15s;
+}
+.hero .cta:hover { background: rgba(255,255,255,0.28); text-decoration: none; }
+.hero .badge {
+    display: inline-block;
+    margin-left: 0.6rem;
+    padding: 0.18rem 0.55rem;
+    border-radius: 999px;
+    background: rgba(255,255,255,0.18);
+    font-size: 0.8rem;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    vertical-align: middle;
+}
+
+main { max-width: var(--max); margin: 0 auto; padding: 2.5rem 1.5rem 4rem; }
+section { margin-bottom: 2.8rem; }
+
+h2 {
+    font-size: 1.45rem;
+    color: var(--accent-dark);
+    border-bottom: 2px solid var(--accent-soft);
+    padding-bottom: 0.4rem;
+    margin: 0 0 1rem 0;
+    font-weight: 600;
+}
+h3 { font-size: 1.12rem; color: var(--ink); margin: 1.4rem 0 0.5rem 0; font-weight: 600; }
+p { margin: 0.5rem 0 0.9rem; }
+p.lede { font-size: 1.05rem; color: var(--ink-soft); }
+
+.count-band {
+    display: flex;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+    margin: 1.2rem 0 0.4rem;
+}
+.count-band .stat {
+    background: #fff;
+    border: 1px solid var(--rule);
+    border-radius: 8px;
+    padding: 0.8rem 1.2rem;
+    min-width: 120px;
+}
+.count-band .stat .num { font-size: 1.7rem; font-weight: 700; color: var(--accent-dark); line-height: 1.1; }
+.count-band .stat .lbl { font-size: 0.85rem; color: var(--ink-soft); }
+
+.layer-group {
+    background: #fff;
+    border: 1px solid var(--rule);
+    border-radius: 8px;
+    padding: 1rem 1.25rem;
+    margin: 0.9rem 0;
+}
+.layer-group h3 {
+    margin-top: 0;
+    color: var(--accent-dark);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+.layer-group h3::before {
+    content: "";
+    display: inline-block;
+    width: 4px;
+    height: 1.1em;
+    background: var(--accent);
+    border-radius: 2px;
+}
+.layer { padding: 0.55rem 0; border-top: 1px solid var(--rule); }
+.layer:first-of-type { border-top: 0; padding-top: 0; }
+.layer .name { font-weight: 600; color: var(--ink); }
+.layer .source { color: var(--ink-soft); font-size: 0.93rem; margin: 0.1rem 0 0.15rem; }
+.layer .links { font-size: 0.88rem; }
+.layer .links a { margin-right: 0.9rem; }
+.lic {
+    display: inline-block;
+    font-size: 0.78rem;
+    font-weight: 500;
+    color: var(--accent-dark);
+    background: var(--accent-soft);
+    border-radius: 4px;
+    padding: 0.05rem 0.4rem;
+    margin-top: 0.2rem;
+}
+
+.callout {
+    background: var(--accent-soft);
+    border-left: 3px solid var(--accent);
+    padding: 0.9rem 1.1rem;
+    border-radius: 0 6px 6px 0;
+    margin: 1rem 0;
+    font-size: 0.97rem;
+}
+
+.foot {
+    text-align: center;
+    color: var(--ink-soft);
+    font-size: 0.88rem;
+    margin-top: 3rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--rule);
+}
+.foot .partners {
+    display: flex;
+    justify-content: center;
+    gap: 1.8rem;
+    flex-wrap: wrap;
+    margin: 0.6rem 0 1rem;
+    font-weight: 500;
+    color: var(--ink);
+}
+
+@media (max-width: 600px) {
+    .hero h1 { font-size: 1.6rem; }
+    main { padding: 1.5rem 1rem 3rem; }
+    h2 { font-size: 1.2rem; }
+}
+</style>
+</head>
+<body>
+
+<header class="hero">
+    <div class="hero-inner">
+        <h1>California Wolf Data Explorer
+            <span class="badge">work in progress</span>
+        </h1>
+        <p class="tag">An interactive map and AI assistant for exploring the return of gray wolves to California — pack territories and movement alongside the habitat, connectivity, conservation, and land-use data that shapes where wolves can live.</p>
+        <a href="/" class="cta">← Open the App</a>
+    </div>
+</header>
+
+<main>
+
+<section>
+    <h2>About this project</h2>
+    <p class="lede">A project of the <a href="https://dse.berkeley.edu" target="_blank" rel="noopener">Eric and Wendy Schmidt Center for Data Science &amp; Environment (DSE)</a> at UC Berkeley, developed with the <a href="https://californiawolfproject.berkeley.edu/" target="_blank" rel="noopener">California Wolf Project</a> at UC Berkeley.</p>
+    <p>Gray wolves (<em>Canis lupus</em>) were extirpated from California by the 1920s. In 2011 a single wolf, OR-7, crossed back into the state; today California is home to a growing number of established packs across the northern Sierra Nevada and southern Cascades. Their recolonization raises pressing questions for wildlife managers, ranchers, tribes, and the public — where will wolves go next, what habitat and prey support them, and where will they overlap with people and livestock?</p>
+    <p>This app brings the <a href="https://wildlife.ca.gov/Conservation/Mammals/Gray-Wolf" target="_blank" rel="noopener">California Department of Fish and Wildlife (CDFW)</a> gray wolf monitoring data together with the environmental, habitat-connectivity, conservation, and socioeconomic context needed to interpret it — and pairs it with an AI assistant that can drive the map and answer analytical questions about the underlying data. It is a <strong>work in progress</strong>; layers and capabilities are being added and refined.</p>
+
+    <div class="count-band">
+        <div class="stat"><div class="num">42</div><div class="lbl">datasets</div></div>
+        <div class="stat"><div class="num">46</div><div class="lbl">map layers</div></div>
+        <div class="stat"><div class="num">12</div><div class="lbl">thematic groups</div></div>
+    </div>
+</section>
+
+<section>
+    <h2>How it works</h2>
+    <p>This app is powered by <a href="https://boettiger-lab.github.io/geo-agent/" target="_blank" rel="noopener"><strong>GLEN</strong></a>, DSE's open-source framework for AI-assisted geospatial exploration. Open datasets stream straight to your browser from cloud-native formats — no tile server in between — and an AI assistant answers questions by writing live queries against the same data. Full technical details are in the <a href="https://boettiger-lab.github.io/geo-agent/docs/" target="_blank" rel="noopener">GLEN documentation</a>.</p>
+
+    <div class="callout">
+        <strong>🌱 Low-carbon, open models.</strong> Be patient. While much faster than most humans, GLEN uses more environmentally-friendly AI models. (Check out the <a href="https://carbon-dashboard.nrp-nautilus.io" target="_blank" rel="noopener">carbon dashboard 🌱</a> to see the CO₂/energy use of this deployment.)
+    </div>
+</section>
+
+<section>
+    <h2>Exploring the map</h2>
+    <p>The map is built on <a href="https://maplibre.org" target="_blank" rel="noopener">MapLibre GL</a> — the open-source engine behind familiar Mapbox-style interactive maps. <strong>Scroll or pinch to zoom</strong>, <strong>drag to pan</strong>, and <strong>hold Ctrl and drag</strong> to tilt and rotate the view, useful for reading terrain in 3D across the mountainous wolf range.</p>
+    <p>The <strong>Overlays</strong> panel lists every data layer, organized into groups. <strong>Toggle a layer on or off</strong> with its checkbox, and <strong>hover any feature</strong> for a tooltip of its live attributes — names, categories, counts — straight from the source data. When layers overlap, use the <strong>send-to-back button (↩)</strong> in the Overlays header to drop the topmost layer beneath the others.</p>
+
+    <h3>Base maps</h3>
+    <p>All data layers are drawn over a base map. Use the <strong>base-map switcher</strong> on the map to choose among three backdrops; <strong>NatGeo</strong> is the default. NatGeo and Satellite are terrain-enabled, so Ctrl-drag tilts them into 3D.</p>
+    <div class="layer-group">
+        <div class="layer">
+            <div class="name">NatGeo <span class="lic" style="margin:0 0 0 0.4rem;">default</span></div>
+            <div class="source">National Geographic World Map — a reference base with terrain shading, place names, roads, and boundaries. Good general-purpose context for the mountainous wolf range. Terrain-enabled (3D).</div>
+            <div class="links"><a href="https://www.arcgis.com/home/item.html?id=b9b1b422198944fbbd5250b3241691b6" target="_blank" rel="noopener">Esri ArcGIS Online</a></div>
+            <span class="lic">Tiles © Esri — National Geographic, DeLorme, USGS, NASA, GEBCO, NOAA and others</span>
+        </div>
+        <div class="layer">
+            <div class="name">Satellite</div>
+            <div class="source">Esri World Imagery — high-resolution aerial and satellite imagery, useful for reading actual land cover, vegetation, and terrain on the ground. Terrain-enabled (3D).</div>
+            <div class="links"><a href="https://www.arcgis.com/home/item.html?id=10df2279f9684e4a9f6a7f08febac2a9" target="_blank" rel="noopener">Esri ArcGIS Online</a></div>
+            <span class="lic">Tiles © Esri — Esri, USDA, USGS, GeoEye, Getmapping, IGN, and the GIS User Community</span>
+        </div>
+        <div class="layer">
+            <div class="name">Plain</div>
+            <div class="source">CARTO Positron (light) — a clean, low-ink grayscale backdrop that lets colored data overlays stand out. Built from OpenStreetMap data.</div>
+            <div class="links"><a href="https://carto.com/basemaps/" target="_blank" rel="noopener">CARTO basemaps</a><a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a></div>
+            <span class="lic">© OpenStreetMap contributors © CARTO</span>
+        </div>
+    </div>
+</section>
+
+<section>
+    <h2>Asking the assistant</h2>
+    <p>The Wolf Data Assistant understands plain English and does two kinds of things: it can <strong>drive the map</strong> for you, and it can <strong>answer analytical questions</strong> about the data. Just type what you want — if it can't do something, it will say so and usually suggest the closest thing it can.</p>
+
+    <p><strong>Map operations</strong> happen right away on the layers already loaded:</p>
+    <ul>
+        <li><strong>Fly somewhere:</strong> <em>"Zoom to the Whaleback pack territory"</em>, <em>"Fly to Lassen County."</em></li>
+        <li><strong>Show or hide a layer:</strong> <em>"Turn on present-day connectivity"</em>, <em>"Show the CWHR habitat types."</em></li>
+        <li><strong>Filter or restyle:</strong> <em>"Show only GAP status 1 and 2 protected lands"</em>, <em>"Make farmland 50% transparent."</em></li>
+    </ul>
+
+    <p><strong>Analytical questions</strong> are answered by writing live spatial queries over the underlying data:</p>
+    <ul>
+        <li><em>"Which protected lands overlap with wolf pack territories?"</em></li>
+        <li><em>"What habitat types dominate inside the Whaleback territory?"</em></li>
+        <li><em>"Which state assembly districts contain wolf activity?"</em></li>
+    </ul>
+
+    <div class="callout">
+        <strong>✏️ Draw an area to ask about it.</strong> Use the <strong>draw tool</strong> to sketch a polygon — a proposed corridor, a county, a watershed — then ask the assistant about it: <em>"What share of the area I drew is conserved land?"</em>, <em>"How much grazing land falls inside this polygon?"</em> Your drawn shape becomes a live spatial filter for any query.
+    </div>
+</section>
+
+<section>
+    <h2>Data layers &amp; sources</h2>
+    <p>Every layer draws from a public, primary source. Click "STAC" beside any entry for the full machine-readable metadata — schemas, column descriptions, license, lineage, and download URLs.</p>
+
+    <div class="layer-group">
+        <h3>🐺 Wolf Activity</h3>
+        <div class="layer">
+            <div class="name">Pack Territories, Current Positions &amp; Movement (CDFW)</div>
+            <div class="source">California Gray Wolf Monitoring from the CDFW Wolf Program — pack territory polygons (Feb 2025), recent hexbinned positions, and animated GPS movement tracks for monitored packs and dispersers (Whaleback, Harvey, Lassen, Ice Cave, Diamond/Beyem Seyo, Yowlumni, and others). Three map layers from one collection.</div>
+            <div class="links"><a href="https://radiantearth.github.io/stac-browser/#/external/s3-west.nrp-nautilus.io/public-ca-wolves/stac-collection.json" target="_blank" rel="noopener">STAC</a><a href="https://wildlife.ca.gov/Conservation/Mammals/Gray-Wolf" target="_blank" rel="noopener">Source: CDFW Gray Wolf</a></div>
+            <span class="lic">CC0 1.0 — CDFW Wolf Program</span>
+        </div>
+    </div>
+
+    <div class="layer-group">
+        <h3>Connectivity &amp; Corridors</h3>
+        <div class="layer">
+            <div class="name">Present-day Connectivity — Current Flow (Cameron et al. 2022)</div>
+            <div class="source">Modeled ecological current-flow connectivity index (0–100) for California — where animal movement is most concentrated across the landscape. Central to understanding wolf dispersal and recolonization routes.</div>
+            <div class="links"><a href="https://radiantearth.github.io/stac-browser/#/external/s3-west.nrp-nautilus.io/public-connectivity/present-day-connectivity/flow/stac-collection.json" target="_blank" rel="noopener">STAC</a><a href="https://doi.org/10.1111/csp2.12698" target="_blank" rel="noopener">Source</a></div>
+            <span class="lic">CC0 1.0 — Cameron et al. 2022</span>
+        </div>
+        <div class="layer">
+            <div class="name">Connectivity Categories (Cameron et al. 2022)</div>
+            <div class="source">Classifies each ~90 m pixel into a connectivity strategy — diffuse, intensified, channelized, permeable, or impeded — distinguishing intact landscapes from pinch-point corridors.</div>
+            <div class="links"><a href="https://radiantearth.github.io/stac-browser/#/external/s3-west.nrp-nautilus.io/public-connectivity/present-day-connectivity/categories/stac-collection.json" target="_blank" rel="noopener">STAC</a><a href="https://doi.org/10.1111/csp2.12698" target="_blank" rel="noopener">Source</a></div>
+            <span class="lic">CC0 1.0 — Cameron et al. 2022</span>
+        </div>
+        <div class="layer">
+            <div class="name">Climate Migration Routes (Schloss et al. 2022)</div>
+            <div class="source">Omniscape-modeled climate-connectivity for California — present-day linkages that also serve as climate-change corridors under two global climate models. Relevant to where species, including wolf prey, may shift.</div>
+            <div class="links"><a href="https://radiantearth.github.io/stac-browser/#/external/s3-west.nrp-nautilus.io/public-connectivity/climate-migration-routes/stac-collection.json" target="_blank" rel="noopener">STAC</a><a href="https://doi.org/10.1002/eap.2468" target="_blank" rel="noopener">Source</a></div>
+            <span class="lic">CC0 1.0 — Schloss et al. 2022</span>
+        </div>
+    </div>
+
+    <div class="layer-group">
+        <h3>Wildlife Habitat</h3>
+        <div class="layer">
+            <div class="name">CWHR Major Habitat Types (13-class) &amp; Detailed (60-class)</div>
+            <div class="source">CAL FIRE FRAP FVEG (2022) vegetation reclassified into the California Wildlife Habitat Relationships (CWHR) system — both the broad 13-class major-habitat view and the detailed 60+ subtype view. The foundational habitat &amp; prey-base layer.</div>
+            <div class="links"><a href="https://radiantearth.github.io/stac-browser/#/external/s3-west.nrp-nautilus.io/public-ca30x30/cwhr13/stac-collection.json" target="_blank" rel="noopener">STAC (13-class)</a><a href="https://radiantearth.github.io/stac-browser/#/external/s3-west.nrp-nautilus.io/public-ca30x30/cwhr/stac-collection.json" target="_blank" rel="noopener">STAC (60-class)</a><a href="https://frap.fire.ca.gov/mapping/gis-data/" target="_blank" rel="noopener">Source</a></div>
+            <span class="lic">CAL FIRE FRAP — free use with attribution</span>
+        </div>
+        <div class="layer">
+            <div class="name">Imperiled Species Richness (NatureServe MOBI)</div>
+            <div class="source">NatureServe Map of Biodiversity Importance — modeled richness of imperiled and endemic species across the contiguous US.</div>
+            <div class="links"><a href="https://radiantearth.github.io/stac-browser/#/external/s3-west.nrp-nautilus.io/public-mobi/mobi-species-richness-all/stac-collection.json" target="_blank" rel="noopener">STAC</a><a href="https://www.natureserve.org/products/map-biodiversity-importance" target="_blank" rel="noopener">Source</a></div>
+            <span class="lic">CC BY-NC 4.0 — NatureServe</span>
+        </div>
+        <div class="layer">
+            <div class="name">USFWS Critical Habitat — Final &amp; Proposed</div>
+            <div class="source">U.S. Fish and Wildlife Service designated and proposed critical habitat for ESA-listed threatened and endangered species.</div>
+            <div class="links"><a href="https://radiantearth.github.io/stac-browser/#/external/s3-west.nrp-nautilus.io/public-usfws/critical-habitat/final/stac-collection.json" target="_blank" rel="noopener">STAC (Final)</a><a href="https://radiantearth.github.io/stac-browser/#/external/s3-west.nrp-nautilus.io/public-usfws/critical-habitat/proposed/stac-collection.json" target="_blank" rel="noopener">STAC (Proposed)</a><a href="https://ecos.fws.gov/ecp/report/table/critical-habitat.html" target="_blank" rel="noopener">Source</a></div>
+            <span class="lic">Public domain — USFWS</span>
+        </div>
+        <div class="layer">
+            <div class="name">Ungulate Migration Routes (USGS)</div>
+            <div class="source">Mapped seasonal migration corridors of elk, mule deer, pronghorn, and moose across the Western US (USGS, Vols 1–5) — wolf prey movement.</div>
+            <div class="links"><a href="https://radiantearth.github.io/stac-browser/#/external/s3-west.nrp-nautilus.io/public-wyoming/ungulate-migration/stac-collection.json" target="_blank" rel="noopener">STAC</a><a href="https://www.usgs.gov/centers/fort-collins-science-center/science/ungulate-migrations-western-united-states" target="_blank" rel="noopener">Source</a></div>
+            <span class="lic">Public domain — USGS</span>
+        </div>
+    </div>
+
+    <div class="layer-group">
+        <h3>Biodiversity</h3>
+        <div class="layer">
+            <div class="name">Terrestrial Biodiversity Rank (CDFW ACE)</div>
+            <div class="source">CDFW Areas of Conservation Emphasis (ACE) v3.0 — a statewide hexagon grid ranking native, rare, and endemic species richness (BioRank 1–5).</div>
+            <div class="links"><a href="https://radiantearth.github.io/stac-browser/#/external/s3-west.nrp-nautilus.io/public-cdfw/ace/terrestrial-biodiversity-summary/stac-collection.json" target="_blank" rel="noopener">STAC</a><a href="https://wildlife.ca.gov/Data/Analysis/ACE" target="_blank" rel="noopener">Source</a></div>
+            <span class="lic">CC BY 4.0 — CDFW</span>
+        </div>
+        <div class="layer">
+            <div class="name">Plant Species Richness (Kling et al. 2018)</div>
+            <div class="source">Modeled vascular plant species richness for the California Floristic Province.</div>
+            <div class="links"><a href="https://radiantearth.github.io/stac-browser/#/external/s3-west.nrp-nautilus.io/public-ca30x30/plant-richness/stac-collection.json" target="_blank" rel="noopener">STAC</a><a href="https://doi.org/10.1098/rstb.2017.0397" target="_blank" rel="noopener">Source</a></div>
+            <span class="lic">Free use with attribution — Kling et al. 2018</span>
+        </div>
+    </div>
+
+    <div class="layer-group">
+        <h3>Protected &amp; Conserved Lands</h3>
+        <div class="layer">
+            <div class="name">30x30 Conserved Areas, Terrestrial (2025)</div>
+            <div class="source">California's statewide inventory of lands counted toward the 30x30 goal, carrying GAP biodiversity-protection status — the current conservation framing for the state.</div>
+            <div class="links"><a href="https://radiantearth.github.io/stac-browser/#/external/s3-west.nrp-nautilus.io/public-ca30x30/conserved-areas-terrestrial-2025/stac-collection.json" target="_blank" rel="noopener">STAC</a><a href="https://www.californianature.ca.gov/" target="_blank" rel="noopener">Source: CA Nature / CNRA</a></div>
+            <span class="lic">CC BY 4.0 — CNRA</span>
+        </div>
+        <div class="layer">
+            <div class="name">PAD-US 4.1 — Fee Lands &amp; Conservation Easements</div>
+            <div class="source">USGS Protected Areas Database of the United States — fee-owned protected lands (styled by GAP status) and conservation easements (filtered to CA).</div>
+            <div class="links"><a href="https://radiantearth.github.io/stac-browser/#/external/s3-west.nrp-nautilus.io/public-padus/padus-4-1/fee/stac-collection.json" target="_blank" rel="noopener">STAC (Fee)</a><a href="https://radiantearth.github.io/stac-browser/#/external/s3-west.nrp-nautilus.io/public-padus/padus-4-1/easement/stac-collection.json" target="_blank" rel="noopener">STAC (Easement)</a><a href="https://www.usgs.gov/programs/gap-analysis-project/science/pad-us-data-overview" target="_blank" rel="noopener">Source</a></div>
+            <span class="lic">Public domain — USGS GAP</span>
+        </div>
+        <div class="layer">
+            <div class="name">California Protected Areas (CPAD Holdings &amp; Units) + Conservation Easements (CCED)</div>
+            <div class="source">The California Protected Areas Database and Conservation Easement Database (2025b), maintained by GreenInfo Network — parcel-level holdings, county-aggregated units, and easements.</div>
+            <div class="links"><a href="https://radiantearth.github.io/stac-browser/#/external/s3-west.nrp-nautilus.io/public-cpad/cpad-holdings-stac-collection.json" target="_blank" rel="noopener">STAC (Holdings)</a><a href="https://radiantearth.github.io/stac-browser/#/external/s3-west.nrp-nautilus.io/public-cpad/cpad-units-stac-collection.json" target="_blank" rel="noopener">STAC (Units)</a><a href="https://radiantearth.github.io/stac-browser/#/external/s3-west.nrp-nautilus.io/public-cpad/cced-stac-collection.json" target="_blank" rel="noopener">STAC (CCED)</a><a href="https://www.calands.org/" target="_blank" rel="noopener">Source</a></div>
+            <span class="lic">CC BY 4.0 — GreenInfo Network</span>
+        </div>
+        <div class="layer">
+            <div class="name">WCB Approved Projects</div>
+            <div class="source">California Wildlife Conservation Board funded acquisition and restoration projects (CDFW BIOS ds672).</div>
+            <div class="links"><a href="https://radiantearth.github.io/stac-browser/#/external/s3-west.nrp-nautilus.io/public-tpl/wcb-approved-projects/stac-collection.json" target="_blank" rel="noopener">STAC</a><a href="https://wcb.ca.gov/" target="_blank" rel="noopener">Source</a></div>
+            <span class="lic">CC BY 4.0 — CDFW / WCB</span>
+        </div>
+        <div class="layer">
+            <div class="name">Indigenous Territories (LandMark)</div>
+            <div class="source">LandMark global platform of Indigenous and community land boundaries (v202509), filtered to the United States.</div>
+            <div class="links"><a href="https://radiantearth.github.io/stac-browser/#/external/s3-west.nrp-nautilus.io/public-indigenous/landmark/iplc-poly-stac.json" target="_blank" rel="noopener">STAC</a><a href="https://www.landmarkmap.org/" target="_blank" rel="noopener">Source</a></div>
+            <span class="lic">CC BY 4.0 — LandMark</span>
+        </div>
+        <div class="layer">
+            <div class="name">Conservation Ballot Measures (LandVote)</div>
+            <div class="source">Trust for Public Land's LandVote record of local and state conservation finance ballot measures (1988–2025), filtered to CA.</div>
+            <div class="links"><a href="https://radiantearth.github.io/stac-browser/#/external/s3-west.nrp-nautilus.io/public-tpl/landvote/stac-collection.json" target="_blank" rel="noopener">STAC</a><a href="https://tpl.org/landvote" target="_blank" rel="noopener">Source</a></div>
+            <span class="lic">Trust for Public Land — see source terms</span>
+        </div>
+    </div>
+
+    <div class="layer-group">
+        <h3>Working Lands</h3>
+        <div class="layer">
+            <div class="name">Important Farmland &amp; Grazing Land (FMMP 2022)</div>
+            <div class="source">California Important Farmland (Farmland Mapping &amp; Monitoring Program) classifying Prime, Statewide, Unique, Local, and Grazing land — the working-lands context where wolves and livestock interact.</div>
+            <div class="links"><a href="https://radiantearth.github.io/stac-browser/#/external/s3-west.nrp-nautilus.io/public-ca30x30/fmmp-2022/stac-collection.json" target="_blank" rel="noopener">STAC</a><a href="https://www.conservation.ca.gov/dlrp/fmmp" target="_blank" rel="noopener">Source</a></div>
+            <span class="lic">Public domain — CA Dept. of Conservation</span>
+        </div>
+    </div>
+
+    <div class="layer-group">
+        <h3>Hydrology</h3>
+        <div class="layer">
+            <div class="name">Perennial Streams (USGS NHD)</div>
+            <div class="source">USGS National Hydrography Dataset high-resolution perennial stream and river flowlines.</div>
+            <div class="links"><a href="https://radiantearth.github.io/stac-browser/#/external/s3-west.nrp-nautilus.io/public-usgs-nhd/perennial-streams/stac-collection.json" target="_blank" rel="noopener">STAC</a><a href="https://www.usgs.gov/national-hydrography/national-hydrography-dataset" target="_blank" rel="noopener">Source</a></div>
+            <span class="lic">Public domain — USGS</span>
+        </div>
+        <div class="layer">
+            <div class="name">Freshwater Species Richness (Howard et al. 2015)</div>
+            <div class="source">Per-subwatershed (HUC12) freshwater species richness, vulnerability, and listed-species counts — TNC California Freshwater Species Database (CDFW BIOS ds1197).</div>
+            <div class="links"><a href="https://radiantearth.github.io/stac-browser/#/external/s3-west.nrp-nautilus.io/public-ca30x30/freshwater-species-richness/stac-collection.json" target="_blank" rel="noopener">STAC</a><a href="https://doi.org/10.1371/journal.pone.0130710" target="_blank" rel="noopener">Source</a></div>
+            <span class="lic">TNC / Howard et al. 2015 — attribution</span>
+        </div>
+        <div class="layer">
+            <div class="name">Nationwide Rivers Inventory &amp; Wild and Scenic Rivers</div>
+            <div class="source">National Park Service Nationwide Rivers Inventory (2024) and federally Designated Wild and Scenic Rivers.</div>
+            <div class="links"><a href="https://radiantearth.github.io/stac-browser/#/external/s3-west.nrp-nautilus.io/public-rivers/american-rivers/nri-2024/stac-collection.json" target="_blank" rel="noopener">STAC (NRI)</a><a href="https://radiantearth.github.io/stac-browser/#/external/s3-west.nrp-nautilus.io/public-rivers/american-rivers/wild-scenic-designated/stac-collection.json" target="_blank" rel="noopener">STAC (W&amp;S)</a><a href="https://www.rivers.gov/" target="_blank" rel="noopener">Source</a></div>
+            <span class="lic">Public domain — NPS</span>
+        </div>
+    </div>
+
+    <div class="layer-group">
+        <h3>Wildfire</h3>
+        <div class="layer">
+            <div class="name">Fire Perimeters &amp; Prescribed Burns (CAL FIRE + USGS)</div>
+            <div class="source">CAL FIRE FRAP wildfire perimeters and prescribed burns (2024, 2025) and the USGS combined wildland fire dataset (2021) — recent fire history reshaping wolf habitat.</div>
+            <div class="links"><a href="https://radiantearth.github.io/stac-browser/#/external/s3-west.nrp-nautilus.io/public-fire/stac-collection.json" target="_blank" rel="noopener">STAC</a><a href="https://frap.fire.ca.gov/mapping/gis-data/" target="_blank" rel="noopener">Source</a></div>
+            <span class="lic">CC BY 4.0 — CAL FIRE FRAP</span>
+        </div>
+    </div>
+
+    <div class="layer-group">
+        <h3>Environment</h3>
+        <div class="layer">
+            <div class="name">Land Cover (NLCD 2024)</div>
+            <div class="source">Annual National Land Cover Database 2024, 30 m, from MRLC/USGS — forest, shrub, grassland, developed, and agricultural classes across the contiguous US.</div>
+            <div class="links"><a href="https://radiantearth.github.io/stac-browser/#/external/s3-west.nrp-nautilus.io/public-land-cover/nlcd-2024/stac-collection.json" target="_blank" rel="noopener">STAC</a><a href="https://www.mrlc.gov/data" target="_blank" rel="noopener">Source</a></div>
+            <span class="lic">Public domain — MRLC / USGS</span>
+        </div>
+        <div class="layer">
+            <div class="name">California Ecoregions (30x30 / Bailey-derived)</div>
+            <div class="source">CDFW/CNRA partition of California into 20 ecoregions derived from USFS Bailey/ECOMAP sections — broad biogeographic context.</div>
+            <div class="links"><a href="https://radiantearth.github.io/stac-browser/#/external/s3-west.nrp-nautilus.io/public-ca30x30/ecoregion/stac-collection.json" target="_blank" rel="noopener">STAC</a><a href="https://wildlife.ca.gov/Data/Analysis/ACE" target="_blank" rel="noopener">Source</a></div>
+            <span class="lic">CC BY 4.0 — CDFW / CNRA</span>
+        </div>
+        <div class="layer">
+            <div class="name">WWF Terrestrial Ecoregions</div>
+            <div class="source">World Wildlife Fund global terrestrial ecoregions (2017 update) — coarse global biome context.</div>
+            <div class="links"><a href="https://radiantearth.github.io/stac-browser/#/external/s3-west.nrp-nautilus.io/public-ecoregion/stac-collection.json" target="_blank" rel="noopener">STAC</a><a href="https://www.worldwildlife.org/biomes" target="_blank" rel="noopener">Source</a></div>
+            <span class="lic">CC BY 4.0 — WWF</span>
+        </div>
+        <div class="layer">
+            <div class="name">California Climate Zones (Ackerly/Kling)</div>
+            <div class="source">Ten California climate zones from hierarchical clustering of Basin Characterization Model climate normals (UC Berkeley, Ackerly Lab).</div>
+            <div class="links"><a href="https://radiantearth.github.io/stac-browser/#/external/s3-west.nrp-nautilus.io/public-ca30x30/ca-climate-zones/stac-collection.json" target="_blank" rel="noopener">STAC</a><a href="https://github.com/matthewkling/climclust" target="_blank" rel="noopener">Source</a></div>
+            <span class="lic">Ackerly Lab / Kling — see source</span>
+        </div>
+        <div class="layer">
+            <div class="name">Mid-Century Habitat Climate Exposure (Thorne et al. 2016)</div>
+            <div class="source">Projected mid-century (2040–2069) climate-exposure index for California's natural vegetation under the CNRM-CM5 model.</div>
+            <div class="links"><a href="https://radiantearth.github.io/stac-browser/#/external/s3-west.nrp-nautilus.io/public-hazard/mid-century-habitat-climate-exposure/stac-collection.json" target="_blank" rel="noopener">STAC</a><a href="https://doi.org/10.1073/pnas.2310074121" target="_blank" rel="noopener">Source</a></div>
+            <span class="lic">Thorne et al. / UC Davis — see source</span>
+        </div>
+        <div class="layer">
+            <div class="name">Sierra Nevada Geology (CGS Atlas)</div>
+            <div class="source">California Geological Survey Sierra Nevada Earth Science Atlas (GDM 009) — geologic map-unit framework for the northern Sierra.</div>
+            <div class="links"><a href="https://radiantearth.github.io/stac-browser/#/external/s3-west.nrp-nautilus.io/public-cgs/sierra-nevada-atlas/map-unit-polys/stac-collection.json" target="_blank" rel="noopener">STAC</a><a href="https://www.conservation.ca.gov/cgs" target="_blank" rel="noopener">Source</a></div>
+            <span class="lic">Public domain — California Geological Survey</span>
+        </div>
+    </div>
+
+    <div class="layer-group">
+        <h3>Environmental Justice</h3>
+        <div class="layer">
+            <div class="name">CalEnviroScreen 5.0</div>
+            <div class="source">CalEPA/OEHHA cumulative environmental and socioeconomic burden screening by census tract.</div>
+            <div class="links"><a href="https://radiantearth.github.io/stac-browser/#/external/s3-west.nrp-nautilus.io/public-calenviroscreen/stac-collection.json" target="_blank" rel="noopener">STAC</a><a href="https://oehha.ca.gov/calenviroscreen" target="_blank" rel="noopener">Source</a></div>
+            <span class="lic">Public domain — OEHHA</span>
+        </div>
+        <div class="layer">
+            <div class="name">Disadvantaged Communities &amp; Economically Distressed Areas (2023)</div>
+            <div class="source">California Department of Water Resources DAC/EDA designations by census tract.</div>
+            <div class="links"><a href="https://radiantearth.github.io/stac-browser/#/external/s3-west.nrp-nautilus.io/public-ca-dac/stac-collection.json" target="_blank" rel="noopener">STAC</a><a href="https://water.ca.gov/" target="_blank" rel="noopener">Source</a></div>
+            <span class="lic">CC BY 4.0 — CA DWR</span>
+        </div>
+        <div class="layer">
+            <div class="name">Social Vulnerability Index (CDC SVI 2022)</div>
+            <div class="source">CDC/ATSDR Social Vulnerability Index by census tract, filtered to California.</div>
+            <div class="links"><a href="https://radiantearth.github.io/stac-browser/#/external/s3-west.nrp-nautilus.io/public-social-vulnerability/2022/stac-collection.json" target="_blank" rel="noopener">STAC</a><a href="https://www.atsdr.cdc.gov/place-health/php/svi/" target="_blank" rel="noopener">Source</a></div>
+            <span class="lic">Public domain — CDC/ATSDR</span>
+        </div>
+    </div>
+
+    <div class="layer-group">
+        <h3>Recreation</h3>
+        <div class="layer">
+            <div class="name">Federal Trails Network (2026)</div>
+            <div class="source">U.S. federal trails — USFS National Forest System Trails, NPS public trails, and BLM ground transportation linear features.</div>
+            <div class="links"><a href="https://radiantearth.github.io/stac-browser/#/external/s3-west.nrp-nautilus.io/public-trails/federal-trails-2026/stac-collection.json" target="_blank" rel="noopener">STAC</a><a href="https://www.fs.usda.gov/" target="_blank" rel="noopener">Source</a></div>
+            <span class="lic">Public domain — USFS / NPS / BLM</span>
+        </div>
+    </div>
+
+    <div class="layer-group">
+        <h3>Political Boundaries</h3>
+        <div class="layer">
+            <div class="name">Counties, Census Tracts, Congressional &amp; State Legislative Districts</div>
+            <div class="source">US Census Bureau boundaries — 2024 counties, tracts, and congressional districts; 2025 California State Assembly and Senate districts. Useful for relating wolf activity to jurisdictions.</div>
+            <div class="links"><a href="https://radiantearth.github.io/stac-browser/#/external/s3-west.nrp-nautilus.io/public-census/census-2024/county/stac-collection.json" target="_blank" rel="noopener">STAC (County)</a><a href="https://radiantearth.github.io/stac-browser/#/external/s3-west.nrp-nautilus.io/public-census/census-2024/tract/stac-collection.json" target="_blank" rel="noopener">STAC (Tract)</a><a href="https://www.census.gov/geographies/mapping-files.html" target="_blank" rel="noopener">Source</a></div>
+            <span class="lic">Public domain — US Census Bureau</span>
+        </div>
+    </div>
+
+    <p style="margin-top: 1.6rem;">Browse the full STAC catalog at <a href="https://radiantearth.github.io/stac-browser/#/external/s3-west.nrp-nautilus.io/public-data/stac/catalog.json" target="_blank" rel="noopener">radiantearth.github.io / stac-browser</a> to explore additional datasets not yet enabled in the app.</p>
+</section>
+
+<div class="foot">
+    <div class="partners">
+        <span><a href="https://dse.berkeley.edu" target="_blank" rel="noopener">Schmidt Center for Data Science &amp; Environment</a></span>
+        <span><a href="https://californiawolfproject.berkeley.edu/" target="_blank" rel="noopener">California Wolf Project</a></span>
+    </div>
+    <div>Built with <a href="https://github.com/boettiger-lab/geo-agent" target="_blank" rel="noopener">GLEN</a> at DSE, UC Berkeley · <a href="https://github.com/SchmidtDSE/ca-wolves" target="_blank" rel="noopener">Source on GitHub</a></div>
+    <div style="margin-top:0.4rem;">A work in progress — feedback welcome via <a href="https://github.com/SchmidtDSE/ca-wolves/issues" target="_blank" rel="noopener">GitHub issues</a>.</div>
+</div>
+
+</main>
+
+</body>
+</html>
