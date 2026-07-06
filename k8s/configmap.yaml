@@ -14,7 +14,7 @@ data:
     {
         "mcp_server_url": "${MCP_SERVER_URL}",
         "maptiler_key": "${MAPTILER_KEY}",
-        "llm_model": "qwen3",
+        "llm_model": "qwen",
         "llm_models": [
             {
                 "value": "gemma",
@@ -23,8 +23,8 @@ data:
                 "api_key": "unused"
             },
             {
-                "value": "nemotron",
-                "label": "DSE Nemotron",
+                "value": "qwen",
+                "label": "DSE-nimbus",
                 "endpoint": "/api/llm",
                 "api_key": "unused"
             },
