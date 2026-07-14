@@ -967,6 +967,166 @@
             ]
         },
         {
+            "collection_id": "swap-2025-provinces",
+            "collection_url": "https://s3-west.nrp-nautilus.io/public-swap/california/swap-2025/provinces/stac-collection.json",
+            "group": { "name": "State Wildlife Action Plan (SWAP)", "collapsed": true },
+            "assets": [
+                {
+                    "id": "provinces-pmtiles",
+                    "display_name": "SWAP Provinces (8)",
+                    "visible": false,
+                    "default_style": {
+                        "fill-color": [
+                            "match", ["get", "Province"],
+                            "Anadromous", "#80B1D3",
+                            "Bay Delta and Central Coast", "#8DD3C7",
+                            "Cascades and Modoc Plateau", "#FDB462",
+                            "Central Valley and Sierra Nevada Province", "#B3DE69",
+                            "Deserts", "#FCCDE5",
+                            "Marine", "#4EB3D3",
+                            "North Coast and Klamath", "#BC80BD",
+                            "South Coast", "#FB8072",
+                            "#CCCCCC"
+                        ],
+                        "fill-opacity": 0.35
+                    },
+                    "outline_style": {
+                        "line-color": "#37474F",
+                        "line-width": 1.0
+                    },
+                    "tooltip_fields": ["Province", "ProvinceID"]
+                }
+            ]
+        },
+        {
+            "collection_id": "swap-2025-conservation-units",
+            "collection_url": "https://s3-west.nrp-nautilus.io/public-swap/california/swap-2025/conservation-units/stac-collection.json",
+            "group": { "name": "State Wildlife Action Plan (SWAP)", "collapsed": true },
+            "assets": [
+                {
+                    "id": "conservation-units-pmtiles",
+                    "display_name": "SWAP Conservation Units (46)",
+                    "visible": false,
+                    "default_style": {
+                        "fill-color": [
+                            "match", ["get", "ConsUnitType"],
+                            "Terrestrial", "#B3DE69",
+                            "Freshwater Aquatic", "#80B1D3",
+                            "Marine", "#4EB3D3",
+                            "Anadromous", "#BC80BD",
+                            "None", "#CCCCCC",
+                            "#CCCCCC"
+                        ],
+                        "fill-opacity": 0.35
+                    },
+                    "outline_style": {
+                        "line-color": "#555555",
+                        "line-width": 0.6
+                    },
+                    "tooltip_fields": ["Name", "ConsUnitType", "ParentProvinceID"]
+                }
+            ]
+        },
+        {
+            "collection_id": "swap-2025-bay-delta-conservation-unit",
+            "collection_url": "https://s3-west.nrp-nautilus.io/public-swap/california/swap-2025/bay-delta-conservation-unit/stac-collection.json",
+            "group": { "name": "State Wildlife Action Plan (SWAP)", "collapsed": true },
+            "assets": [
+                {
+                    "id": "bay-delta-conservation-unit-pmtiles",
+                    "display_name": "SWAP Bay-Delta Conservation Unit",
+                    "visible": false,
+                    "default_style": {
+                        "fill-color": "#35978F",
+                        "fill-opacity": 0.4
+                    },
+                    "outline_style": {
+                        "line-color": "#01665E",
+                        "line-width": 1.0
+                    },
+                    "tooltip_fields": ["Bay_Delta"]
+                }
+            ]
+        },
+        {
+            "collection_id": "swap-2025-sgcn-ranges",
+            "collection_url": "https://s3-west.nrp-nautilus.io/public-swap/california/swap-2025/sgcn-ranges/stac-collection.json",
+            "group": { "name": "State Wildlife Action Plan (SWAP)", "collapsed": true },
+            "assets": [
+                {
+                    "id": "sgcn-ranges-pmtiles",
+                    "display_name": "SWAP SGCN Species Ranges",
+                    "visible": false,
+                    "default_style": {
+                        "fill-color": [
+                            "match", ["get", "Taxonomic_Group"],
+                            "Amphibians", "#33A02C",
+                            "Birds", "#1F78B4",
+                            "Fish", "#A6CEE3",
+                            "Mammals", "#E31A1C",
+                            "Reptiles", "#FF7F00",
+                            "#CCCCCC"
+                        ],
+                        "fill-opacity": 0.25
+                    },
+                    "outline_style": {
+                        "line-color": "#555555",
+                        "line-width": 0.4
+                    },
+                    "default_filter": ["==", ["get", "Taxonomic_Group"], "Mammals"],
+                    "tooltip_fields": ["SWAP_Common", "SWAP_Scientific", "Taxonomic_Group"]
+                }
+            ]
+        },
+        {
+            "collection_id": "swap-2025-noaa-esu-dps",
+            "collection_url": "https://s3-west.nrp-nautilus.io/public-swap/california/swap-2025/noaa-esu-dps/stac-collection.json",
+            "group": { "name": "State Wildlife Action Plan (SWAP)", "collapsed": true },
+            "assets": [
+                {
+                    "id": "noaa-esu-dps-pmtiles",
+                    "display_name": "SWAP NOAA ESU/DPS (salmonids)",
+                    "visible": false,
+                    "default_style": {
+                        "fill-color": [
+                            "match", ["get", "ESU_or_DPS"],
+                            "ESU", "#1F78B4",
+                            "DPS", "#33A02C",
+                            "Both ESU and DPS", "#6A3D9A",
+                            "#CCCCCC"
+                        ],
+                        "fill-opacity": 0.35
+                    },
+                    "outline_style": {
+                        "line-color": "#555555",
+                        "line-width": 0.6
+                    },
+                    "tooltip_fields": ["ESU_DPS", "ESU_or_DPS", "Class", "Status"]
+                }
+            ]
+        },
+        {
+            "collection_id": "swap-2025-marine-bioregions",
+            "collection_url": "https://s3-west.nrp-nautilus.io/public-swap/california/swap-2025/marine-bioregions/stac-collection.json",
+            "group": { "name": "State Wildlife Action Plan (SWAP)", "collapsed": true },
+            "assets": [
+                {
+                    "id": "marine-bioregions-pmtiles",
+                    "display_name": "SWAP Marine Bioregions (3)",
+                    "visible": false,
+                    "default_style": {
+                        "fill-color": "#4EB3D3",
+                        "fill-opacity": 0.3
+                    },
+                    "outline_style": {
+                        "line-color": "#555555",
+                        "line-width": 0.6
+                    },
+                    "tooltip_fields": ["Name"]
+                }
+            ]
+        },
+        {
             "collection_id": "ca-wolves",
             "collection_url": "https://s3-west.nrp-nautilus.io/public-ca-wolves/stac-collection.json",
             "group": { "name": "Wolf Activity" },
