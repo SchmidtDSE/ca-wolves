@@ -749,6 +749,48 @@
             ]
         },
         {
+            "collection_id": "usgs-wbd-hu4",
+            "collection_url": "https://s3-west.nrp-nautilus.io/public-usgs-wbd/wbd/hu4/stac-collection.json",
+            "group": { "name": "Hydrology", "collapsed": true },
+            "assets": [
+                {
+                    "id": "hu4-pmtiles",
+                    "display_name": "Watershed Subregions (HUC4, USGS WBD)",
+                    "visible": false,
+                    "default_style": {
+                        "fill-color": "rgba(0,0,0,0)",
+                        "fill-opacity": 0
+                    },
+                    "outline_style": {
+                        "line-color": "#0D47A1",
+                        "line-width": 1.6
+                    },
+                    "tooltip_fields": ["name", "huc4", "states", "areasqkm"]
+                }
+            ]
+        },
+        {
+            "collection_id": "usgs-wbd-hu8",
+            "collection_url": "https://s3-west.nrp-nautilus.io/public-usgs-wbd/wbd/hu8/stac-collection.json",
+            "group": { "name": "Hydrology", "collapsed": true },
+            "assets": [
+                {
+                    "id": "hu8-pmtiles",
+                    "display_name": "Watershed Subbasins (HUC8, USGS WBD)",
+                    "visible": false,
+                    "default_style": {
+                        "fill-color": "rgba(0,0,0,0)",
+                        "fill-opacity": 0
+                    },
+                    "outline_style": {
+                        "line-color": "#1976D2",
+                        "line-width": 0.7
+                    },
+                    "tooltip_fields": ["name", "huc8", "states", "areasqkm"]
+                }
+            ]
+        },
+        {
             "collection_id": "federal-trails-2026",
             "collection_url": "https://s3-west.nrp-nautilus.io/public-trails/federal-trails-2026/stac-collection.json",
             "group": { "name": "Recreation", "collapsed": true },
