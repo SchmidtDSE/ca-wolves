@@ -4,3 +4,7 @@ __pycache__/
 
 # Claude Code local/agent state
 .claude/
+
+# Editor / notebook artifacts
+.ipynb_checkpoints/
+.vscode/
