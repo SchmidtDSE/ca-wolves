@@ -63,21 +63,33 @@ data:
 
     Outputs (all overwritten in place each run):
 
-      wolf_tracks.geojson        — per-pack LineStrings, used by the map's
-                                   trajectory animation. Visualization only.
+      wolf_tracks.geojson        — per-wolf LineStrings through consecutive
+                                   hexbin centroids, used by the map's playback
+                                   layer. Visualization only. Each waypoint
+                                   carries the window its cell was reported over
+                                   (`timestamps` / `end_timestamps`), so the map
+                                   can show the observations themselves rather
+                                   than a path between them.
       wolf_trail/hex/h0=*/data_0.parquet
                                  — canonical analytical asset. Past 30 days of
-                                   (pack, snapshot_ts, hexbin polygon) polyfilled
-                                   to H3 res 8 cells, hive-partitioned by h0.
-                                   Joins against any catalog hex dataset via h8;
-                                   h0 partition column enables DPP against
+                                   (pack, reporting window, hexbin polygon)
+                                   polyfilled to H3 res 8 cells, hive-partitioned
+                                   by h0. Joins against any catalog hex dataset
+                                   via h8; h0 partition column enables DPP against
                                    global datasets. Built with DuckDB + spatial
                                    + h3 community extensions, matching the
                                    convention in cng_datasets/vector/h3_tiling.py.
 
+    One row per (wolf, cell, reporting window): CDFW republishes a wolf's cell
+    in every snapshot until it moves, so consecutive republications of the same
+    cell collapse into one row spanning `snapshot_ts` (first reported) to
+    `last_seen_ts` (last reported). A wolf missing from intervening snapshots
+    breaks the window, so gaps in reporting survive into the data.
+
     wolf_bins_latest.geojson is written by fetch.sh (current snapshot only) and
     is not touched here. Current positions in SQL are
-    `trail WHERE snapshot_ts = (SELECT MAX(snapshot_ts) FROM trail)`.
+    `trail WHERE last_seen_ts = (SELECT MAX(last_seen_ts) FROM trail)` — keying
+    off MAX(snapshot_ts) instead would drop every wolf that hasn't moved lately.
     """
     import json, os, shutil, subprocess, sys
     from datetime import datetime, timedelta
@@ -117,16 +129,19 @@ data:
             recent.append((f, ts_str, ts))
 
     trail_features = []
-    tracks = {}          # pack -> [{"coords": [lon, lat], "ts": str}]
+    tracks = {}          # pack -> [{"coords": [lon, lat], "ts", "end_ts"}]
     prev_positions = {}  # pack -> (lon, lat) rounded
+    open_row = {}        # pack -> index in trail_features of its current cell
+    last_snap_idx = {}   # pack -> index in `recent` where it was last reported
     latest_snapshot = None  # most recent snapshot's parsed GeoJSON
 
-    for fname, ts_str, _ in recent:
+    for snap_idx, (fname, ts_str, _) in enumerate(recent):
         r = s3("cp", f"s3://{BUCKET}/snapshots/{fname}", "-")
         if r.returncode != 0:
             continue
         data = json.loads(r.stdout)
         latest_snapshot = data  # `recent` is sorted; final iteration wins
+        ts = ts_str + "Z"
 
         for feat in data["features"]:
             pack = feat["properties"]["pack"]
@@ -137,32 +152,62 @@ data:
             centroid = (sum(lons) / len(lons), sum(lats) / len(lats))
             pos = (round(centroid[0], 4), round(centroid[1], 4))
 
-            if pack not in prev_positions or prev_positions[pack] != pos:
-                feat["properties"]["snapshot_ts"] = ts_str + "Z"
+            # A cell keeps being republished for as long as the wolf stays in
+            # it, so record the *window* it was reported over rather than one
+            # row per snapshot. The window only continues through consecutive
+            # snapshots: a wolf that drops out and later reappears in the same
+            # cell gets a second row, so the break in reporting stays visible
+            # instead of being smoothed into one long presence.
+            continues = (
+                prev_positions.get(pack) == pos
+                and last_snap_idx.get(pack) == snap_idx - 1
+            )
+            if continues:
+                trail_features[open_row[pack]]["properties"]["last_seen_ts"] = ts
+                tracks[pack][-1]["end_ts"] = ts
+            else:
+                feat["properties"]["snapshot_ts"] = ts
+                feat["properties"]["last_seen_ts"] = ts
                 trail_features.append(feat)
+                open_row[pack] = len(trail_features) - 1
 
                 tracks.setdefault(pack, []).append({
                     "coords": [centroid[0], centroid[1]],
-                    "ts": ts_str + "Z",
+                    "ts": ts,
+                    "end_ts": ts,
                 })
 
+            # `pack` is an individual wolf id and is renamed upstream from time
+            # to time; `pack_origin` is the stable label the map styles by.
+            origin = feat["properties"].get("pack_origin")
+            if origin:
+                tracks[pack][-1]["pack_origin"] = origin
+
             prev_positions[pack] = pos
+            last_snap_idx[pack] = snap_idx
 
     # Build trail
     trail = {"type": "FeatureCollection", "features": trail_features}
 
-    # Build tracks (only packs with ≥2 waypoints form a line)
+    # Build tracks (only packs with ≥2 waypoints form a line).
+    # `timestamps` / `end_timestamps` are parallel to the coordinates: each
+    # waypoint carries the window its cell was reported over, which is what the
+    # map's stepped playback mode shows (and what keeps it from inventing a
+    # position in the gaps between reports).
     track_features = []
     for pack, wpts in sorted(tracks.items()):
         if len(wpts) < 2:
             continue
+        origins = [w["pack_origin"] for w in wpts if w.get("pack_origin")]
         track_features.append({
             "type": "Feature",
             "properties": {
                 "pack": pack,
+                "pack_origin": origins[-1] if origins else None,
                 "timestamps": [w["ts"] for w in wpts],
+                "end_timestamps": [w["end_ts"] for w in wpts],
                 "first_seen": wpts[0]["ts"],
-                "last_seen": wpts[-1]["ts"],
+                "last_seen": wpts[-1]["end_ts"],
                 "waypoint_count": len(wpts),
             },
             "geometry": {
@@ -206,21 +251,25 @@ data:
                     SELECT
                         row_number() OVER () AS _cng_fid,
                         pack,
+                        pack_origin,
                         most_recent_adj,
                         CAST(snapshot_ts AS TIMESTAMP) AS snapshot_ts,
+                        CAST(last_seen_ts AS TIMESTAMP) AS last_seen_ts,
                         geom
                     FROM ST_Read('/tmp/wolf_trail.geojson')
                 ),
                 cells AS (
                     SELECT
-                        _cng_fid, pack, most_recent_adj, snapshot_ts,
+                        _cng_fid, pack, pack_origin, most_recent_adj,
+                        snapshot_ts, last_seen_ts,
                         UNNEST(h3_polygon_wkt_to_cells(
                             ST_AsText(ST_Force2D(geom)), {H3_RES}
                         )) AS h{H3_RES}
                     FROM src
                 )
                 SELECT
-                    _cng_fid, pack, most_recent_adj, snapshot_ts,
+                    _cng_fid, pack, pack_origin, most_recent_adj,
+                    snapshot_ts, last_seen_ts,
                     h{H3_RES},
                     h3_cell_to_parent(h{H3_RES}, 0) AS h0
                 FROM cells

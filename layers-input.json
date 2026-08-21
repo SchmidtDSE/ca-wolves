@@ -22,6 +22,7 @@
         "message": "Hi! I can help you explore California gray wolf territories, pack movement data, and related environmental and political context. Try asking:",
         "examples": [
             "Tell me about the wolf datasets available.",
+            "How precise are the wolf position data?",
             "Zoom to the Whaleback pack territory.",
             "Which protected lands overlap with wolf territories?",
             "Which state assembly districts overlap with wolf packs?"
@@ -1015,7 +1016,7 @@
             "assets": [
                 {
                     "id": "territories",
-                    "display_name": "Pack Territories (Feb 2025)",
+                    "display_name": "Pack Territories (approximate, Feb 2025)",
                     "visible": true,
                     "default_style": {
                         "fill-color": [
@@ -1023,10 +1024,10 @@
                             "Whaleback",        "#E65100",
                             "Harvey",           "#1565C0",
                             "Ice Cave",         "#2E7D32",
-                            "Lassen",           "#6A1B9A",
+                            "Lassen",           "#8B4FD0",
                             "Diamond/Beyem Seyo","#AD1457",
-                            "Yowlumni",         "#F9A825",
-                            "#888888"
+                            "Yowlumni",         "#EDA100",
+                            "#8A8A85"
                         ],
                         "fill-opacity": 0.55
                     },
@@ -1034,24 +1035,24 @@
                         "line-color": "#333333",
                         "line-width": 1.2
                     },
-                    "tooltip_fields": ["pack", "centroid_lon", "centroid_lat", "source"]
+                    "tooltip_fields": ["pack", "note", "source"]
                 },
                 {
                     "id": "bins-latest",
-                    "display_name": "Current Positions (~6km hexbins)",
+                    "display_name": "Latest Reported Cells (~7 km hexes)",
                     "visible": true,
                     "default_style": {
-                        "fill-color": [
-                            "match", ["get", "pack"],
-                            "Whaleback 1",       "#E65100",
-                            "Whaleback 2",       "#FF6D00",
-                            "Whaleback 4",       "#FFAB40",
-                            "Whaleback Disperser 1", "#FFD180",
-                            "Whaleback Disperser 2", "#FFE0B2",
-                            "Harvey 1",          "#1565C0",
-                            "Harvey 3",          "#42A5F5",
-                            "Yowlumni Disperser","#F9A825",
-                            "#888888"
+                        "fill-color": ["match", ["get", "pack_origin"],
+                            "Whaleback",         "#E65100",
+                            "Harvey",            "#1565C0",
+                            "Ice Cave",          "#2E7D32",
+                            "Lassen",            "#8B4FD0",
+                            "Diamond/Beyem Seyo","#AD1457",
+                            "Diamond",           "#AD1457",
+                            "Beyem Seyo",        "#AD1457",
+                            "Yowlumni",          "#EDA100",
+                            "Grizzly",           "#0097A7",
+                            "#8A8A85"
                         ],
                         "fill-opacity": 0.7
                     },
@@ -1059,46 +1060,63 @@
                         "line-color": "#333333",
                         "line-width": 1
                     },
-                    "tooltip_fields": ["pack", "most_recent_adj"]
+                    "tooltip_fields": ["pack", "pack_origin", "most_recent_adj"]
                 },
                 {
                     "id": "tracks",
-                    "display_name": "Wolf Movement (animated)",
+                    "display_name": "Cell-to-Cell Movement (animated)",
                     "visible": true,
                     "animation": {
                         "type": "trajectory",
                         "timestamp_field": "timestamps",
+                        "end_timestamp_field": "end_timestamps",
                         "id_field": "pack",
                         "duration_seconds": 30,
                         "static_positions_asset": "bins-latest",
-                        "show_track_line": true,
+                        "mode": "stepped",
+                        "mode_toggle": true,
+                        "hex_resolution": 6,
+                        "show_track_line": false,
                         "show_labels": true
                     },
                     "default_style": {
-                        "line-color": [
-                            "match", ["get", "pack"],
-                            "Whaleback 1",       "#E65100",
-                            "Whaleback 2",       "#FF6D00",
-                            "Whaleback 4",       "#FFAB40",
-                            "Whaleback Disperser 1", "#FFD180",
-                            "Whaleback Disperser 2", "#FFE0B2",
-                            "Harvey 1",          "#1565C0",
-                            "Harvey 3",          "#42A5F5",
-                            "Yowlumni Disperser","#F9A825",
-                            "#888888"
+                        "line-color": ["match", ["get", "pack_origin"],
+                            "Whaleback",         "#E65100",
+                            "Harvey",            "#1565C0",
+                            "Ice Cave",          "#2E7D32",
+                            "Lassen",            "#8B4FD0",
+                            "Diamond/Beyem Seyo","#AD1457",
+                            "Diamond",           "#AD1457",
+                            "Beyem Seyo",        "#AD1457",
+                            "Yowlumni",          "#EDA100",
+                            "Grizzly",           "#0097A7",
+                            "#8A8A85"
                         ],
-                        "circle-color": [
-                            "match", ["get", "pack"],
-                            "Whaleback 1",       "#E65100",
-                            "Whaleback 2",       "#FF6D00",
-                            "Whaleback 4",       "#FFAB40",
-                            "Whaleback Disperser 1", "#FFD180",
-                            "Whaleback Disperser 2", "#FFE0B2",
-                            "Harvey 1",          "#1565C0",
-                            "Harvey 3",          "#42A5F5",
-                            "Yowlumni Disperser","#F9A825",
-                            "#888888"
-                        ]
+                        "circle-color": ["match", ["get", "pack_origin"],
+                            "Whaleback",         "#E65100",
+                            "Harvey",            "#1565C0",
+                            "Ice Cave",          "#2E7D32",
+                            "Lassen",            "#8B4FD0",
+                            "Diamond/Beyem Seyo","#AD1457",
+                            "Diamond",           "#AD1457",
+                            "Beyem Seyo",        "#AD1457",
+                            "Yowlumni",          "#EDA100",
+                            "Grizzly",           "#0097A7",
+                            "#8A8A85"
+                        ],
+                        "fill-color": ["match", ["get", "pack_origin"],
+                            "Whaleback",         "#E65100",
+                            "Harvey",            "#1565C0",
+                            "Ice Cave",          "#2E7D32",
+                            "Lassen",            "#8B4FD0",
+                            "Diamond/Beyem Seyo","#AD1457",
+                            "Diamond",           "#AD1457",
+                            "Beyem Seyo",        "#AD1457",
+                            "Yowlumni",          "#EDA100",
+                            "Grizzly",           "#0097A7",
+                            "#8A8A85"
+                        ],
+                        "fill-outline-color": "#333333"
                     }
                 }
             ]

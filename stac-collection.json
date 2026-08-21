@@ -3,7 +3,7 @@
     "id": "ca-wolves",
     "stac_version": "1.0.0",
     "title": "California Gray Wolf Monitoring",
-    "description": "California gray wolf pack territory polygons and GPS collar location snapshots from the CDFW Wolf Program. Territory polygons are convex-hull approximations digitized from the official CDFW Approximate Area of Gray Wolf Activity map (February 2025) for six confirmed packs: Whaleback, Harvey, Ice Cave, Lassen, Diamond/Beyem Seyo, and Yowlumni. Boundary polygons are approximate (\u00b15\u201310 km) and intended for visualization, not legal or management purposes. GPS collar snapshots are collected every 6 hours from the CDFW Wolf Location Map and aggregated by CDFW to ~6 km hexagonal cells sized to match average daily wolf movement; only new data (detected by Last-Modified header) is archived. IMPORTANT SAMPLING LIMITATIONS: (1) Only a subset of wolves in a subset of packs are GPS-collared; packs with higher livestock-conflict potential are prioritized for collaring, so coverage is biased, not representative. (2) Collars typically collect 4 fixes/day (3 dusk-to-dawn, 1 midday); frequency may increase seasonally for research. (3) Transmission can be delayed by weather or dense forest cover. (4) During denning/rendezvous season (April\u2013August), CDFW suppresses cells near den and rendezvous sites to protect sensitive locations; absence of active cells in a known territory does not mean the pack is absent. (5) If a collar stops reporting, the map continues to show its last known location. (6) When multiple collars occupy the same cell, only one cell is shown. This data was designed for livestock-conflict mitigation, not ecological monitoring.",
+    "description": "California gray wolf pack territory polygons and CDFW collar-derived position cells. IMPORTANT \u2014 THESE ARE CELLS, NOT POINTS: CDFW does not publish GPS fixes. Each published cell is the hexagon on a fixed grid that *contains* a collar's most recent reported location. CDFW selected the cell size from the average daily movement of collared wolves, intending it to be \"large enough to protect exact wolf locations\", and publishes no figure for it; measured from the published cells they are H3 resolution 6 \u2014 about 37 km\u00b2 (14 square miles), roughly 7 km (4 miles) flat-to-flat and 8 km (5 miles) corner to corner. The cell is the finest location this dataset contains, and it is one fix's neighbourhood rather than an aggregate of a day's movement. Any point rendered from it (a centroid, a track vertex, an animated dot) is a label for a cell, not a location, and carries no sub-cell precision. NO PATH IS KNOWN BETWEEN CELLS: positions arrive as a sequence of ~2-hourly snapshots, so consecutive cells say where a wolf was reported, never the route between them. Do not read line or animation geometry drawn through cell centroids as a travelled path, a distance travelled, or a speed. Territory polygons are our own convex-hull approximations, digitized by image georeferencing from the official CDFW Approximate Area of Gray Wolf Activity map (February 2025) for the six packs CDFW recognized then: Whaleback, Harvey, Ice Cave, Lassen, Diamond/Beyem Seyo, and Yowlumni. THIS IS NOT THE CURRENT PACK LIST: as of CDFW's July 2026 Known Wolves list, Ashpan, Tunnison, Grizzly, Interstate, Whitehorse and Long Valley have also been recognized (several promoted from Areas of Wolf Activity), Diamond and Beyem Seyo are separate entries, and Beyem Seyo is a past pack. Do not treat these six as California's current packs or a pack's absence here as evidence it does not exist. They are accurate to roughly 5\u201310 miles (8\u201316 km) \u2014 our estimate, not a CDFW figure; CDFW describes its own map as showing \"the approximate boundaries of known resident wolf territories\". Intended for visualization, not legal or management purposes, and superseded by later editions of the CDFW map. Snapshots are collected hourly from the CDFW Wolf Location Map; only new data (detected by Last-Modified header) is archived. SAMPLING LIMITATIONS, per CDFW's own documentation: (1) Only a subset of wolves in a subset of packs are GPS-collared; CDFW aims for at least one collar per pack and prioritizes packs with higher known or potential livestock conflict, so coverage is biased, not representative, and neither wolves nor packs can be counted from it. (2) Wolves in a pack move independently, so a collar's cell does not locate other pack members, and CDFW warns that \"wolf-livestock conflict can and will take place beyond the boundaries of active cells\". (3) The `pack` field is an individual wolf identifier, not a pack, and is an opaque display label: CDFW changed its wolf-id convention on 1 July 2026 to sequential `CA###` ids assigned in order of identification regardless of pack (previously a three-letter pack prefix plus number plus M/F, e.g. WHA23F), and the tracker's labels carry both conventions plus transitional forms such as 'CA127 (previously Whaleback 2)'. The two id systems are not interchangeable; CDFW publishes the crosswalk in California's Known Wolves \u2013 Past and Present (linked below). (3a) `pack_origin` is the wolf's origin (birth) pack \u2014 NOT where it is now, and not a link to the territory polygon of the same name. Dispersers keep the origin pack of a range they have left, and one such pack (Beyem Seyo) no longer exists. (4) Collars typically collect 4 fixes/day (3 dusk-to-dawn, 1 midday) and transmit each morning; frequency may increase seasonally for research. (5) Transmission can be delayed or lost to weather or dense forest cover. (6) During denning/rendezvous season (typically April\u2013August), cells in the immediate vicinity of den and rendezvous sites are not activated; absence of active cells in a known territory does not mean the pack is absent. (7) If a collar has not reported for a day, the map continues to show its last known cell \u2014 compare `most_recent_adj` (CDFW's last-fix date) against the snapshot time before treating a cell as current. (8) When multiple collars occupy the same cell, only one cell is shown. (9) The tool does not identify land ownership; wolves frequently use private land. CDFW built this tool primarily to give livestock producers general location information to help mitigate wolf-livestock conflict \u2014 not for ecological monitoring \u2014 and states that the presence or absence of data is not a basis for any legal finding. See the CDFW Wolf Location Automated Mapping System FAQ (linked below) for the authoritative description.",
     "license": "CC0-1.0",
     "extent": {
         "spatial": {
@@ -61,6 +61,29 @@
             "rel": "derived_from",
             "href": "https://wildlife.ca.gov/Conservation/Mammals/Gray-Wolf/Location-Map",
             "title": "CDFW Wolf Location Automated Mapping System"
+        },
+        {
+            "rel": "derived_from",
+            "href": "https://nrm.dfg.ca.gov/FileHandler.ashx?DocumentID=232434&inline",
+            "type": "application/pdf",
+            "title": "CDFW Wolf Location Automated Mapping System: Additional Information and FAQ (authoritative description of the cells, collar schedule, denning-season suppression, and non-reporting collars)"
+        },
+        {
+            "rel": "derived_from",
+            "href": "https://storage.googleapis.com/cdfw-wolf-tracker/wolf_movement.html",
+            "type": "text/html",
+            "title": "CDFW Wolf Tracker (upstream source of the hexbin snapshots, and its limitations-on-use notice)"
+        },
+        {
+            "rel": "derived_from",
+            "href": "https://nrm.dfg.ca.gov/FileHandler.ashx?DocumentID=247113",
+            "title": "CDFW Approximate Area of Gray Wolf Activity, current edition (territory polygons here digitize the February 2025 edition)"
+        },
+        {
+            "rel": "derived_from",
+            "href": "https://nrm.dfg.ca.gov/FileHandler.ashx?DocumentID=247119",
+            "type": "application/pdf",
+            "title": "CDFW California's Known Wolves \u2013 Past and Present, July 2026 (current and past packs, individual wolf histories, and the old-id to CA### crosswalk)"
         }
     ],
     "assets": {
@@ -68,7 +91,7 @@
             "href": "https://s3-west.nrp-nautilus.io/public-ca-wolves/wolf_territories_feb2025.geojson",
             "type": "application/geo+json",
             "title": "Wolf pack territory polygons (February 2025)",
-            "description": "Six pack territory polygons digitized from the CDFW Approximate Area of Gray Wolf Activity map (Feb 2025): Whaleback, Harvey, Ice Cave, Lassen, Diamond/Beyem Seyo, Yowlumni. Convex-hull approximations, ~5\u201310 km accuracy. Static reference layer.",
+            "description": "Six pack territory polygons digitized from the CDFW Approximate Area of Gray Wolf Activity map (Feb 2025): Whaleback, Harvey, Ice Cave, Lassen, Diamond/Beyem Seyo, Yowlumni. Our own convex-hull approximations from image georeferencing, accurate to roughly 5\u201310 miles (8\u201316 km) \u2014 our estimate, not a CDFW figure. These are approximate areas of activity, not territory boundaries, home ranges, or administrative limits. Static February 2025 reference layer, superseded by later editions of the CDFW map \u2014 CDFW has recognized further packs since (see California's Known Wolves, linked in the collection); areas and overlaps computed from them are approximate, and differences between packs are not measured differences.",
             "roles": [
                 "data"
             ],
@@ -103,8 +126,8 @@
         "bins-latest": {
             "href": "https://s3-west.nrp-nautilus.io/public-ca-wolves/wolf_bins_latest.geojson",
             "type": "application/geo+json",
-            "title": "Latest wolf GPS collar hexbins (visualization)",
-            "description": "Most recent CDFW snapshot of wolf positions as ~6 km hexagonal polygons in GeoJSON. Used by the map's current-positions layer. For SQL queries, use trail-hex with `WHERE snapshot_ts = (SELECT MAX(snapshot_ts) FROM trail-hex)` instead \u2014 it has H3 cells for fast joins.",
+            "title": "Latest reported wolf cells (~7 km hexes, visualization)",
+            "description": "Most recent CDFW snapshot of reported wolf positions as H3 resolution-6 hexagonal polygons (~37 km\u00b2 / 14 square miles, roughly 7 km / 4 miles flat-to-flat) in GeoJSON. Used by the map's latest-cells layer. Each feature is the cell containing one collar's most recent reported location, carrying the individual wolf id (`pack`), its origin \u2014 birth \u2014 pack (`pack_origin`, which is not necessarily where it is now), and CDFW's last-fix date (`most_recent_adj`). For SQL queries use trail-hex with `WHERE last_seen_ts = (SELECT MAX(last_seen_ts) FROM trail-hex)` instead \u2014 it has H3 cells for fast joins.",
             "roles": [
                 "visual"
             ]
@@ -112,8 +135,8 @@
         "tracks": {
             "href": "https://s3-west.nrp-nautilus.io/public-ca-wolves/wolf_tracks.geojson",
             "type": "application/geo+json",
-            "title": "Wolf movement trajectories (animation, visualization)",
-            "description": "Per-pack LineStrings through hexbin centroids over the past 30 days, used by the map's trajectory animation. Visualization only \u2014 for SQL movement queries, use trail-hex.",
+            "title": "Wolf cell-to-cell sequences (map playback, visualization)",
+            "description": "Per-wolf LineStrings through the centroids of consecutively reported hexbin cells over the past 30 days, used by the map's playback layer. THE LINE GEOMETRY IS NOT AN OBSERVED PATH \u2014 it connects cell centroids in reporting order and no part of it between two vertices was observed. Each vertex carries the window its cell was reported over: `timestamps` (first reported) and `end_timestamps` (last reported) are arrays parallel to the coordinates, which lets the map show each cell only while it was actually being reported instead of sliding a dot between them. `pack` is the individual wolf; `pack_origin` is the pack it came from, not where it is now. Visualization only \u2014 for SQL movement queries, use trail-hex.",
             "roles": [
                 "visual"
             ]
@@ -131,7 +154,7 @@
             "href": "https://s3-west.nrp-nautilus.io/public-ca-wolves/wolf_trail/hex/h0=*/data_0.parquet",
             "type": "application/vnd.apache.parquet",
             "title": "Wolf movement trail (H3 res-8 tiled, h0-partitioned, 30-day rolling)",
-            "description": "PRIMARY ANALYTICAL ASSET. Past 30 days of de-duplicated wolf positions, polyfilled to H3 resolution 8 cells. One row per (pack, snapshot_ts, h8). Hive-partitioned by h0 \u2014 California fits in a single h0 cell, but the column is exposed so dynamic partition pruning works when joining against globally-partitioned catalog datasets. Hash-join on h8 with any other catalog hex asset; prune time windows on snapshot_ts (UTC TIMESTAMP). Rebuilt hourly by overwriting the file in place.",
+            "description": "PRIMARY ANALYTICAL ASSET. Past 30 days of reported wolf positions, polyfilled to H3 resolution 8 cells. One row per (wolf, reported cell, reporting window, h8): CDFW republishes a wolf's cell in every snapshot until it moves, so consecutive republications of the same cell collapse into a single row spanning `snapshot_ts` (first reported) to `last_seen_ts` (last reported); a wolf missing from intervening snapshots breaks the window, so gaps in reporting survive into the data. Current positions are `WHERE last_seen_ts = (SELECT MAX(last_seen_ts) FROM trail)` \u2014 keying off MAX(snapshot_ts) instead drops every wolf that hasn't changed cells lately. Note the source cell is CDFW's H3 resolution-6 hexbin (~37 km\u00b2); the resolution-8 cells here are a tiling of it for joining, not a finer measurement, so COUNT(*) counts index cells \u2014 count DISTINCT _cng_fid for observations. Hive-partitioned by h0 \u2014 California fits in a single h0 cell, but the column is exposed so dynamic partition pruning works when joining against globally-partitioned catalog datasets. Hash-join on h8 with any other catalog hex asset; prune time windows on snapshot_ts / last_seen_ts (UTC TIMESTAMP). Rebuilt hourly by overwriting the file in place.",
             "roles": [
                 "data"
             ],
@@ -144,22 +167,32 @@
                 {
                     "name": "pack",
                     "type": "string",
-                    "description": "Individual wolf identifier (e.g. 'Whaleback 1', 'Harvey 3', 'Yowlumni Disperser')"
+                    "description": "Individual collared wolf identifier and opaque display label (e.g. 'CA091 (previously Yowlumni Disperser)') \u2014 not a pack. CDFW moved to sequential CA### ids on 1 July 2026; older pack-prefixed ids (WHA23F) are not convertible to them by rule"
+                },
+                {
+                    "name": "pack_origin",
+                    "type": "string",
+                    "description": "Pack the wolf came from \u2014 its origin (birth) pack, not its current pack or current location; a disperser keeps the origin pack of a range it has left"
                 },
                 {
                     "name": "most_recent_adj",
                     "type": "string",
-                    "description": "CDFW last-fix date (MM/DD/YYYY)"
+                    "description": "CDFW last-fix date (MM/DD/YYYY) \u2014 compare against the snapshot time to tell a current cell from a non-reporting collar's last known cell"
                 },
                 {
                     "name": "snapshot_ts",
                     "type": "timestamp",
-                    "description": "UTC timestamp of the snapshot that captured this position"
+                    "description": "UTC timestamp of the snapshot that first reported this wolf in this cell"
+                },
+                {
+                    "name": "last_seen_ts",
+                    "type": "timestamp",
+                    "description": "UTC timestamp of the last consecutive snapshot still reporting this wolf in this cell (equal to snapshot_ts for a single-snapshot report)"
                 },
                 {
                     "name": "h8",
                     "type": "uint64",
-                    "description": "H3 cell ID at resolution 8 (working resolution)"
+                    "description": "H3 cell ID at resolution 8 \u2014 one of several tiling CDFW's resolution-6 source hexbin, for joining (not a finer position)"
                 },
                 {
                     "name": "h0",

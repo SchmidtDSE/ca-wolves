@@ -153,6 +153,11 @@ p.lede { font-size: 1.05rem; color: var(--ink-soft); }
     font-size: 0.97rem;
 }
 
+.callout.caution {
+    background: #fdf4e6;
+    border-left-color: #c07000;
+}
+
 .foot {
     text-align: center;
     color: var(--ink-soft);
@@ -202,6 +207,48 @@ p.lede { font-size: 1.05rem; color: var(--ink-soft); }
         <div class="stat"><div class="num">42</div><div class="lbl">datasets</div></div>
         <div class="stat"><div class="num">46</div><div class="lbl">map layers</div></div>
         <div class="stat"><div class="num">12</div><div class="lbl">thematic groups</div></div>
+    </div>
+</section>
+
+<section>
+    <h2 id="reading">Reading the wolf movement data</h2>
+    <p class="lede">CDFW does not publish GPS points, and this map cannot show you where a wolf went. It shows which cell a collar was reported in, and when.</p>
+
+    <div class="callout caution">
+        <strong>⬡ A dot is a cell, not a location.</strong> Each cell CDFW publishes is the hexagon, on a fixed grid, that <em>contains</em> one collar's most recent reported location. CDFW picked the cell size from how far wolves typically move in a day and to keep it <a href="https://nrm.dfg.ca.gov/FileHandler.ashx?DocumentID=232434&amp;inline" target="_blank" rel="noopener">“large enough to protect exact wolf locations”</a>; it publishes no figure for the size. Measured from the cells themselves, they are about <strong>37 km² — 14 square miles, roughly 7 km (4 miles) flat-to-flat and 8 km (5 miles) corner to corner</strong>. That cell is the finest location that exists in this data, and it marks one fix rather than a day's wandering. Where the map draws a dot or a label, it sits at the <strong>centre of that cell</strong>: a marker for the hexagon, not a position within it.
+    </div>
+
+    <p><strong>There is no known path between cells.</strong> Positions arrive as a series of snapshots, roughly every two hours, each naming the cell a collar reported from. What happened between one cell and the next was never observed. Two consecutive cells 25 km apart tell you the wolf covered at least that distance somehow — not the route, and not the speed.</p>
+
+    <h3>Two ways to play it back</h3>
+    <p>The <strong>Cell-to-Cell Movement</strong> layer has a mode switch in its playback controls, because the two views make quite different claims:</p>
+    <ul>
+        <li><strong>Observed only</strong> (the default) — each cell is drawn as a hexagon, for exactly the window it was being reported, and then the hexagon jumps to wherever the wolf was reported next. Nothing is drawn during a break in reporting. What you see is what was recorded.</li>
+        <li><strong>Interpolated</strong> — a dot glides steadily from one cell centre to the next. It is much easier to follow, and none of it is data: the position between two reports is invented by the animation, at a constant speed along a straight line nobody observed. Use it to read the sequence, not the movement.</li>
+    </ul>
+    <p>Neither mode draws a trail line behind the animation. A line through consecutive cell centroids looks like a recorded track, and no such track exists.</p>
+
+    <h3>What the data cannot tell you</h3>
+    <ul>
+        <li><strong>Not all wolves are collared.</strong> CDFW aims for at least one collar per pack and prioritizes packs with higher known or potential livestock conflict — so this is a biased subset, not a sample. Wolves and packs cannot be counted from it. Wolves in a pack also move independently, so one collar's cell does not locate the rest of the pack: CDFW's own warning is that <em>“wolf-livestock conflict can and will take place beyond the boundaries of active cells.”</em></li>
+        <li><strong>An empty area is not an empty area.</strong> Collars take around four fixes a day and transmit each morning, transmission is delayed or lost to weather and forest canopy, and from roughly April through August cells near den and rendezvous sites are not activated, to protect them. No cell in a territory does not mean no wolves.</li>
+        <li><strong>A stationary hexagon may be a silent collar.</strong> If a collar has not reported for a day, the map keeps showing its last known cell. The last-fix date on each cell (<em>most_recent_adj</em>) is what tells you whether a cell is current.</li>
+        <li><strong>Each identifier is one wolf, not a pack.</strong> Labels such as <em>CA091</em> are individual collared animals. CDFW changed its naming convention on <strong>1 July 2026</strong>: wolves now get a sequential <em>CA###</em> id in the order they were identified, replacing the old pack-prefixed form (<em>WHA23F</em> was a Whaleback female). The two are not convertible by rule — CDFW publishes the crosswalk in <a href="https://nrm.dfg.ca.gov/FileHandler.ashx?DocumentID=247119" target="_blank" rel="noopener">California's Known Wolves</a> — which is why some labels here still read “CA127 (previously Whaleback 2)”.</li>
+        <li><strong>A wolf's pack is where it came from, not where it is.</strong> The pack field on a cell is the wolf's <em>origin</em> pack — the one it was born into. The animals this map is most used to watch are exactly the ones that have left: CA124 was born in Whaleback and is now in the Ashpan pack, CA077 in Whaleback and is now the Whitehorse female, CA091 in Beyem Seyo and ranges in Yowlumni country. Don't read the pack label as a current address, or as a link to the territory polygon of the same name.</li>
+        <li><strong>The pack list here is a February 2025 snapshot.</strong> Those six territories were the packs CDFW recognized then. Its <a href="https://nrm.dfg.ca.gov/FileHandler.ashx?DocumentID=247119" target="_blank" rel="noopener">July 2026 list</a> is longer — Ashpan, Tunnison, Grizzly, Interstate, Whitehorse and Long Valley have since been recognized, several promoted from Areas of Wolf Activity; Diamond and Beyem Seyo are now separate entries; and Beyem Seyo is a past pack, its remaining adults lethally removed in October 2025 after repeated livestock depredations in Sierra Valley. A pack missing from this map is not a pack that doesn't exist.</li>
+        <li><strong>Territory polygons are approximate, and that estimate is ours.</strong> The six pack polygons were hand-digitized here from CDFW's February 2025 <em>Approximate Area of Gray Wolf Activity</em> map, and we put their accuracy at roughly 5–10 miles (8–16 km) — our georeferencing estimate, not a CDFW figure. CDFW describes its own map as showing “the approximate boundaries of known resident wolf territories”. They are areas of activity, not boundaries or home ranges, they do not update, and <a href="https://nrm.dfg.ca.gov/FileHandler.ashx?DocumentID=247113" target="_blank" rel="noopener">later editions of the CDFW map</a> supersede them.</li>
+        <li><strong>It is not a basis for a legal finding.</strong> CDFW attaches no warranty of positional accuracy to the tracker and states that the presence or absence of data does not support any finding under local, state, or federal law. The tool also does not show land ownership — wolves frequently use private land, and access restrictions to it should be respected.</li>
+    </ul>
+    <p>This data is collected to help mitigate livestock conflict, not for ecological research. The assistant is instructed to report it at the resolution it was published, and to decline to infer behaviour, causes, or predictions from it.</p>
+
+    <div class="callout">
+        <strong>📄 Straight from CDFW.</strong> Everything above is drawn from CDFW's own documentation — worth reading first-hand:
+        <ul>
+            <li><a href="https://nrm.dfg.ca.gov/FileHandler.ashx?DocumentID=232434&amp;inline" target="_blank" rel="noopener">Wolf Location Automated Mapping System: Additional Information &amp; FAQ</a> (PDF) — what the cells are, how their size was chosen, the collar schedule, denning-season suppression, non-reporting collars</li>
+            <li><a href="https://wildlife.ca.gov/Conservation/Mammals/Gray-Wolf/Location-Map" target="_blank" rel="noopener">Wolf Location Map</a> and the live <a href="https://storage.googleapis.com/cdfw-wolf-tracker/wolf_movement.html" target="_blank" rel="noopener">CDFW Wolf Tracker</a> — the upstream source of the cells on this map, with its limitations-on-use notice</li>
+            <li><a href="https://nrm.dfg.ca.gov/FileHandler.ashx?DocumentID=247119" target="_blank" rel="noopener">California's Known Wolves — Past and Present</a> (PDF) — the dated, authoritative list of current and past packs and Areas of Wolf Activity, individual wolf histories, and the old-id → <em>CA###</em> crosswalk</li>
+            <li><a href="https://wildlife.ca.gov/Conservation/Mammals/Gray-Wolf" target="_blank" rel="noopener">CDFW Gray Wolf Program</a> — the current editions of all of the above, plus quarterly updates and annual reports</li>
+        </ul>
     </div>
 </section>
 
@@ -262,6 +309,10 @@ p.lede { font-size: 1.05rem; color: var(--ink-soft); }
     </ul>
 
     <div class="callout">
+        <strong>📐 Data and methods, not opinions.</strong> The assistant is deliberately scoped to computing what you asked for and telling you how it computed it — which dataset, how a feature was defined, at what resolution, over what time window. It is instructed not to interpret results, not to infer behaviour or causes from wolf positions, not to predict where wolves will go, and not to fill gaps from its own background knowledge. If you ask what a number means, it will say that judgment is yours and give you the numbers that bear on it. You are the subject-matter expert; it is the query writer.
+    </div>
+
+    <div class="callout">
         <strong>✏️ Draw an area to ask about it.</strong> Use the <strong>draw tool</strong> to sketch a polygon — a proposed corridor, a county, a watershed — then ask the assistant about it: <em>"What share of the area I drew is conserved land?"</em>, <em>"How much grazing land falls inside this polygon?"</em> Your drawn shape becomes a live spatial filter for any query.
     </div>
 </section>
@@ -273,9 +324,9 @@ p.lede { font-size: 1.05rem; color: var(--ink-soft); }
     <div class="layer-group">
         <h3>🐺 Wolf Activity</h3>
         <div class="layer">
-            <div class="name">Pack Territories, Current Positions &amp; Movement (CDFW)</div>
-            <div class="source">California Gray Wolf Monitoring from the CDFW Wolf Program — pack territory polygons (Feb 2025), recent hexbinned positions, and animated GPS movement tracks for monitored packs and dispersers (Whaleback, Harvey, Lassen, Ice Cave, Diamond/Beyem Seyo, Yowlumni, and others). Three map layers from one collection.</div>
-            <div class="links"><a href="https://radiantearth.github.io/stac-browser/#/external/s3-west.nrp-nautilus.io/public-ca-wolves/stac-collection.json" target="_blank" rel="noopener">STAC</a><a href="https://wildlife.ca.gov/Conservation/Mammals/Gray-Wolf" target="_blank" rel="noopener">Source: CDFW Gray Wolf</a></div>
+            <div class="name">Pack Territories, Latest Cells &amp; Cell-to-Cell Movement (CDFW)</div>
+            <div class="source">California Gray Wolf Monitoring from the CDFW Wolf Program — three map layers from one collection: approximate pack territory polygons (Feb 2025, to within roughly 5–10 miles); the cells collars were most recently reported in; and 30 days of cell-to-cell movement for collared wolves and dispersers. The six territory polygons are the packs CDFW recognized in February 2025 (Whaleback, Harvey, Lassen, Ice Cave, Diamond/Beyem Seyo, Yowlumni); CDFW has recognized more since, and cells are labelled by the wolf's origin pack rather than its current one. Positions are ~37 km² (14 sq mi) hexagonal cells, not GPS points, and no path between consecutive cells was observed — see <a href="#reading">reading the wolf movement data</a>.</div>
+            <div class="links"><a href="https://radiantearth.github.io/stac-browser/#/external/s3-west.nrp-nautilus.io/public-ca-wolves/stac-collection.json" target="_blank" rel="noopener">STAC</a><a href="https://wildlife.ca.gov/Conservation/Mammals/Gray-Wolf" target="_blank" rel="noopener">Source: CDFW Gray Wolf</a><a href="https://wildlife.ca.gov/Conservation/Mammals/Gray-Wolf/Location-Map" target="_blank" rel="noopener">CDFW Wolf Location Map</a><a href="https://nrm.dfg.ca.gov/FileHandler.ashx?DocumentID=232434&amp;inline" target="_blank" rel="noopener">CDFW mapping-system FAQ (PDF)</a></div>
             <span class="lic">CC0 1.0 — CDFW Wolf Program</span>
         </div>
     </div>
