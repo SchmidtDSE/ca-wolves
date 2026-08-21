@@ -1024,10 +1024,10 @@
                             "Whaleback",        "#E65100",
                             "Harvey",           "#1565C0",
                             "Ice Cave",         "#2E7D32",
-                            "Lassen",           "#6A1B9A",
+                            "Lassen",           "#8B4FD0",
                             "Diamond/Beyem Seyo","#AD1457",
-                            "Yowlumni",         "#F9A825",
-                            "#888888"
+                            "Yowlumni",         "#EDA100",
+                            "#8A8A85"
                         ],
                         "fill-opacity": 0.55
                     },
@@ -1039,19 +1039,20 @@
                 },
                 {
                     "id": "bins-latest",
-                    "display_name": "Latest Reported Cells (~6 km hexes)",
+                    "display_name": "Latest Reported Cells (~7 km hexes)",
                     "visible": true,
                     "default_style": {
                         "fill-color": ["match", ["get", "pack_origin"],
                             "Whaleback",         "#E65100",
                             "Harvey",            "#1565C0",
                             "Ice Cave",          "#2E7D32",
-                            "Lassen",            "#6A1B9A",
+                            "Lassen",            "#8B4FD0",
                             "Diamond/Beyem Seyo","#AD1457",
+                            "Diamond",           "#AD1457",
                             "Beyem Seyo",        "#AD1457",
-                            "Yowlumni",          "#F9A825",
-                            "Grizzly",           "#00838F",
-                            "#888888"
+                            "Yowlumni",          "#EDA100",
+                            "Grizzly",           "#0097A7",
+                            "#8A8A85"
                         ],
                         "fill-opacity": 0.7
                     },
@@ -1083,34 +1084,37 @@
                             "Whaleback",         "#E65100",
                             "Harvey",            "#1565C0",
                             "Ice Cave",          "#2E7D32",
-                            "Lassen",            "#6A1B9A",
+                            "Lassen",            "#8B4FD0",
                             "Diamond/Beyem Seyo","#AD1457",
+                            "Diamond",           "#AD1457",
                             "Beyem Seyo",        "#AD1457",
-                            "Yowlumni",          "#F9A825",
-                            "Grizzly",           "#00838F",
-                            "#888888"
+                            "Yowlumni",          "#EDA100",
+                            "Grizzly",           "#0097A7",
+                            "#8A8A85"
                         ],
                         "circle-color": ["match", ["get", "pack_origin"],
                             "Whaleback",         "#E65100",
                             "Harvey",            "#1565C0",
                             "Ice Cave",          "#2E7D32",
-                            "Lassen",            "#6A1B9A",
+                            "Lassen",            "#8B4FD0",
                             "Diamond/Beyem Seyo","#AD1457",
+                            "Diamond",           "#AD1457",
                             "Beyem Seyo",        "#AD1457",
-                            "Yowlumni",          "#F9A825",
-                            "Grizzly",           "#00838F",
-                            "#888888"
+                            "Yowlumni",          "#EDA100",
+                            "Grizzly",           "#0097A7",
+                            "#8A8A85"
                         ],
                         "fill-color": ["match", ["get", "pack_origin"],
                             "Whaleback",         "#E65100",
                             "Harvey",            "#1565C0",
                             "Ice Cave",          "#2E7D32",
-                            "Lassen",            "#6A1B9A",
+                            "Lassen",            "#8B4FD0",
                             "Diamond/Beyem Seyo","#AD1457",
+                            "Diamond",           "#AD1457",
                             "Beyem Seyo",        "#AD1457",
-                            "Yowlumni",          "#F9A825",
-                            "Grizzly",           "#00838F",
-                            "#888888"
+                            "Yowlumni",          "#EDA100",
+                            "Grizzly",           "#0097A7",
+                            "#8A8A85"
                         ],
                         "fill-outline-color": "#333333"
                     }

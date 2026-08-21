@@ -12,7 +12,7 @@
       "properties": {
         "pack": "Whaleback",
         "source": "CDFW Approximate Area of Gray Wolf Activity, February 2025",
-        "note": "digitized from official map; ~5-10 mile positional uncertainty",
+        "note": "digitized from the CDFW Approximate Area of Gray Wolf Activity map (February 2025) by image georeferencing; our own convex-hull approximation, accurate to roughly 5-10 miles (8-16 km); CDFW publishes these as approximate areas of activity, not boundaries; visualization only",
         "centroid_lon": -122.4292,
         "centroid_lat": 41.8868
       },
@@ -93,7 +93,7 @@
       "properties": {
         "pack": "Harvey",
         "source": "CDFW Approximate Area of Gray Wolf Activity, February 2025",
-        "note": "digitized from official map; ~5-10 mile positional uncertainty",
+        "note": "digitized from the CDFW Approximate Area of Gray Wolf Activity map (February 2025) by image georeferencing; our own convex-hull approximation, accurate to roughly 5-10 miles (8-16 km); CDFW publishes these as approximate areas of activity, not boundaries; visualization only",
         "centroid_lon": -121.4472,
         "centroid_lat": 40.8505
       },
@@ -162,7 +162,7 @@
       "properties": {
         "pack": "Ice Cave",
         "source": "CDFW Approximate Area of Gray Wolf Activity, February 2025",
-        "note": "digitized from official map; ~5-10 mile positional uncertainty",
+        "note": "digitized from the CDFW Approximate Area of Gray Wolf Activity map (February 2025) by image georeferencing; our own convex-hull approximation, accurate to roughly 5-10 miles (8-16 km); CDFW publishes these as approximate areas of activity, not boundaries; visualization only",
         "centroid_lon": -121.7695,
         "centroid_lat": 40.3683
       },
@@ -247,7 +247,7 @@
       "properties": {
         "pack": "Lassen",
         "source": "CDFW Approximate Area of Gray Wolf Activity, February 2025",
-        "note": "digitized from official map; ~5-10 mile positional uncertainty",
+        "note": "digitized from the CDFW Approximate Area of Gray Wolf Activity map (February 2025) by image georeferencing; our own convex-hull approximation, accurate to roughly 5-10 miles (8-16 km); CDFW publishes these as approximate areas of activity, not boundaries; visualization only",
         "centroid_lon": -121.0866,
         "centroid_lat": 40.2763
       },
@@ -312,7 +312,7 @@
       "properties": {
         "pack": "Diamond/Beyem Seyo",
         "source": "CDFW Approximate Area of Gray Wolf Activity, February 2025",
-        "note": "digitized from official map; ~5-10 mile positional uncertainty",
+        "note": "digitized from the CDFW Approximate Area of Gray Wolf Activity map (February 2025) by image georeferencing; our own convex-hull approximation, accurate to roughly 5-10 miles (8-16 km); CDFW publishes these as approximate areas of activity, not boundaries; visualization only",
         "centroid_lon": -120.465,
         "centroid_lat": 39.8016
       },
@@ -397,7 +397,7 @@
       "properties": {
         "pack": "Yowlumni",
         "source": "CDFW Approximate Area of Gray Wolf Activity, February 2025",
-        "note": "digitized from official map; ~5-10 mile positional uncertainty",
+        "note": "digitized from the CDFW Approximate Area of Gray Wolf Activity map (February 2025) by image georeferencing; our own convex-hull approximation, accurate to roughly 5-10 miles (8-16 km); CDFW publishes these as approximate areas of activity, not boundaries; visualization only",
         "centroid_lon": -118.3005,
         "centroid_lat": 37.0471
       },
