@@ -34,21 +34,62 @@ Six California gray wolf pack territory polygons digitized from the official Cal
 
 ### `snapshots/wolf_bins_<TIMESTAMP>.geojson`
 
-Time-series snapshots of wolf collar GPS positions, aggregated to ~6 km H3 hexbins by CDFW and published via their [Wolf Tracker](https://storage.googleapis.com/cdfw-wolf-tracker/wolf_movement.html).
+Time-series snapshots of CDFW-reported wolf positions, published via their [Wolf Tracker](https://storage.googleapis.com/cdfw-wolf-tracker/wolf_movement.html).
 
-Snapshots are collected every 6 hours by a Kubernetes CronJob. Only new data (detected by the `Last-Modified` HTTP header) is saved — the timestamp in the filename reflects the CDFW publication time, not the snapshot collection time.
+> **These are cells, not points.** CDFW does not publish GPS fixes. Collar locations are aggregated to
+> **H3 resolution-6 hexagons — about 37 km², 6 km flat-to-flat and 7.7 km corner-to-corner** — sized to
+> match average daily wolf movement. The cell is the finest location in this data; a centroid derived from
+> it is a label for the hexagon, not a position within it. Positions arrive as a sequence of snapshots, so
+> **no path between consecutive cells was observed** — do not read a line through cell centroids as a
+> travelled route, a distance travelled, or a speed.
+
+Snapshots are collected hourly by a Kubernetes CronJob. Only new data (detected by the `Last-Modified` HTTP header) is saved — the timestamp in the filename reflects the CDFW publication time, not the snapshot collection time. A wolf's cell is republished in every snapshot until it moves; when a collar stops reporting, its last known cell keeps being published.
 
 | Field | Description |
 |-------|-------------|
-| `pack` | Individual wolf identifier (e.g. "Whaleback 1", "Harvey 3", "Yowlumni Disperser") |
-| `most_recent_adj` | Most recent adjusted GPS fix date for this individual in this hexbin |
-| geometry | H3 hexagon polygon (~6 km resolution) |
+| `pack` | Individual collared wolf identifier (e.g. "CA091 (previously Yowlumni Disperser)", "CA150") — an individual, **not** a pack; renamed upstream from time to time |
+| `pack_origin` | Pack the wolf is associated with (e.g. "Whaleback", "Harvey", "Beyem Seyo", "Grizzly") — the stable label for grouping |
+| `most_recent_adj` | Most recent adjusted GPS fix date (MM/DD/YYYY) for this individual in this cell — compare against the snapshot time to tell a current cell from a non-reporting collar's last known cell |
+| geometry | H3 resolution-6 hexagon polygon (~37 km²) |
 
 **File naming:** `wolf_bins_YYYY-MM-DDTHH:MM:SS.geojson` (UTC timestamp from CDFW `Last-Modified` header)
 
-**Coverage:** Snapshots begin 2025 (collection start date). Not all wolves are collared; uncollared individuals do not appear in this dataset.
+**Coverage:** Snapshots begin 2025 (collection start date). Only some wolves in some packs are collared, and packs with higher livestock-conflict potential are prioritized for collaring — the collared set is a biased subset, not a sample, and neither wolves nor packs can be counted from it. From April through August, CDFW suppresses cells near den and rendezvous sites, so an absence of cells is not an absence of wolves.
 
 **Source:** CDFW Wolf Program — https://wildlife.ca.gov/Conservation/Mammals/Gray-Wolf
+
+---
+
+### `wolf_bins_latest.geojson`
+
+The most recent snapshot, at a fixed key so the map can always load current cells without listing the archive. Same fields and caveats as `snapshots/` above.
+
+---
+
+### `wolf_trail/hex/h0=*/data_0.parquet`
+
+The queryable asset: the past 30 days of reported positions, polyfilled to H3 resolution 8 for joining against other H3-indexed datasets, hive-partitioned by `h0`. Rebuilt hourly, overwritten in place.
+
+One row per **(wolf, cell, reporting window, h8)**. Because CDFW republishes a wolf's cell in every snapshot until it moves, consecutive republications of the same cell collapse into one row spanning `snapshot_ts` → `last_seen_ts`. A wolf missing from intervening snapshots breaks the window, so gaps in reporting survive into the data.
+
+| Field | Description |
+|-------|-------------|
+| `_cng_fid` | Synthetic id — one per reported cell-window. Count `DISTINCT _cng_fid` for observations |
+| `pack`, `pack_origin`, `most_recent_adj` | As in the snapshots above |
+| `snapshot_ts` | UTC timestamp of the snapshot that **first** reported this wolf in this cell |
+| `last_seen_ts` | UTC timestamp of the **last** consecutive snapshot still reporting it there |
+| `h8` | H3 resolution-8 cell — one of several tiling CDFW's resolution-6 hexagon, for joining. **Not** a finer position, so `COUNT(*)` counts index cells rather than observations |
+| `h0` | H3 resolution-0 partition key (enables dynamic partition pruning against globally-partitioned datasets) |
+
+Current positions are `WHERE last_seen_ts = (SELECT MAX(last_seen_ts) FROM trail)` — keying off `MAX(snapshot_ts)` instead drops every wolf that hasn't changed cells lately.
+
+---
+
+### `wolf_tracks.geojson`
+
+**Visualization only** — per-wolf LineStrings through the centroids of consecutively reported cells over the past 30 days, used by the map's playback layer. The line geometry is **not an observed path**: it connects cell centroids in reporting order, and nothing between two vertices was observed.
+
+`timestamps` and `end_timestamps` are arrays parallel to the coordinates, giving the window each cell was reported over. That lets the map show each cell only while it was actually being reported, instead of sliding a dot along a path that never happened. For any analysis, use the trail parquet above.
 
 ---
 
