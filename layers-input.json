@@ -1040,7 +1040,7 @@
                 {
                     "id": "bins-latest",
                     "display_name": "Latest Reported Cells (~7 km hexes)",
-                    "visible": true,
+                    "visible": false,
                     "default_style": {
                         "fill-color": ["match", ["get", "pack_origin"],
                             "Whaleback",         "#E65100",
