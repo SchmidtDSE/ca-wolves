@@ -58,8 +58,8 @@ spec:
         - name: PROXY_KEY
           valueFrom:
             secretKeyRef:
-              name: open-llm-proxy-app-keys
-              key: ca-wolves
+              name: open-llm-proxy-namespace-keys
+              key: public
         - name: MAPTILER_KEY
           valueFrom:
             secretKeyRef:
