@@ -144,7 +144,12 @@ data:
         ts = ts_str + "Z"
 
         for feat in data["features"]:
-            pack = feat["properties"]["pack"]
+            props = feat["properties"]
+            # Upstream named this field `name` from 2026-10-30 to 2026-11-02, and
+            # 29 snapshots from those days are stored that way.
+            if "pack" not in props and "name" in props:
+                props["pack"] = props.pop("name")
+            pack = props["pack"]
             ring = feat["geometry"]["coordinates"][0]
             # Centroid of hexbin (skip closing vertex)
             lons = [c[0] for c in ring[:-1]]
