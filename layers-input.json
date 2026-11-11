@@ -38,14 +38,6 @@
                     "id": "county-pmtiles",
                     "display_name": "CA Counties",
                     "visible": false,
-                    "default_style": {
-                        "fill-color": "rgba(0,0,0,0)",
-                        "fill-opacity": 0
-                    },
-                    "outline_style": {
-                        "line-color": "#616161",
-                        "line-width": 1.5
-                    },
                     "default_filter": ["==", ["get", "STATEFP"], "06"],
                     "tooltip_fields": ["NAME", "NAMELSAD", "GEOID"]
                 }
@@ -60,14 +52,6 @@
                     "id": "tract-pmtiles",
                     "display_name": "CA Census Tracts",
                     "visible": false,
-                    "default_style": {
-                        "fill-color": "rgba(0,0,0,0)",
-                        "fill-opacity": 0
-                    },
-                    "outline_style": {
-                        "line-color": "#9E9E9E",
-                        "line-width": 0.5
-                    },
                     "default_filter": ["==", ["get", "STATEFP"], "06"],
                     "tooltip_fields": ["NAMELSAD", "GEOID", "COUNTYFP"]
                 }
@@ -82,14 +66,6 @@
                     "id": "cd-pmtiles",
                     "display_name": "Congressional Districts (119th)",
                     "visible": false,
-                    "default_style": {
-                        "fill-color": "rgba(0,0,0,0)",
-                        "fill-opacity": 0
-                    },
-                    "outline_style": {
-                        "line-color": "#1565C0",
-                        "line-width": 1.5
-                    },
                     "default_filter": ["==", ["get", "STATEFP"], "06"],
                     "tooltip_fields": ["NAMELSAD", "GEOID"]
                 }
@@ -104,14 +80,6 @@
                     "id": "sldl-pmtiles",
                     "display_name": "CA Assembly Districts",
                     "visible": false,
-                    "default_style": {
-                        "fill-color": "rgba(0,0,0,0)",
-                        "fill-opacity": 0
-                    },
-                    "outline_style": {
-                        "line-color": "#7B1FA2",
-                        "line-width": 1.5
-                    },
                     "default_filter": ["==", ["get", "STATEFP"], "06"],
                     "tooltip_fields": ["NAMELSAD", "GEOID"]
                 }
@@ -126,14 +94,6 @@
                     "id": "sldu-pmtiles",
                     "display_name": "CA Senate Districts",
                     "visible": false,
-                    "default_style": {
-                        "fill-color": "rgba(0,0,0,0)",
-                        "fill-opacity": 0
-                    },
-                    "outline_style": {
-                        "line-color": "#C62828",
-                        "line-width": 1.5
-                    },
                     "default_filter": ["==", ["get", "STATEFP"], "06"],
                     "tooltip_fields": ["NAMELSAD", "GEOID"]
                 }
@@ -148,14 +108,6 @@
                     "id": "ecoregion-pmtiles",
                     "display_name": "WWF Ecoregions",
                     "visible": false,
-                    "default_style": {
-                        "fill-color": ["get", "COLOR_BIO"],
-                        "fill-opacity": 0.4
-                    },
-                    "outline_style": {
-                        "line-color": "#555555",
-                        "line-width": 1
-                    },
                     "tooltip_fields": ["ECO_NAME", "BIOME_NAME", "REALM", "NNH_NAME"]
                 }
             ]
@@ -169,44 +121,6 @@
                     "id": "map-unit-polys-pmtiles",
                     "display_name": "Sierra Nevada Geology (CGS Atlas)",
                     "visible": false,
-                    "default_style": {
-                        "fill-color": [
-                            "match", ["get", "GeoMaterial"],
-                            "Alluvial sediment, mostly coarse-grained", "#FFF2AE",
-                            "Alluvial sediment, mostly fine-grained", "#FEF99E",
-                            "Dune sand", "#FFE082",
-                            "Glacial till", "#E3E3E3",
-                            "Lacustrine sediment, mostly fine-grained", "#B5C7D9",
-                            "Marine sediment, mostly fine-grained", "#80AECF",
-                            "Debris flows, landslides, and other localized mass-movement sediment", "#D2B48C",
-                            "Water or ice", "#4A90D9",
-                            "\"Made\" or human-engineered land", "#555555",
-                            "Unmapped area", "#CCCCCC",
-                            "Clastic sedimentary rock", "#F2C880",
-                            "Sedimentary and extrusive igneous material", "#BFA988",
-                            "Sandstone and mudstone", "#E8C170",
-                            "Coarse-grained intrusive igneous rock", "#F08080",
-                            "Coarse-grained, mafic-composition intrusive igneous rock", "#8B3A3A",
-                            "Igneous rock", "#E68A8A",
-                            "Extrusive igneous material", "#B774C8",
-                            "Mafic-composition lava flows", "#6B2D6B",
-                            "Intermediate-composition lava flows", "#A85FBE",
-                            "Felsic-composition pyroclastic flows", "#DCB1E1",
-                            "Metamorphic rock", "#7FC64E",
-                            "Metaigneous rock", "#5FA76C",
-                            "Metasedimentary rock", "#97D080",
-                            "Meta-carbonate rock", "#BCD9A6",
-                            "Meta-mafic rock", "#4F8654",
-                            "Meta-ultramafic rock", "#1F4E2E",
-                            "Medium and high-grade regional metamorphic rock, of unspecified origin", "#6BAB8E",
-                            "#999999"
-                        ],
-                        "fill-opacity": 0.7
-                    },
-                    "outline_style": {
-                        "line-color": "#444444",
-                        "line-width": 0.2
-                    },
                     "tooltip_fields": ["FullName", "MapUnit", "Age", "GeoMaterial", "IdentityConfidence"]
                 }
             ]
@@ -235,37 +149,6 @@
                     "id": "ecoregion-pmtiles",
                     "display_name": "CA Ecoregions (30x30 / Bailey-derived)",
                     "visible": false,
-                    "default_style": {
-                        "fill-color": [
-                            "match", ["get", "CA_Ecoregi"],
-                            "Central California Coast", "#8DD3C7",
-                            "Central Valley Coast Ranges", "#FFFFB3",
-                            "Colorado Desert", "#BEBADA",
-                            "Great Valley (North)", "#FB8072",
-                            "Great Valley (South)", "#80B1D3",
-                            "Klamath Mountains", "#FDB462",
-                            "Modoc Plateau", "#B3DE69",
-                            "Mojave Desert", "#FCCDE5",
-                            "Mono", "#D9D9D9",
-                            "Northern California Coast", "#BC80BD",
-                            "Northern California Coast Ranges", "#CCEBC5",
-                            "Northern California Interior Coast Ranges", "#FFED6F",
-                            "Northwestern Basin and Range", "#A6CEE3",
-                            "Sierra Nevada", "#1F78B4",
-                            "Sierra Nevada Foothills", "#B2DF8A",
-                            "Sonoran Desert", "#33A02C",
-                            "Southeastern Great Basin", "#FB9A99",
-                            "Southern California Coast", "#E31A1C",
-                            "Southern California Mountains and Valleys", "#FDBF6F",
-                            "Southern Cascades", "#FF7F00",
-                            "#CCCCCC"
-                        ],
-                        "fill-opacity": 0.35
-                    },
-                    "outline_style": {
-                        "line-color": "#555555",
-                        "line-width": 0.6
-                    },
                     "tooltip_fields": ["CA_Ecoregi"]
                 }
             ]
@@ -309,17 +192,6 @@
                     "id": "ces5-pmtiles",
                     "display_name": "CalEnviroScreen 5.0",
                     "visible": false,
-                    "default_style": {
-                        "fill-color": [
-                            "interpolate", ["linear"], ["get", "CIscore_Pctl"],
-                            0, "#F7FCF5",
-                            25, "#C7E9C0",
-                            50, "#74C476",
-                            75, "#238B45",
-                            100, "#00441B"
-                        ],
-                        "fill-opacity": 0.6
-                    },
                     "tooltip_fields": ["county", "CIscore", "CIscore_Pctl", "Population"]
                 }
             ]
@@ -362,17 +234,6 @@
                     "id": "tract-pmtiles",
                     "display_name": "Social Vulnerability Index (SVI 2022)",
                     "visible": false,
-                    "default_style": {
-                        "fill-color": [
-                            "interpolate", ["linear"], ["get", "RPL_THEMES"],
-                            0, "#FFFFB2",
-                            0.25, "#FECC5C",
-                            0.5, "#FD8D3C",
-                            0.75, "#F03B20",
-                            1, "#BD0026"
-                        ],
-                        "fill-opacity": 0.6
-                    },
                     "default_filter": ["==", ["get", "ST_ABBR"], "CA"],
                     "tooltip_fields": ["COUNTY", "LOCATION", "RPL_THEMES", "E_TOTPOP"]
                 }
@@ -387,17 +248,6 @@
                     "id": "fee-pmtiles",
                     "display_name": "Protected Lands (PAD-US Fee)",
                     "visible": false,
-                    "default_style": {
-                        "fill-color": [
-                            "match", ["get", "GAP_Sts"],
-                            "1", "#26633A",
-                            "2", "#3E9C47",
-                            "3", "#7EB3D3",
-                            "4", "#BDBDBD",
-                            "#888888"
-                        ],
-                        "fill-opacity": 0.45
-                    },
                     "default_filter": [
                         "match", ["get", "GAP_Sts"], ["1", "2"], true, false
                     ],
@@ -414,14 +264,6 @@
                     "id": "wcb-approved-projects-pmtiles",
                     "display_name": "WCB Approved Projects",
                     "visible": false,
-                    "default_style": {
-                        "fill-color": "#00695C",
-                        "fill-opacity": 0.5
-                    },
-                    "outline_style": {
-                        "line-color": "#004D40",
-                        "line-width": 0.6
-                    },
                     "tooltip_fields": ["ProjName", "PrimGrante", "County", "Acres", "WCBFunding", "Type", "Program", "dtmBoardAp"]
                 }
             ]
@@ -435,14 +277,6 @@
                     "id": "cced-pmtiles",
                     "display_name": "Conservation Easements (CCED)",
                     "visible": false,
-                    "default_style": {
-                        "fill-color": "#8BC34A",
-                        "fill-opacity": 0.4
-                    },
-                    "outline_style": {
-                        "line-color": "#558B2F",
-                        "line-width": 1
-                    },
                     "tooltip_fields": ["sitename", "esmthldr", "eholdtyp", "county"]
                 }
             ]
@@ -456,14 +290,6 @@
                     "id": "iplc-poly-pmtiles",
                     "display_name": "Indigenous Territories (LandMark)",
                     "visible": false,
-                    "default_style": {
-                        "fill-color": "#FF7043",
-                        "fill-opacity": 0.35
-                    },
-                    "outline_style": {
-                        "line-color": "#BF360C",
-                        "line-width": 1
-                    },
                     "default_filter": ["==", ["get", "country"], "United States of America"],
                     "tooltip_fields": ["name", "identity", "country", "form_rec"]
                 }
@@ -478,14 +304,6 @@
                     "id": "holdings-pmtiles",
                     "display_name": "CA Protected Areas (CPAD Holdings)",
                     "visible": false,
-                    "default_style": {
-                        "fill-color": "#00897B",
-                        "fill-opacity": 0.4
-                    },
-                    "outline_style": {
-                        "line-color": "#004D40",
-                        "line-width": 0.6
-                    },
                     "tooltip_fields": ["SITE_NAME", "AGNCY_NAME", "MNG_AGNCY", "ACCESS_TYP", "COUNTY", "ACRES"]
                 }
             ]
@@ -499,14 +317,6 @@
                     "id": "units-pmtiles",
                     "display_name": "CA Protected Areas (CPAD Units)",
                     "visible": false,
-                    "default_style": {
-                        "fill-color": "rgba(0,0,0,0)",
-                        "fill-opacity": 0
-                    },
-                    "outline_style": {
-                        "line-color": "#00695C",
-                        "line-width": 1
-                    },
                     "tooltip_fields": ["UNIT_NAME", "AGNCY_NAME", "COUNTY", "ACRES"]
                 }
             ]
@@ -520,14 +330,6 @@
                     "id": "easement-pmtiles",
                     "display_name": "Conservation Easements (PAD-US)",
                     "visible": false,
-                    "default_style": {
-                        "fill-color": "#AB47BC",
-                        "fill-opacity": 0.4
-                    },
-                    "outline_style": {
-                        "line-color": "#6A1B9A",
-                        "line-width": 0.6
-                    },
                     "default_filter": ["==", ["get", "State_Nm"], "CA"],
                     "tooltip_fields": ["Unit_Nm", "EsmtHldr", "Mang_Name", "GAP_Sts", "GIS_Acres"]
                 }
@@ -542,14 +344,6 @@
                     "id": "landvote-pmtiles",
                     "display_name": "Conservation Ballot Measures (LandVote)",
                     "visible": false,
-                    "default_style": {
-                        "fill-color": "#5E35B1",
-                        "fill-opacity": 0.4
-                    },
-                    "outline_style": {
-                        "line-color": "#311B92",
-                        "line-width": 0.6
-                    },
                     "default_filter": ["==", ["get", "state"], "CA"],
                     "tooltip_fields": ["jurisdiction", "year", "status", "purpose", "conservation_funds_approved", "percent_yes"]
                 }
@@ -564,21 +358,6 @@
                     "id": "conserved-areas-terrestrial-2025-pmtiles",
                     "display_name": "30x30 Conserved Areas (2025)",
                     "visible": false,
-                    "default_style": {
-                        "fill-color": [
-                            "match", ["get", "reGAP"],
-                            1, "#26633A",
-                            2, "#3E9C47",
-                            3, "#7EB3D3",
-                            4, "#BDBDBD",
-                            "#888888"
-                        ],
-                        "fill-opacity": 0.45
-                    },
-                    "outline_style": {
-                        "line-color": "#1B4D2B",
-                        "line-width": 0.5
-                    },
                     "tooltip_fields": ["UNIT_NAME", "MNG_AGENCY", "MNG_AG_LEV", "reGAP", "ACCESS_TYP", "Acres"]
                 }
             ]
@@ -592,25 +371,6 @@
                     "id": "fmmp-2022-pmtiles",
                     "display_name": "Important Farmland & Grazing Land (FMMP 2022)",
                     "visible": false,
-                    "default_style": {
-                        "fill-color": [
-                            "match", ["get", "polygon_ty"],
-                            "P", "#1B5E20",
-                            "S", "#558B2F",
-                            "U", "#7CB342",
-                            "L", "#AED581",
-                            "G", "#C9A24B",
-                            "D", "#E6D8A8",
-                            "X", "#CFD8DC",
-                            "W", "#90CAF9",
-                            "#BDBDBD"
-                        ],
-                        "fill-opacity": 0.5
-                    },
-                    "outline_style": {
-                        "line-color": "#5D4037",
-                        "line-width": 0.3
-                    },
                     "tooltip_fields": ["polygon_ty", "County", "polygon_ac", "upd_year"]
                 }
             ]
@@ -624,42 +384,12 @@
                     "id": "firep-pmtiles",
                     "display_name": "CAL FIRE Wildfire Perimeters (2024)",
                     "visible": false,
-                    "default_style": {
-                        "fill-color": [
-                            "interpolate", ["linear"], ["get", "YEAR_"],
-                            1950, "#FFF9C4",
-                            1980, "#FFCC02",
-                            2000, "#FF6D00",
-                            2015, "#D32F2F",
-                            2024, "#7B0000"
-                        ],
-                        "fill-opacity": 0.55
-                    },
-                    "outline_style": {
-                        "line-color": "#B71C1C",
-                        "line-width": 0.8
-                    },
                     "tooltip_fields": ["FIRE_NAME", "YEAR_", "GIS_ACRES", "AGENCY", "CAUSE", "ALARM_DATE"]
                 },
                 {
                     "id": "rxburn-pmtiles",
                     "display_name": "CAL FIRE Prescribed Burns (2024)",
                     "visible": false,
-                    "default_style": {
-                        "fill-color": [
-                            "interpolate", ["linear"], ["get", "YEAR_"],
-                            1950, "#F1F8E9",
-                            1980, "#AED581",
-                            2000, "#7CB342",
-                            2015, "#33691E",
-                            2024, "#1B5E20"
-                        ],
-                        "fill-opacity": 0.55
-                    },
-                    "outline_style": {
-                        "line-color": "#2E7D32",
-                        "line-width": 0.8
-                    },
                     "tooltip_fields": ["TREATMENT_NAME", "YEAR_", "GIS_ACRES", "AGENCY", "START_DATE", "END_DATE"]
                 }
             ]
@@ -674,11 +404,6 @@
                     "display_name": "Nationwide Rivers Inventory (2024)",
                     "visible": false,
                     "layer_type": "line",
-                    "default_style": {
-                        "line-color": "#1E88E5",
-                        "line-opacity": 0.7,
-                        "line-width": 1
-                    },
                     "tooltip_fields": ["River", "Classifica", "GIS_Miles", "State1", "County", "ORV"]
                 }
             ]
@@ -693,11 +418,6 @@
                     "display_name": "Wild & Scenic Rivers (Designated)",
                     "visible": false,
                     "layer_type": "line",
-                    "default_style": {
-                        "line-color": "#00695C",
-                        "line-opacity": 0.85,
-                        "line-width": 1.6
-                    },
                     "tooltip_fields": ["GNIS_NAME", "CLASSIFICA", "STATE", "AGENCY", "TOTAL_MILE"]
                 }
             ]
@@ -712,11 +432,6 @@
                     "display_name": "Perennial Streams (USGS NHD)",
                     "visible": false,
                     "layer_type": "line",
-                    "default_style": {
-                        "line-color": "#4FC3F7",
-                        "line-opacity": 0.7,
-                        "line-width": 0.6
-                    },
                     "tooltip_fields": ["GNIS_NAME", "LENGTHKM", "REACHCODE"]
                 }
             ]
@@ -730,21 +445,6 @@
                     "id": "freshwater-species-richness-pmtiles",
                     "display_name": "Freshwater Species Richness (Howard 2015)",
                     "visible": false,
-                    "default_style": {
-                        "fill-color": [
-                            "interpolate", ["linear"], ["get", "Freshwater_Species_Count"],
-                            1, "#EDF8FB",
-                            50, "#B2E2E2",
-                            120, "#66C2A4",
-                            220, "#2CA25F",
-                            428, "#006D2C"
-                        ],
-                        "fill-opacity": 0.55
-                    },
-                    "outline_style": {
-                        "line-color": "#238B45",
-                        "line-width": 0.3
-                    },
                     "tooltip_fields": ["Watershed_Name", "Freshwater_Species_Count", "Vulnerable_Species_Count", "Listed_Species_Count"]
                 }
             ]
@@ -758,14 +458,6 @@
                     "id": "hu4-pmtiles",
                     "display_name": "Watershed Subregions (HUC4, USGS WBD)",
                     "visible": false,
-                    "default_style": {
-                        "fill-color": "rgba(0,0,0,0)",
-                        "fill-opacity": 0
-                    },
-                    "outline_style": {
-                        "line-color": "#0D47A1",
-                        "line-width": 1.6
-                    },
                     "tooltip_fields": ["name", "huc4", "states", "areasqkm"]
                 }
             ]
@@ -779,14 +471,6 @@
                     "id": "hu8-pmtiles",
                     "display_name": "Watershed Subbasins (HUC8, USGS WBD)",
                     "visible": false,
-                    "default_style": {
-                        "fill-color": "rgba(0,0,0,0)",
-                        "fill-opacity": 0
-                    },
-                    "outline_style": {
-                        "line-color": "#1976D2",
-                        "line-width": 0.7
-                    },
                     "tooltip_fields": ["name", "huc8", "states", "areasqkm"]
                 }
             ]
@@ -801,11 +485,6 @@
                     "display_name": "Federal Trails (USFS / NPS / BLM)",
                     "visible": false,
                     "layer_type": "line",
-                    "default_style": {
-                        "line-color": "#6D4C41",
-                        "line-opacity": 0.7,
-                        "line-width": 0.8
-                    },
                     "tooltip_fields": ["trail_name", "admin_agency", "admin_unit", "trail_type", "length_miles"]
                 }
             ]
@@ -866,17 +545,6 @@
                     "display_name": "Ungulate Migration Routes",
                     "visible": false,
                     "layer_type": "line",
-                    "default_style": {
-                        "line-color": ["match", ["get", "species"],
-                            "Elk",               "#E65100",
-                            "MuleDeer",          "#2E7D32",
-                            "Pronghorn",         "#1565C0",
-                            "Moose",             "#6D4C41",
-                            "WhiteTailedDeer",   "#558B2F",
-                            "#9E9E9E"
-                        ],
-                        "line-opacity": 0.7
-                    },
                     "tooltip_fields": ["species", "herd", "state", "ind_year"]
                 }
             ]
@@ -890,14 +558,6 @@
                     "id": "final-pmtiles",
                     "display_name": "Critical Habitat — Final (USFWS)",
                     "visible": false,
-                    "default_style": {
-                        "fill-color": "#00838F",
-                        "fill-opacity": 0.4
-                    },
-                    "outline_style": {
-                        "line-color": "#006064",
-                        "line-width": 0.8
-                    },
                     "tooltip_fields": ["comname", "sciname", "status", "listing_st", "pubdate"]
                 }
             ]
@@ -911,14 +571,6 @@
                     "id": "proposed-pmtiles",
                     "display_name": "Critical Habitat — Proposed (USFWS)",
                     "visible": false,
-                    "default_style": {
-                        "fill-color": "#FBC02D",
-                        "fill-opacity": 0.35
-                    },
-                    "outline_style": {
-                        "line-color": "#F57F17",
-                        "line-width": 0.8
-                    },
                     "tooltip_fields": ["comname", "sciname", "status", "listing_st", "pubdate"]
                 }
             ]
@@ -978,18 +630,6 @@
                     "id": "terrestrial-biodiversity-summary-pmtiles",
                     "display_name": "Terrestrial Biodiversity Rank (CDFW ACE)",
                     "visible": false,
-                    "default_style": {
-                        "fill-color": [
-                            "match", ["get", "BioRankSW"],
-                            1, "#FFFFCC",
-                            2, "#C2E699",
-                            3, "#78C679",
-                            4, "#31A354",
-                            5, "#006837",
-                            "rgba(0,0,0,0)"
-                        ],
-                        "fill-opacity": 0.6
-                    },
                     "tooltip_fields": ["BioRankSW", "NativeCoun", "RareCount", "County"]
                 }
             ]
