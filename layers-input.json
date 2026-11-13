@@ -745,6 +745,17 @@
                     }
                 }
             ]
-        }
+        },
+        { "collection_id": "swap-2025-provinces", "collection_url": "https://s3-west.nrp-nautilus.io/public-swap/california/swap-2025/provinces/stac-collection.json", "group": {"name": "California SWAP 2025", "collapsed": true}, "assets": [{"id": "provinces-pmtiles", "display_name": "SWAP · Provinces", "visible": false, "tooltip_fields": ["Province", "ProvinceID"]}] },
+        { "collection_id": "swap-2025-conservation-units", "collection_url": "https://s3-west.nrp-nautilus.io/public-swap/california/swap-2025/conservation-units/stac-collection.json", "group": {"name": "California SWAP 2025", "collapsed": true}, "assets": [{"id": "conservation-units-pmtiles", "display_name": "SWAP · Conservation Units", "visible": false, "tooltip_fields": ["Name", "ConsUnitType", "ParentProvinceID"]}] },
+        { "collection_id": "swap-2025-bay-delta-conservation-unit", "collection_url": "https://s3-west.nrp-nautilus.io/public-swap/california/swap-2025/bay-delta-conservation-unit/stac-collection.json", "group": {"name": "California SWAP 2025", "collapsed": true}, "assets": [{"id": "bay-delta-conservation-unit-pmtiles", "display_name": "SWAP · Bay-Delta Conservation Unit", "visible": false, "tooltip_fields": ["Bay_Delta"]}] },
+        { "collection_id": "swap-2025-sgcn-ranges", "collection_url": "https://s3-west.nrp-nautilus.io/public-swap/california/swap-2025/sgcn-ranges/stac-collection.json", "group": {"name": "California SWAP 2025", "collapsed": true}, "assets": [{"id": "sgcn-ranges-pmtiles", "display_name": "SWAP · SGCN Species Ranges", "visible": false, "tooltip_fields": ["SWAP_Common", "SWAP_Scientific", "Taxonomic_Group"]}] },
+        { "collection_id": "swap-2025-noaa-esu-dps", "collection_url": "https://s3-west.nrp-nautilus.io/public-swap/california/swap-2025/noaa-esu-dps/stac-collection.json", "group": {"name": "California SWAP 2025", "collapsed": true}, "assets": [{"id": "noaa-esu-dps-pmtiles", "display_name": "SWAP · Salmonid ESU / DPS (NOAA)", "visible": false, "tooltip_fields": ["ESU_DPS", "ESU_or_DPS", "Class", "Status"]}] },
+        { "collection_id": "swap-2025-marine-bioregions", "collection_url": "https://s3-west.nrp-nautilus.io/public-swap/california/swap-2025/marine-bioregions/stac-collection.json", "group": {"name": "California SWAP 2025", "collapsed": true}, "assets": [{"id": "marine-bioregions-pmtiles", "display_name": "SWAP · Marine Bioregions", "visible": false, "tooltip_fields": ["Name"]}] },
+        { "collection_id": "swap-2025-sgcn-species", "collection_url": "https://s3-west.nrp-nautilus.io/public-swap/california/swap-2025/sgcn-species/stac-collection.json", "assets": [] },
+        { "collection_id": "swap-2025-sgcn-species-units", "collection_url": "https://s3-west.nrp-nautilus.io/public-swap/california/swap-2025/sgcn-species-units/stac-collection.json", "assets": [] },
+        { "collection_id": "swap-2025-targets", "collection_url": "https://s3-west.nrp-nautilus.io/public-swap/california/swap-2025/targets/stac-collection.json", "assets": [] },
+        { "collection_id": "swap-2025-strategies", "collection_url": "https://s3-west.nrp-nautilus.io/public-swap/california/swap-2025/strategies/stac-collection.json", "assets": [] },
+        { "collection_id": "gbif-derived", "collection_url": "https://s3-west.nrp-nautilus.io/public-gbif/stac-collection.json", "assets": [] }
     ]
 }
