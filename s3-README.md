@@ -34,9 +34,9 @@ Six California gray wolf pack territory polygons digitized from the official Cal
 
 ---
 
-### `snapshots/wolf_bins_<TIMESTAMP>.geojson`
+### `wolf_bins_history.parquet`
 
-Time-series snapshots of CDFW-reported wolf positions, published via their [Wolf Tracker](https://storage.googleapis.com/cdfw-wolf-tracker/wolf_movement.html).
+Every version of CDFW's reported wolf positions that we have seen, published via their [Wolf Tracker](https://storage.googleapis.com/cdfw-wolf-tracker/wolf_movement.html). CDFW overwrites one file and keeps no history, so this GeoParquet table is the only record of what it published: one row per feature per version, from 10 April 2026.
 
 > **These are cells, not points.** CDFW does not publish GPS fixes. Each published cell is the hexagon on a
 > fixed grid that *contains* one collar's most recent reported location. CDFW chose the cell size from wolves'
@@ -49,18 +49,19 @@ Time-series snapshots of CDFW-reported wolf positions, published via their [Wolf
 > so **no path between consecutive cells was observed** — do not read a line through cell centroids as a
 > travelled route, a distance travelled, or a speed.
 
-Snapshots are collected hourly by a Kubernetes CronJob. Only new data (detected by the `Last-Modified` HTTP header) is saved — the timestamp in the filename reflects the CDFW publication time, not the snapshot collection time. A wolf's cell is republished in every snapshot until it moves; when a collar stops reporting, its last known cell keeps being published.
+A Kubernetes CronJob polls the file hourly and appends each new version (detected by the `Last-Modified` HTTP header) to the table; `snapshot_ts` is that CDFW publication time, not the time we collected it. Grouping by `snapshot_ts` and ordering by `feature_index` rebuilds any version exactly. A wolf's cell is republished in every snapshot until it moves; when a collar stops reporting, its last known cell keeps being published.
 
 | Field | Description |
 |-------|-------------|
 | `pack` | Individual collared wolf identifier and opaque display label (e.g. "CA091 (previously Yowlumni Disperser)", "CA150") — an individual, **not** a pack. CDFW switched to sequential `CA###` ids on **1 July 2026**; before that an id was a three-letter pack prefix + number + M/F (`WHA23F`, `LAS02M`). The two are not convertible by rule — CDFW publishes the crosswalk in [California's Known Wolves](https://nrm.dfg.ca.gov/FileHandler.ashx?DocumentID=247119) |
 | `pack_origin` | The pack the wolf **came from** — its origin (birth) pack (e.g. "Whaleback", "Harvey", "Beyem Seyo", "Grizzly"). **Not** its current pack, its current location, or a link to the territory polygon of the same name: dispersers keep the origin pack of a range they have left, and Beyem Seyo is no longer an active pack |
 | `most_recent_adj` | Most recent adjusted GPS fix date (MM/DD/YYYY) for this individual in this cell — compare against the snapshot time to tell a current cell from a non-reporting collar's last known cell |
-| geometry | H3 resolution-6 hexagon polygon (~37 km²) |
+| `snapshot_ts` | UTC publication time of the version (CDFW `Last-Modified`) |
+| `feature_index` | The feature's position in that version |
+| `properties` | JSON of every upstream property, verbatim and in order; a property CDFW adds or renames appears here with no schema change |
+| geometry | H3 resolution-6 hexagon polygon (~37 km²), as published |
 
-**File naming:** `wolf_bins_YYYY-MM-DDTHH:MM:SS.geojson` (UTC timestamp from CDFW `Last-Modified` header)
-
-**Coverage:** Snapshots begin 2025 (collection start date). Only some wolves in some packs are collared; CDFW aims for at least one collar per pack and prioritizes packs with higher known or potential livestock conflict — the collared set is a biased subset, not a sample, and neither wolves nor packs can be counted from it. Wolves in a pack move independently, so a collar's cell does not locate the other pack members. From roughly April through August, cells near den and rendezvous sites are not activated, so an absence of cells is not an absence of wolves. CDFW's own caution: *"wolf-livestock conflict can and will take place beyond the boundaries of active cells."*
+**Coverage:** Versions begin 10 April 2026. Per-version GeoJSON files under `snapshots/` were written until 16 November 2026, when the table replaced them. Only some wolves in some packs are collared; CDFW aims for at least one collar per pack and prioritizes packs with higher known or potential livestock conflict — the collared set is a biased subset, not a sample, and neither wolves nor packs can be counted from it. Wolves in a pack move independently, so a collar's cell does not locate the other pack members. From roughly April through August, cells near den and rendezvous sites are not activated, so an absence of cells is not an absence of wolves. CDFW's own caution: *"wolf-livestock conflict can and will take place beyond the boundaries of active cells."*
 
 **Source:** CDFW Wolf Program — https://wildlife.ca.gov/Conservation/Mammals/Gray-Wolf
 
@@ -68,7 +69,7 @@ Snapshots are collected hourly by a Kubernetes CronJob. Only new data (detected 
 
 ### `wolf_bins_latest.geojson`
 
-The most recent snapshot, at a fixed key so the map can always load current cells without listing the archive. Same fields and caveats as `snapshots/` above.
+The most recent snapshot, at a fixed key so the map can always load current cells without listing the archive. Same fields and caveats as `wolf_bins_history.parquet` above.
 
 ---
 
@@ -81,7 +82,7 @@ One row per **(wolf, cell, reporting window, h8)**. Because CDFW republishes a w
 | Field | Description |
 |-------|-------------|
 | `_cng_fid` | Synthetic id — one per reported cell-window. Count `DISTINCT _cng_fid` for observations |
-| `pack`, `pack_origin`, `most_recent_adj` | As in the snapshots above |
+| `pack`, `pack_origin`, `most_recent_adj` | As in `wolf_bins_history.parquet` above |
 | `snapshot_ts` | UTC timestamp of the snapshot that **first** reported this wolf in this cell |
 | `last_seen_ts` | UTC timestamp of the **last** consecutive snapshot still reporting it there |
 | `h8` | H3 resolution-8 cell — one of several tiling CDFW's resolution-6 hexagon, for joining. **Not** a finer position, so `COUNT(*)` counts index cells rather than observations |
@@ -104,25 +105,20 @@ Current positions are `WHERE last_seen_ts = (SELECT MAX(last_seen_ts) FROM trail
 All files are publicly readable. No authentication required.
 
 ```bash
-# List all snapshots
-aws s3 ls s3://ca-wolves/snapshots/ --endpoint-url https://s3-west.nrp-nautilus.io --no-sign-request
-
 # Download territories GeoJSON
-curl -O https://s3-west.nrp-nautilus.io/ca-wolves/wolf_territories_feb2025.geojson
+curl -O https://s3-west.nrp-nautilus.io/public-ca-wolves/wolf_territories_feb2025.geojson
 
-# Download most recent snapshot (example)
-aws s3 ls s3://ca-wolves/snapshots/ --endpoint-url https://s3-west.nrp-nautilus.io --no-sign-request \
-  | sort | tail -1 | awk '{print $4}' \
-  | xargs -I{} curl -O "https://s3-west.nrp-nautilus.io/ca-wolves/snapshots/{}"
+# Download the most recent version
+curl -O https://s3-west.nrp-nautilus.io/public-ca-wolves/wolf_bins_latest.geojson
 ```
 
 **DuckDB:**
 ```sql
--- Query all snapshots
-INSTALL httpfs; LOAD httpfs;
-SELECT filename, pack, most_recent_adj
-FROM read_json('https://s3-west.nrp-nautilus.io/ca-wolves/snapshots/*.geojson',
-               filename=true, auto_detect=true);
+-- Every published version, one row per feature
+INSTALL httpfs; LOAD httpfs; INSTALL spatial; LOAD spatial;
+SELECT snapshot_ts, pack, pack_origin, most_recent_adj, geometry
+FROM 'https://s3-west.nrp-nautilus.io/public-ca-wolves/wolf_bins_history.parquet'
+ORDER BY snapshot_ts, feature_index;
 ```
 
 ---
@@ -132,7 +128,7 @@ FROM read_json('https://s3-west.nrp-nautilus.io/ca-wolves/snapshots/*.geojson',
 - **Interactive map:** https://ca-wolves.nrp-nautilus.io
 - **CDFW Wolf Program** (packs, quarterly updates, annual reports): https://wildlife.ca.gov/Conservation/Mammals/Gray-Wolf
 - **CDFW Wolf Location Map:** https://wildlife.ca.gov/Conservation/Mammals/Gray-Wolf/Location-Map
-- **CDFW Wolf Tracker** (upstream source of these snapshots, and its limitations-on-use notice): https://storage.googleapis.com/cdfw-wolf-tracker/wolf_movement.html
+- **CDFW Wolf Tracker** (upstream source of this data, and its limitations-on-use notice): https://storage.googleapis.com/cdfw-wolf-tracker/wolf_movement.html
 - **Wolf Location Automated Mapping System: Additional Information and FAQ** — CDFW's authoritative account of what the cells are, how the cell size was chosen, the collar schedule, denning-season suppression, and non-reporting collars: https://nrm.dfg.ca.gov/FileHandler.ashx?DocumentID=232434&inline
 - **Approximate Area of Gray Wolf Activity**, current edition: https://nrm.dfg.ca.gov/FileHandler.ashx?DocumentID=247113
 - **California's Known Wolves – Past and Present** — current and past packs, Areas of Wolf Activity, individual wolf histories, and the old-id → `CA###` crosswalk: https://nrm.dfg.ca.gov/FileHandler.ashx?DocumentID=247119
