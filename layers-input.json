@@ -1,761 +1,1382 @@
 {
-    "catalog": "https://s3-west.nrp-nautilus.io/public-data/stac/catalog.json",
-    "titiler_url": "https://titiler.nrp-nautilus.io",
-    "mcp_url": "https://duckdb-mcp.nrp-nautilus.io/mcp",
-    "auto_approve": true,
-    "draw_enabled": true,
-    "sidebar": {
-        "enabled": true,
-        "default_width": 420,
-        "title": "Wolf Data Assistant"
-    },
-    "links": {
-        "docs": "/docs.html",
-        "carbon": true,
-        "github": "https://github.com/SchmidtDSE/ca-wolves"
-    },
-    "view": {
-        "center": [-121.5, 40.5],
-        "zoom": 7
-    },
-    "welcome": {
-        "message": "Hi! I can help you explore California gray wolf territories, pack movement data, and related environmental and political context. Try asking:",
-        "examples": [
-            "Tell me about the wolf datasets available.",
-            "How precise are the wolf position data?",
-            "Zoom to the Whaleback pack territory.",
-            "Which protected lands overlap with wolf territories?",
-            "Which state assembly districts overlap with wolf packs?"
-        ]
-    },
-    "collections": [
-        {
-            "collection_id": "census-2024-county",
-            "collection_url": "https://s3-west.nrp-nautilus.io/public-census/census-2024/county/stac-collection.json",
-            "group": { "name": "Political Boundaries", "collapsed": true },
-            "assets": [
-                {
-                    "id": "county-pmtiles",
-                    "display_name": "CA Counties",
-                    "visible": false,
-                    "default_filter": ["==", ["get", "STATEFP"], "06"],
-                    "tooltip_fields": ["NAME", "NAMELSAD", "GEOID"]
-                }
-            ]
-        },
-        {
-            "collection_id": "census-2024-tract",
-            "collection_url": "https://s3-west.nrp-nautilus.io/public-census/census-2024/tract/stac-collection.json",
-            "group": { "name": "Political Boundaries", "collapsed": true },
-            "assets": [
-                {
-                    "id": "tract-pmtiles",
-                    "display_name": "CA Census Tracts",
-                    "visible": false,
-                    "default_filter": ["==", ["get", "STATEFP"], "06"],
-                    "tooltip_fields": ["NAMELSAD", "GEOID", "COUNTYFP"]
-                }
-            ]
-        },
-        {
-            "collection_id": "census-2024-cd",
-            "collection_url": "https://s3-west.nrp-nautilus.io/public-census/census-2024/cd/stac-collection.json",
-            "group": { "name": "Political Boundaries", "collapsed": true },
-            "assets": [
-                {
-                    "id": "cd-pmtiles",
-                    "display_name": "Congressional Districts (119th)",
-                    "visible": false,
-                    "default_filter": ["==", ["get", "STATEFP"], "06"],
-                    "tooltip_fields": ["NAMELSAD", "GEOID"]
-                }
-            ]
-        },
-        {
-            "collection_id": "census-2025-sldl",
-            "collection_url": "https://s3-west.nrp-nautilus.io/public-census/census-2025/sldl/stac-collection.json",
-            "group": { "name": "Political Boundaries", "collapsed": true },
-            "assets": [
-                {
-                    "id": "sldl-pmtiles",
-                    "display_name": "CA Assembly Districts",
-                    "visible": false,
-                    "default_filter": ["==", ["get", "STATEFP"], "06"],
-                    "tooltip_fields": ["NAMELSAD", "GEOID"]
-                }
-            ]
-        },
-        {
-            "collection_id": "census-2025-sldu",
-            "collection_url": "https://s3-west.nrp-nautilus.io/public-census/census-2025/sldu/stac-collection.json",
-            "group": { "name": "Political Boundaries", "collapsed": true },
-            "assets": [
-                {
-                    "id": "sldu-pmtiles",
-                    "display_name": "CA Senate Districts",
-                    "visible": false,
-                    "default_filter": ["==", ["get", "STATEFP"], "06"],
-                    "tooltip_fields": ["NAMELSAD", "GEOID"]
-                }
-            ]
-        },
-        {
-            "collection_id": "wwf-ecoregions-2017",
-            "collection_url": "https://s3-west.nrp-nautilus.io/public-ecoregion/wwf-ecoregions-2017/stac-collection.json",
-            "group": { "name": "Environment", "collapsed": true },
-            "assets": [
-                {
-                    "id": "ecoregion-pmtiles",
-                    "display_name": "WWF Ecoregions",
-                    "visible": false,
-                    "tooltip_fields": ["ECO_NAME", "BIOME_NAME", "REALM", "NNH_NAME"]
-                }
-            ]
-        },
-        {
-            "collection_id": "sierra-nevada-atlas-map-unit-polys",
-            "collection_url": "https://s3-west.nrp-nautilus.io/public-cgs/sierra-nevada-atlas/map-unit-polys/stac-collection.json",
-            "group": { "name": "Environment", "collapsed": true },
-            "assets": [
-                {
-                    "id": "map-unit-polys-pmtiles",
-                    "display_name": "Sierra Nevada Geology (CGS Atlas)",
-                    "visible": false,
-                    "tooltip_fields": ["FullName", "MapUnit", "Age", "GeoMaterial", "IdentityConfidence"]
-                }
-            ]
-        },
-        {
-            "collection_id": "ca-climate-zones",
-            "collection_url": "https://s3-west.nrp-nautilus.io/public-ca30x30/ca-climate-zones/stac-collection.json",
-            "group": { "name": "Environment", "collapsed": true },
-            "assets": [
-                {
-                    "id": "ca-climate-zones-cog",
-                    "display_name": "California Climate Zones (Ackerly/Kling)",
-                    "visible": false,
-                    "legend_label": "Climate zone (1–10)"
-                }
-            ]
-        },
-        {
-            "collection_id": "ca30x30-ecoregion",
-            "collection_url": "https://s3-west.nrp-nautilus.io/public-ca30x30/ecoregion/stac-collection.json",
-            "group": { "name": "Environment", "collapsed": true },
-            "assets": [
-                {
-                    "id": "ecoregion-pmtiles",
-                    "display_name": "CA Ecoregions (30x30 / Bailey-derived)",
-                    "visible": false,
-                    "tooltip_fields": ["CA_Ecoregi"]
-                }
-            ]
-        },
-        {
-            "collection_id": "nlcd",
-            "collection_url": "https://s3-west.nrp-nautilus.io/public-land-cover/nlcd/stac-collection.json",
-            "group": { "name": "Environment", "collapsed": true },
-            "assets": [
-                {
-                    "id": "nlcd-cog-2024",
-                    "display_name": "Land Cover (NLCD 2024)",
-                    "visible": false,
-                    "legend_label": "NLCD land cover class"
-                }
-            ]
-        },
-        {
-            "collection_id": "mid-century-habitat-climate-exposure",
-            "collection_url": "https://s3-west.nrp-nautilus.io/public-hazard/mid-century-habitat-climate-exposure/stac-collection.json",
-            "group": { "name": "Environment", "collapsed": true },
-            "assets": [
-                {
-                    "id": "cnrm-cog",
-                    "display_name": "Mid-Century Climate Exposure (Thorne, CNRM-CM5)",
-                    "visible": false,
-                    "legend_label": "Habitat climate exposure (−1 to 1)"
-                }
-            ]
-        },
-        {
-            "collection_id": "calenviroscreen-5-0",
-            "collection_url": "https://s3-west.nrp-nautilus.io/public-calenviroscreen/stac-collection.json",
-            "group": { "name": "Environmental Justice", "collapsed": true },
-            "assets": [
-                {
-                    "id": "ces5-pmtiles",
-                    "display_name": "CalEnviroScreen 5.0",
-                    "visible": false,
-                    "tooltip_fields": ["county", "CIscore", "CIscore_Pctl", "Population"]
-                }
-            ]
-        },
-        {
-            "collection_id": "ca-dac-eda-2023",
-            "collection_url": "https://s3-west.nrp-nautilus.io/public-ca-dac/stac-collection.json",
-            "group": { "name": "Environmental Justice", "collapsed": true },
-            "assets": [
-                {
-                    "id": "dac-tract-pmtiles",
-                    "display_name": "Disadvantaged Communities (DAC)",
-                    "visible": false,
-                    "default_style": {
-                        "fill-color": "#C2185B",
-                        "fill-opacity": 0.5
-                    },
-                    "default_filter": ["==", ["get", "DAC23"], "Y"],
-                    "tooltip_fields": ["GEOID20", "DAC23", "MHI23", "Pop23"]
-                },
-                {
-                    "id": "eda-tract-pmtiles",
-                    "display_name": "Economically Distressed Areas (EDA)",
-                    "visible": false,
-                    "default_style": {
-                        "fill-color": "#F57C00",
-                        "fill-opacity": 0.5
-                    },
-                    "default_filter": ["==", ["get", "Flag_MHI_P"], "Y"],
-                    "tooltip_fields": ["GEOID20", "Flag_MHI_P", "MHI23", "PopDensity"]
-                }
-            ]
-        },
-        {
-            "collection_id": "svi-2022",
-            "collection_url": "https://s3-west.nrp-nautilus.io/public-social-vulnerability/2022/stac-collection.json",
-            "group": { "name": "Environmental Justice", "collapsed": true },
-            "assets": [
-                {
-                    "id": "tract-pmtiles",
-                    "display_name": "Social Vulnerability Index (SVI 2022)",
-                    "visible": false,
-                    "default_filter": ["==", ["get", "ST_ABBR"], "CA"],
-                    "tooltip_fields": ["COUNTY", "LOCATION", "RPL_THEMES", "E_TOTPOP"]
-                }
-            ]
-        },
-        {
-            "collection_id": "pad-us-4.1-fee",
-            "collection_url": "https://s3-west.nrp-nautilus.io/public-padus/padus-4-1/fee/stac-collection.json",
-            "group": { "name": "Protected & Conserved Lands", "collapsed": true },
-            "assets": [
-                {
-                    "id": "fee-pmtiles",
-                    "display_name": "Protected Lands (PAD-US Fee)",
-                    "visible": false,
-                    "default_filter": [
-                        "match", ["get", "GAP_Sts"], ["1", "2"], true, false
-                    ],
-                    "tooltip_fields": ["Unit_Nm", "GAP_Sts", "Mang_Type"]
-                }
-            ]
-        },
-        {
-            "collection_id": "wcb-approved-projects",
-            "collection_url": "https://s3-west.nrp-nautilus.io/public-tpl/wcb-approved-projects/stac-collection.json",
-            "group": { "name": "Protected & Conserved Lands", "collapsed": true },
-            "assets": [
-                {
-                    "id": "wcb-approved-projects-pmtiles",
-                    "display_name": "WCB Approved Projects",
-                    "visible": false,
-                    "tooltip_fields": ["ProjName", "PrimGrante", "County", "Acres", "WCBFunding", "Type", "Program", "dtmBoardAp"]
-                }
-            ]
-        },
-        {
-            "collection_id": "cced-2025b",
-            "collection_url": "https://s3-west.nrp-nautilus.io/public-cpad/cced-stac-collection.json",
-            "group": { "name": "Protected & Conserved Lands", "collapsed": true },
-            "assets": [
-                {
-                    "id": "cced-pmtiles",
-                    "display_name": "Conservation Easements (CCED)",
-                    "visible": false,
-                    "tooltip_fields": ["sitename", "esmthldr", "eholdtyp", "county"]
-                }
-            ]
-        },
-        {
-            "collection_id": "landmark-iplc-poly",
-            "collection_url": "https://s3-west.nrp-nautilus.io/public-indigenous/landmark/iplc-poly-stac.json",
-            "group": { "name": "Protected & Conserved Lands", "collapsed": true },
-            "assets": [
-                {
-                    "id": "iplc-poly-pmtiles",
-                    "display_name": "Indigenous Territories (LandMark)",
-                    "visible": false,
-                    "default_filter": ["==", ["get", "country"], "United States of America"],
-                    "tooltip_fields": ["name", "identity", "country", "form_rec"]
-                }
-            ]
-        },
-        {
-            "collection_id": "cpad-holdings-2025b",
-            "collection_url": "https://s3-west.nrp-nautilus.io/public-cpad/cpad-holdings-stac-collection.json",
-            "group": { "name": "Protected & Conserved Lands", "collapsed": true },
-            "assets": [
-                {
-                    "id": "holdings-pmtiles",
-                    "display_name": "CA Protected Areas (CPAD Holdings)",
-                    "visible": false,
-                    "tooltip_fields": ["SITE_NAME", "AGNCY_NAME", "MNG_AGNCY", "ACCESS_TYP", "COUNTY", "ACRES"]
-                }
-            ]
-        },
-        {
-            "collection_id": "cpad-units-2025b",
-            "collection_url": "https://s3-west.nrp-nautilus.io/public-cpad/cpad-units-stac-collection.json",
-            "group": { "name": "Protected & Conserved Lands", "collapsed": true },
-            "assets": [
-                {
-                    "id": "units-pmtiles",
-                    "display_name": "CA Protected Areas (CPAD Units)",
-                    "visible": false,
-                    "tooltip_fields": ["UNIT_NAME", "AGNCY_NAME", "COUNTY", "ACRES"]
-                }
-            ]
-        },
-        {
-            "collection_id": "pad-us-4.1-easement",
-            "collection_url": "https://s3-west.nrp-nautilus.io/public-padus/padus-4-1/easement/stac-collection.json",
-            "group": { "name": "Protected & Conserved Lands", "collapsed": true },
-            "assets": [
-                {
-                    "id": "easement-pmtiles",
-                    "display_name": "Conservation Easements (PAD-US)",
-                    "visible": false,
-                    "default_filter": ["==", ["get", "State_Nm"], "CA"],
-                    "tooltip_fields": ["Unit_Nm", "EsmtHldr", "Mang_Name", "GAP_Sts", "GIS_Acres"]
-                }
-            ]
-        },
-        {
-            "collection_id": "landvote",
-            "collection_url": "https://s3-west.nrp-nautilus.io/public-tpl/landvote/stac-collection.json",
-            "group": { "name": "Protected & Conserved Lands", "collapsed": true },
-            "assets": [
-                {
-                    "id": "landvote-pmtiles",
-                    "display_name": "Conservation Ballot Measures (LandVote)",
-                    "visible": false,
-                    "default_filter": ["==", ["get", "state"], "CA"],
-                    "tooltip_fields": ["jurisdiction", "year", "status", "purpose", "conservation_funds_approved", "percent_yes"]
-                }
-            ]
-        },
-        {
-            "collection_id": "ca30x30-conserved-areas-terrestrial-2025",
-            "collection_url": "https://s3-west.nrp-nautilus.io/public-ca30x30/conserved-areas-terrestrial-2025/stac-collection.json",
-            "group": { "name": "Protected & Conserved Lands", "collapsed": true },
-            "assets": [
-                {
-                    "id": "conserved-areas-terrestrial-2025-pmtiles",
-                    "display_name": "30x30 Conserved Areas (2025)",
-                    "visible": false,
-                    "tooltip_fields": ["UNIT_NAME", "MNG_AGENCY", "MNG_AG_LEV", "reGAP", "ACCESS_TYP", "Acres"]
-                }
-            ]
-        },
-        {
-            "collection_id": "fmmp-2022",
-            "collection_url": "https://s3-west.nrp-nautilus.io/public-ca30x30/fmmp-2022/stac-collection.json",
-            "group": { "name": "Working Lands", "collapsed": true },
-            "assets": [
-                {
-                    "id": "fmmp-2022-pmtiles",
-                    "display_name": "Important Farmland & Grazing Land (FMMP 2022)",
-                    "visible": false,
-                    "tooltip_fields": ["polygon_ty", "County", "polygon_ac", "upd_year"]
-                }
-            ]
-        },
-        {
-            "collection_id": "calfire-2025-firep",
-            "collection_url": "https://s3-west.nrp-nautilus.io/public-fire/calfire-2025/firep/stac-collection.json",
-            "group": { "name": "Wildfire", "collapsed": true },
-            "assets": [
-                {
-                    "id": "firep-pmtiles",
-                    "display_name": "CAL FIRE Wildfire Perimeters (2025)",
-                    "visible": false,
-                    "tooltip_fields": ["FIRE_NAME", "YEAR_", "GIS_ACRES", "AGENCY", "CAUSE", "ALARM_DATE"]
-                }
-            ]
-        },
-        {
-            "collection_id": "calfire-2025-rxburn",
-            "collection_url": "https://s3-west.nrp-nautilus.io/public-fire/calfire-2025/rxburn/stac-collection.json",
-            "group": { "name": "Wildfire", "collapsed": true },
-            "assets": [
-                {
-                    "id": "rxburn-pmtiles",
-                    "display_name": "CAL FIRE Prescribed Burns (2025)",
-                    "visible": false,
-                    "tooltip_fields": ["TREATMENT_NAME", "YEAR_", "GIS_ACRES", "AGENCY", "START_DATE", "END_DATE"]
-                }
-            ]
-        },
-        {
-            "collection_id": "american-rivers-nri-2024",
-            "collection_url": "https://s3-west.nrp-nautilus.io/public-rivers/american-rivers/nri-2024/stac-collection.json",
-            "group": { "name": "Hydrology", "collapsed": true },
-            "assets": [
-                {
-                    "id": "nri-2024-pmtiles",
-                    "display_name": "Nationwide Rivers Inventory (2024)",
-                    "visible": false,
-                    "layer_type": "line",
-                    "tooltip_fields": ["River", "Classifica", "GIS_Miles", "State1", "County", "ORV"]
-                }
-            ]
-        },
-        {
-            "collection_id": "american-rivers-wild-scenic-designated",
-            "collection_url": "https://s3-west.nrp-nautilus.io/public-rivers/american-rivers/wild-scenic-designated/stac-collection.json",
-            "group": { "name": "Hydrology", "collapsed": true },
-            "assets": [
-                {
-                    "id": "wild-scenic-designated-pmtiles",
-                    "display_name": "Wild & Scenic Rivers (Designated)",
-                    "visible": false,
-                    "layer_type": "line",
-                    "tooltip_fields": ["GNIS_NAME", "CLASSIFICA", "STATE", "AGENCY", "TOTAL_MILE"]
-                }
-            ]
-        },
-        {
-            "collection_id": "usgs-nhd-perennial-streams",
-            "collection_url": "https://s3-west.nrp-nautilus.io/public-usgs-nhd/perennial-streams/stac-collection.json",
-            "group": { "name": "Hydrology", "collapsed": true },
-            "assets": [
-                {
-                    "id": "perennial-streams-pmtiles",
-                    "display_name": "Perennial Streams (USGS NHD)",
-                    "visible": false,
-                    "layer_type": "line",
-                    "tooltip_fields": ["GNIS_NAME", "LENGTHKM", "REACHCODE"]
-                }
-            ]
-        },
-        {
-            "collection_id": "freshwater-species-richness",
-            "collection_url": "https://s3-west.nrp-nautilus.io/public-ca30x30/freshwater-species-richness/stac-collection.json",
-            "group": { "name": "Hydrology", "collapsed": true },
-            "assets": [
-                {
-                    "id": "freshwater-species-richness-pmtiles",
-                    "display_name": "Freshwater Species Richness (Howard 2015)",
-                    "visible": false,
-                    "tooltip_fields": ["Watershed_Name", "Freshwater_Species_Count", "Vulnerable_Species_Count", "Listed_Species_Count"]
-                }
-            ]
-        },
-        {
-            "collection_id": "usgs-wbd-hu4",
-            "collection_url": "https://s3-west.nrp-nautilus.io/public-usgs-wbd/wbd/hu4/stac-collection.json",
-            "group": { "name": "Hydrology", "collapsed": true },
-            "assets": [
-                {
-                    "id": "hu4-pmtiles",
-                    "display_name": "Watershed Subregions (HUC4, USGS WBD)",
-                    "visible": false,
-                    "tooltip_fields": ["name", "huc4", "states", "areasqkm"]
-                }
-            ]
-        },
-        {
-            "collection_id": "usgs-wbd-hu8",
-            "collection_url": "https://s3-west.nrp-nautilus.io/public-usgs-wbd/wbd/hu8/stac-collection.json",
-            "group": { "name": "Hydrology", "collapsed": true },
-            "assets": [
-                {
-                    "id": "hu8-pmtiles",
-                    "display_name": "Watershed Subbasins (HUC8, USGS WBD)",
-                    "visible": false,
-                    "tooltip_fields": ["name", "huc8", "states", "areasqkm"]
-                }
-            ]
-        },
-        {
-            "collection_id": "federal-trails-2026",
-            "collection_url": "https://s3-west.nrp-nautilus.io/public-trails/federal-trails-2026/stac-collection.json",
-            "group": { "name": "Recreation", "collapsed": true },
-            "assets": [
-                {
-                    "id": "federal-trails-2026-pmtiles",
-                    "display_name": "Federal Trails (USFS / NPS / BLM)",
-                    "visible": false,
-                    "layer_type": "line",
-                    "tooltip_fields": ["trail_name", "admin_agency", "admin_unit", "trail_type", "length_miles"]
-                }
-            ]
-        },
-        {
-            "collection_id": "present-day-connectivity-flow",
-            "collection_url": "https://s3-west.nrp-nautilus.io/public-connectivity/present-day-connectivity/flow/stac-collection.json",
-            "group": { "name": "Connectivity", "collapsed": true },
-            "assets": [
-                {
-                    "id": "present-day-connectivity-flow-cog",
-                    "display_name": "Present-day Connectivity — Current Flow (Cameron 2022)",
-                    "visible": false,
-                    "legend_label": "Current flow (0 low – 100 high)"
-                }
-            ]
-        },
-        {
-            "collection_id": "present-day-connectivity-categories",
-            "collection_url": "https://s3-west.nrp-nautilus.io/public-connectivity/present-day-connectivity/categories/stac-collection.json",
-            "group": { "name": "Connectivity", "collapsed": true },
-            "assets": [
-                {
-                    "id": "present-day-connectivity-categories-cog",
-                    "display_name": "Connectivity Categories (Cameron 2022)",
-                    "visible": false,
-                    "legend_label": "Connectivity category"
-                }
-            ]
-        },
-        {
-            "collection_id": "climate-migration-routes",
-            "collection_url": "https://s3-west.nrp-nautilus.io/public-connectivity/climate-migration-routes/stac-collection.json",
-            "group": { "name": "Connectivity", "collapsed": true },
-            "assets": [
-                {
-                    "id": "climate-migration-routes-cog",
-                    "display_name": "Climate Migration Routes (Schloss 2022)",
-                    "visible": false,
-                    "legend_label": "Climate connectivity class"
-                }
-            ]
-        },
-        {
-            "collection_id": "usgs-ungulate-migration-routes",
-            "collection_url": "https://s3-west.nrp-nautilus.io/public-usgs-ungulate-migration/ungulate-routes/stac-collection.json",
-            "group": { "name": "Wildlife Habitat", "collapsed": true },
-            "assets": [
-                {
-                    "id": "ungulate-routes-pmtiles",
-                    "display_name": "Ungulate Migration Routes",
-                    "visible": false,
-                    "layer_type": "line",
-                    "tooltip_fields": ["species", "herd", "state", "ind_year"]
-                }
-            ]
-        },
-        {
-            "collection_id": "usfws-critical-habitat-final",
-            "collection_url": "https://s3-west.nrp-nautilus.io/public-usfws/critical-habitat/final/stac-collection.json",
-            "group": { "name": "Wildlife Habitat", "collapsed": true },
-            "assets": [
-                {
-                    "id": "final-pmtiles",
-                    "display_name": "Critical Habitat — Final (USFWS)",
-                    "visible": false,
-                    "tooltip_fields": ["comname", "sciname", "status", "listing_st", "pubdate"]
-                }
-            ]
-        },
-        {
-            "collection_id": "usfws-critical-habitat-proposed",
-            "collection_url": "https://s3-west.nrp-nautilus.io/public-usfws/critical-habitat/proposed/stac-collection.json",
-            "group": { "name": "Wildlife Habitat", "collapsed": true },
-            "assets": [
-                {
-                    "id": "proposed-pmtiles",
-                    "display_name": "Critical Habitat — Proposed (USFWS)",
-                    "visible": false,
-                    "tooltip_fields": ["comname", "sciname", "status", "listing_st", "pubdate"]
-                }
-            ]
-        },
-        {
-            "collection_id": "mobi-species-richness-all",
-            "collection_url": "https://s3-west.nrp-nautilus.io/public-mobi/mobi-species-richness-all/stac-collection.json",
-            "group": { "name": "Wildlife Habitat", "collapsed": true },
-            "assets": [
-                {
-                    "id": "species-richness-all-cog",
-                    "display_name": "Imperiled Species Richness (MOBI)",
-                    "visible": false,
-                    "legend_label": "Imperiled species (count)"
-                }
-            ]
-        },
-        {
-            "collection_id": "cwhr13",
-            "collection_url": "https://s3-west.nrp-nautilus.io/public-ca30x30/cwhr13/stac-collection.json",
-            "group": { "name": "Wildlife Habitat", "collapsed": true },
-            "assets": [
-                {
-                    "id": "cwhr13-cog",
-                    "display_name": "CWHR Major Habitat Types (CAL FIRE FVEG)",
-                    "visible": false,
-                    "legend_label": "CWHR major habitat type"
-                }
-            ]
-        },
-        {
-            "collection_id": "cwhr",
-            "collection_url": "https://s3-west.nrp-nautilus.io/public-ca30x30/cwhr/stac-collection.json",
-            "group": { "name": "Wildlife Habitat", "collapsed": true },
-            "assets": [
-                {
-                    "id": "cwhr-cog",
-                    "display_name": "CWHR Habitat Types — Detailed (60-class)",
-                    "visible": false,
-                    "legend_label": "CWHR habitat type (60-class)"
-                }
-            ]
-        },
-        {
-            "collection_id": "ace-terrestrial-biodiversity-summary",
-            "collection_url": "https://s3-west.nrp-nautilus.io/public-cdfw/ace/terrestrial-biodiversity-summary/stac-collection.json",
-            "group": { "name": "Biodiversity", "collapsed": true },
-            "assets": [
-                {
-                    "id": "terrestrial-biodiversity-summary-pmtiles",
-                    "display_name": "Terrestrial Biodiversity Rank (CDFW ACE)",
-                    "visible": false,
-                    "tooltip_fields": ["BioRankSW", "NativeCoun", "RareCount", "County"]
-                }
-            ]
-        },
-        {
-            "collection_id": "plant-richness",
-            "collection_url": "https://s3-west.nrp-nautilus.io/public-ca30x30/plant-richness/stac-collection.json",
-            "group": { "name": "Biodiversity", "collapsed": true },
-            "assets": [
-                {
-                    "id": "plant-richness-cog",
-                    "display_name": "Plant Species Richness (Kling 2018)",
-                    "visible": false,
-                    "legend_label": "Modeled plant species (count)"
-                }
-            ]
-        },
-        {
-            "collection_id": "ca-wolves",
-            "collection_url": "https://s3-west.nrp-nautilus.io/public-ca-wolves/stac-collection.json",
-            "group": { "name": "Wolf Activity" },
-            "assets": [
-                {
-                    "id": "territories",
-                    "display_name": "Pack Territories (approximate, Feb 2025)",
-                    "visible": true,
-                    "default_style": {
-                        "fill-color": [
-                            "match", ["get", "pack"],
-                            "Whaleback",        "#E65100",
-                            "Harvey",           "#1565C0",
-                            "Ice Cave",         "#2E7D32",
-                            "Lassen",           "#8B4FD0",
-                            "Diamond/Beyem Seyo","#AD1457",
-                            "Yowlumni",         "#EDA100",
-                            "#8A8A85"
-                        ],
-                        "fill-opacity": 0.55
-                    },
-                    "outline_style": {
-                        "line-color": "#333333",
-                        "line-width": 1.2
-                    },
-                    "tooltip_fields": ["pack", "note", "source"]
-                },
-                {
-                    "id": "bins-latest",
-                    "display_name": "Latest Reported Cells (~7 km hexes)",
-                    "visible": false,
-                    "default_style": {
-                        "fill-color": ["match", ["get", "pack_origin"],
-                            "Whaleback",         "#E65100",
-                            "Harvey",            "#1565C0",
-                            "Ice Cave",          "#2E7D32",
-                            "Lassen",            "#8B4FD0",
-                            "Diamond/Beyem Seyo","#AD1457",
-                            "Diamond",           "#AD1457",
-                            "Beyem Seyo",        "#AD1457",
-                            "Yowlumni",          "#EDA100",
-                            "Grizzly",           "#0097A7",
-                            "#8A8A85"
-                        ],
-                        "fill-opacity": 0.7
-                    },
-                    "outline_style": {
-                        "line-color": "#333333",
-                        "line-width": 1
-                    },
-                    "tooltip_fields": ["pack", "pack_origin", "most_recent_adj"]
-                },
-                {
-                    "id": "tracks",
-                    "display_name": "Cell-to-Cell Movement (animated)",
-                    "visible": true,
-                    "animation": {
-                        "type": "trajectory",
-                        "timestamp_field": "timestamps",
-                        "end_timestamp_field": "end_timestamps",
-                        "id_field": "pack",
-                        "duration_seconds": 30,
-                        "static_positions_asset": "bins-latest",
-                        "mode": "stepped",
-                        "mode_toggle": true,
-                        "hex_resolution": 6,
-                        "show_track_line": false,
-                        "show_labels": true
-                    },
-                    "default_style": {
-                        "line-color": ["match", ["get", "pack_origin"],
-                            "Whaleback",         "#E65100",
-                            "Harvey",            "#1565C0",
-                            "Ice Cave",          "#2E7D32",
-                            "Lassen",            "#8B4FD0",
-                            "Diamond/Beyem Seyo","#AD1457",
-                            "Diamond",           "#AD1457",
-                            "Beyem Seyo",        "#AD1457",
-                            "Yowlumni",          "#EDA100",
-                            "Grizzly",           "#0097A7",
-                            "#8A8A85"
-                        ],
-                        "circle-color": ["match", ["get", "pack_origin"],
-                            "Whaleback",         "#E65100",
-                            "Harvey",            "#1565C0",
-                            "Ice Cave",          "#2E7D32",
-                            "Lassen",            "#8B4FD0",
-                            "Diamond/Beyem Seyo","#AD1457",
-                            "Diamond",           "#AD1457",
-                            "Beyem Seyo",        "#AD1457",
-                            "Yowlumni",          "#EDA100",
-                            "Grizzly",           "#0097A7",
-                            "#8A8A85"
-                        ],
-                        "fill-color": ["match", ["get", "pack_origin"],
-                            "Whaleback",         "#E65100",
-                            "Harvey",            "#1565C0",
-                            "Ice Cave",          "#2E7D32",
-                            "Lassen",            "#8B4FD0",
-                            "Diamond/Beyem Seyo","#AD1457",
-                            "Diamond",           "#AD1457",
-                            "Beyem Seyo",        "#AD1457",
-                            "Yowlumni",          "#EDA100",
-                            "Grizzly",           "#0097A7",
-                            "#8A8A85"
-                        ],
-                        "fill-outline-color": "#333333"
-                    }
-                }
-            ]
-        },
-        { "collection_id": "swap-2025-provinces", "collection_url": "https://s3-west.nrp-nautilus.io/public-swap/california/swap-2025/provinces/stac-collection.json", "group": {"name": "California SWAP 2025", "collapsed": true}, "assets": [{"id": "provinces-pmtiles", "display_name": "SWAP · Provinces", "visible": false, "tooltip_fields": ["Province", "ProvinceID"]}] },
-        { "collection_id": "swap-2025-conservation-units", "collection_url": "https://s3-west.nrp-nautilus.io/public-swap/california/swap-2025/conservation-units/stac-collection.json", "group": {"name": "California SWAP 2025", "collapsed": true}, "assets": [{"id": "conservation-units-pmtiles", "display_name": "SWAP · Conservation Units", "visible": false, "tooltip_fields": ["Name", "ConsUnitType", "ParentProvinceID"]}] },
-        { "collection_id": "swap-2025-bay-delta-conservation-unit", "collection_url": "https://s3-west.nrp-nautilus.io/public-swap/california/swap-2025/bay-delta-conservation-unit/stac-collection.json", "group": {"name": "California SWAP 2025", "collapsed": true}, "assets": [{"id": "bay-delta-conservation-unit-pmtiles", "display_name": "SWAP · Bay-Delta Conservation Unit", "visible": false, "tooltip_fields": ["Bay_Delta"]}] },
-        { "collection_id": "swap-2025-sgcn-ranges", "collection_url": "https://s3-west.nrp-nautilus.io/public-swap/california/swap-2025/sgcn-ranges/stac-collection.json", "group": {"name": "California SWAP 2025", "collapsed": true}, "assets": [{"id": "sgcn-ranges-pmtiles", "display_name": "SWAP · SGCN Species Ranges", "visible": false, "tooltip_fields": ["SWAP_Common", "SWAP_Scientific", "Taxonomic_Group"]}] },
-        { "collection_id": "swap-2025-noaa-esu-dps", "collection_url": "https://s3-west.nrp-nautilus.io/public-swap/california/swap-2025/noaa-esu-dps/stac-collection.json", "group": {"name": "California SWAP 2025", "collapsed": true}, "assets": [{"id": "noaa-esu-dps-pmtiles", "display_name": "SWAP · Salmonid ESU / DPS (NOAA)", "visible": false, "tooltip_fields": ["ESU_DPS", "ESU_or_DPS", "Class", "Status"]}] },
-        { "collection_id": "swap-2025-marine-bioregions", "collection_url": "https://s3-west.nrp-nautilus.io/public-swap/california/swap-2025/marine-bioregions/stac-collection.json", "group": {"name": "California SWAP 2025", "collapsed": true}, "assets": [{"id": "marine-bioregions-pmtiles", "display_name": "SWAP · Marine Bioregions", "visible": false, "tooltip_fields": ["Name"]}] },
-        { "collection_id": "swap-2025-sgcn-species", "collection_url": "https://s3-west.nrp-nautilus.io/public-swap/california/swap-2025/sgcn-species/stac-collection.json", "assets": [] },
-        { "collection_id": "swap-2025-sgcn-species-units", "collection_url": "https://s3-west.nrp-nautilus.io/public-swap/california/swap-2025/sgcn-species-units/stac-collection.json", "assets": [] },
-        { "collection_id": "swap-2025-targets", "collection_url": "https://s3-west.nrp-nautilus.io/public-swap/california/swap-2025/targets/stac-collection.json", "assets": [] },
-        { "collection_id": "swap-2025-strategies", "collection_url": "https://s3-west.nrp-nautilus.io/public-swap/california/swap-2025/strategies/stac-collection.json", "assets": [] },
-        { "collection_id": "gbif-derived", "collection_url": "https://s3-west.nrp-nautilus.io/public-gbif/stac-collection.json", "assets": [] }
+  "catalog": "https://s3-west.nrp-nautilus.io/public-data/stac/catalog.json",
+  "titiler_url": "https://titiler.nrp-nautilus.io",
+  "auto_approve": true,
+  "sidebar": {
+    "enabled": true,
+    "default_width": 420,
+    "title": "Wolf Data Assistant"
+  },
+  "links": {
+    "docs": "/docs.html",
+    "carbon": true,
+    "github": "https://github.com/SchmidtDSE/ca-wolves"
+  },
+  "view": {
+    "center": [
+      -121.5,
+      40.5
+    ],
+    "zoom": 7
+  },
+  "welcome": {
+    "message": "Hi! I can help you explore California gray wolf territories, pack movement data, and related environmental and political context. Try asking:",
+    "examples": [
+      "Tell me about the wolf datasets available.",
+      "How precise are the wolf position data?",
+      "Zoom to the Whaleback pack territory.",
+      "Which protected lands overlap with wolf territories?",
+      "Which state assembly districts overlap with wolf packs?"
     ]
+  },
+  "collections": [
+    {
+      "collection_id": "census-2024-county",
+      "collection_url": "https://s3-west.nrp-nautilus.io/public-census/census-2024/county/stac-collection.json",
+      "group": {
+        "name": "Political Boundaries",
+        "collapsed": true
+      },
+      "assets": [
+        {
+          "id": "county-pmtiles",
+          "display_name": "CA Counties",
+          "visible": false,
+          "default_filter": [
+            "==",
+            [
+              "get",
+              "STATEFP"
+            ],
+            "06"
+          ],
+          "tooltip_fields": [
+            "NAME",
+            "NAMELSAD",
+            "GEOID"
+          ]
+        }
+      ]
+    },
+    {
+      "collection_id": "census-2024-tract",
+      "collection_url": "https://s3-west.nrp-nautilus.io/public-census/census-2024/tract/stac-collection.json",
+      "group": {
+        "name": "Political Boundaries",
+        "collapsed": true
+      },
+      "assets": [
+        {
+          "id": "tract-pmtiles",
+          "display_name": "CA Census Tracts",
+          "visible": false,
+          "default_filter": [
+            "==",
+            [
+              "get",
+              "STATEFP"
+            ],
+            "06"
+          ],
+          "tooltip_fields": [
+            "NAMELSAD",
+            "GEOID",
+            "COUNTYFP"
+          ]
+        }
+      ]
+    },
+    {
+      "collection_id": "census-2024-cd",
+      "collection_url": "https://s3-west.nrp-nautilus.io/public-census/census-2024/cd/stac-collection.json",
+      "group": {
+        "name": "Political Boundaries",
+        "collapsed": true
+      },
+      "assets": [
+        {
+          "id": "cd-pmtiles",
+          "display_name": "Congressional Districts (119th)",
+          "visible": false,
+          "default_filter": [
+            "==",
+            [
+              "get",
+              "STATEFP"
+            ],
+            "06"
+          ],
+          "tooltip_fields": [
+            "NAMELSAD",
+            "GEOID"
+          ]
+        }
+      ]
+    },
+    {
+      "collection_id": "census-2025-sldl",
+      "collection_url": "https://s3-west.nrp-nautilus.io/public-census/census-2025/sldl/stac-collection.json",
+      "group": {
+        "name": "Political Boundaries",
+        "collapsed": true
+      },
+      "assets": [
+        {
+          "id": "sldl-pmtiles",
+          "display_name": "CA Assembly Districts",
+          "visible": false,
+          "default_filter": [
+            "==",
+            [
+              "get",
+              "STATEFP"
+            ],
+            "06"
+          ],
+          "tooltip_fields": [
+            "NAMELSAD",
+            "GEOID"
+          ]
+        }
+      ]
+    },
+    {
+      "collection_id": "census-2025-sldu",
+      "collection_url": "https://s3-west.nrp-nautilus.io/public-census/census-2025/sldu/stac-collection.json",
+      "group": {
+        "name": "Political Boundaries",
+        "collapsed": true
+      },
+      "assets": [
+        {
+          "id": "sldu-pmtiles",
+          "display_name": "CA Senate Districts",
+          "visible": false,
+          "default_filter": [
+            "==",
+            [
+              "get",
+              "STATEFP"
+            ],
+            "06"
+          ],
+          "tooltip_fields": [
+            "NAMELSAD",
+            "GEOID"
+          ]
+        }
+      ]
+    },
+    {
+      "collection_id": "wwf-ecoregions-2017",
+      "collection_url": "https://s3-west.nrp-nautilus.io/public-ecoregion/wwf-ecoregions-2017/stac-collection.json",
+      "group": {
+        "name": "Environment",
+        "collapsed": true
+      },
+      "assets": [
+        {
+          "id": "ecoregion-pmtiles",
+          "display_name": "WWF Ecoregions",
+          "visible": false,
+          "tooltip_fields": [
+            "ECO_NAME",
+            "BIOME_NAME",
+            "REALM",
+            "NNH_NAME"
+          ]
+        }
+      ]
+    },
+    {
+      "collection_id": "sierra-nevada-atlas-map-unit-polys",
+      "collection_url": "https://s3-west.nrp-nautilus.io/public-cgs/sierra-nevada-atlas/map-unit-polys/stac-collection.json",
+      "group": {
+        "name": "Environment",
+        "collapsed": true
+      },
+      "assets": [
+        {
+          "id": "map-unit-polys-pmtiles",
+          "display_name": "Sierra Nevada Geology (CGS Atlas)",
+          "visible": false,
+          "tooltip_fields": [
+            "FullName",
+            "MapUnit",
+            "Age",
+            "GeoMaterial",
+            "IdentityConfidence"
+          ]
+        }
+      ]
+    },
+    {
+      "collection_id": "ca-climate-zones",
+      "collection_url": "https://s3-west.nrp-nautilus.io/public-ca30x30/ca-climate-zones/stac-collection.json",
+      "group": {
+        "name": "Environment",
+        "collapsed": true
+      },
+      "assets": [
+        {
+          "id": "ca-climate-zones-cog",
+          "display_name": "California Climate Zones (Ackerly/Kling)",
+          "visible": false,
+          "legend_label": "Climate zone (1–10)"
+        }
+      ]
+    },
+    {
+      "collection_id": "ca30x30-ecoregion",
+      "collection_url": "https://s3-west.nrp-nautilus.io/public-ca30x30/ecoregion/stac-collection.json",
+      "group": {
+        "name": "Environment",
+        "collapsed": true
+      },
+      "assets": [
+        {
+          "id": "ecoregion-pmtiles",
+          "display_name": "CA Ecoregions (30x30 / Bailey-derived)",
+          "visible": false,
+          "tooltip_fields": [
+            "CA_Ecoregi"
+          ]
+        }
+      ]
+    },
+    {
+      "collection_id": "nlcd",
+      "collection_url": "https://s3-west.nrp-nautilus.io/public-land-cover/nlcd/stac-collection.json",
+      "group": {
+        "name": "Environment",
+        "collapsed": true
+      },
+      "assets": [
+        {
+          "id": "nlcd-cog-2024",
+          "display_name": "Land Cover (NLCD 2024)",
+          "visible": false,
+          "legend_label": "NLCD land cover class"
+        }
+      ]
+    },
+    {
+      "collection_id": "mid-century-habitat-climate-exposure",
+      "collection_url": "https://s3-west.nrp-nautilus.io/public-hazard/mid-century-habitat-climate-exposure/stac-collection.json",
+      "group": {
+        "name": "Environment",
+        "collapsed": true
+      },
+      "assets": [
+        {
+          "id": "cnrm-cog",
+          "display_name": "Mid-Century Climate Exposure (Thorne, CNRM-CM5)",
+          "visible": false,
+          "legend_label": "Habitat climate exposure (−1 to 1)"
+        }
+      ]
+    },
+    {
+      "collection_id": "calenviroscreen-5-0",
+      "collection_url": "https://s3-west.nrp-nautilus.io/public-calenviroscreen/stac-collection.json",
+      "group": {
+        "name": "Environmental Justice",
+        "collapsed": true
+      },
+      "assets": [
+        {
+          "id": "ces5-pmtiles",
+          "display_name": "CalEnviroScreen 5.0",
+          "visible": false,
+          "tooltip_fields": [
+            "county",
+            "CIscore",
+            "CIscore_Pctl",
+            "Population"
+          ]
+        }
+      ]
+    },
+    {
+      "collection_id": "ca-dac-eda-2023",
+      "collection_url": "https://s3-west.nrp-nautilus.io/public-ca-dac/stac-collection.json",
+      "group": {
+        "name": "Environmental Justice",
+        "collapsed": true
+      },
+      "assets": [
+        {
+          "id": "dac-tract-pmtiles",
+          "display_name": "Disadvantaged Communities (DAC)",
+          "visible": false,
+          "default_style": {
+            "fill-color": "#C2185B",
+            "fill-opacity": 0.5
+          },
+          "default_filter": [
+            "==",
+            [
+              "get",
+              "DAC23"
+            ],
+            "Y"
+          ],
+          "tooltip_fields": [
+            "GEOID20",
+            "DAC23",
+            "MHI23",
+            "Pop23"
+          ]
+        },
+        {
+          "id": "eda-tract-pmtiles",
+          "display_name": "Economically Distressed Areas (EDA)",
+          "visible": false,
+          "default_style": {
+            "fill-color": "#F57C00",
+            "fill-opacity": 0.5
+          },
+          "default_filter": [
+            "==",
+            [
+              "get",
+              "Flag_MHI_P"
+            ],
+            "Y"
+          ],
+          "tooltip_fields": [
+            "GEOID20",
+            "Flag_MHI_P",
+            "MHI23",
+            "PopDensity"
+          ]
+        }
+      ]
+    },
+    {
+      "collection_id": "svi-2022",
+      "collection_url": "https://s3-west.nrp-nautilus.io/public-social-vulnerability/2022/stac-collection.json",
+      "group": {
+        "name": "Environmental Justice",
+        "collapsed": true
+      },
+      "assets": [
+        {
+          "id": "tract-pmtiles",
+          "display_name": "Social Vulnerability Index (SVI 2022)",
+          "visible": false,
+          "default_filter": [
+            "==",
+            [
+              "get",
+              "ST_ABBR"
+            ],
+            "CA"
+          ],
+          "tooltip_fields": [
+            "COUNTY",
+            "LOCATION",
+            "RPL_THEMES",
+            "E_TOTPOP"
+          ]
+        }
+      ]
+    },
+    {
+      "collection_id": "pad-us-4.1-fee",
+      "collection_url": "https://s3-west.nrp-nautilus.io/public-padus/padus-4-1/fee/stac-collection.json",
+      "group": {
+        "name": "Protected & Conserved Lands",
+        "collapsed": true
+      },
+      "assets": [
+        {
+          "id": "fee-pmtiles",
+          "display_name": "Protected Lands (PAD-US Fee)",
+          "visible": false,
+          "default_filter": [
+            "match",
+            [
+              "get",
+              "GAP_Sts"
+            ],
+            [
+              "1",
+              "2"
+            ],
+            true,
+            false
+          ],
+          "tooltip_fields": [
+            "Unit_Nm",
+            "GAP_Sts",
+            "Mang_Type"
+          ]
+        }
+      ]
+    },
+    {
+      "collection_id": "wcb-approved-projects",
+      "collection_url": "https://s3-west.nrp-nautilus.io/public-tpl/wcb-approved-projects/stac-collection.json",
+      "group": {
+        "name": "Protected & Conserved Lands",
+        "collapsed": true
+      },
+      "assets": [
+        {
+          "id": "wcb-approved-projects-pmtiles",
+          "display_name": "WCB Approved Projects",
+          "visible": false,
+          "tooltip_fields": [
+            "ProjName",
+            "PrimGrante",
+            "County",
+            "Acres",
+            "WCBFunding",
+            "Type",
+            "Program",
+            "dtmBoardAp"
+          ]
+        }
+      ]
+    },
+    {
+      "collection_id": "cced-2025b",
+      "collection_url": "https://s3-west.nrp-nautilus.io/public-cpad/cced-stac-collection.json",
+      "group": {
+        "name": "Protected & Conserved Lands",
+        "collapsed": true
+      },
+      "assets": [
+        {
+          "id": "cced-pmtiles",
+          "display_name": "Conservation Easements (CCED)",
+          "visible": false,
+          "tooltip_fields": [
+            "sitename",
+            "esmthldr",
+            "eholdtyp",
+            "county"
+          ]
+        }
+      ]
+    },
+    {
+      "collection_id": "landmark-iplc-poly",
+      "collection_url": "https://s3-west.nrp-nautilus.io/public-indigenous/landmark/iplc-poly-stac.json",
+      "group": {
+        "name": "Protected & Conserved Lands",
+        "collapsed": true
+      },
+      "assets": [
+        {
+          "id": "iplc-poly-pmtiles",
+          "display_name": "Indigenous Territories (LandMark)",
+          "visible": false,
+          "default_filter": [
+            "==",
+            [
+              "get",
+              "country"
+            ],
+            "United States of America"
+          ],
+          "tooltip_fields": [
+            "name",
+            "identity",
+            "country",
+            "form_rec"
+          ]
+        }
+      ]
+    },
+    {
+      "collection_id": "cpad-holdings-2025b",
+      "collection_url": "https://s3-west.nrp-nautilus.io/public-cpad/cpad-holdings-stac-collection.json",
+      "group": {
+        "name": "Protected & Conserved Lands",
+        "collapsed": true
+      },
+      "assets": [
+        {
+          "id": "holdings-pmtiles",
+          "display_name": "CA Protected Areas (CPAD Holdings)",
+          "visible": false,
+          "tooltip_fields": [
+            "SITE_NAME",
+            "AGNCY_NAME",
+            "MNG_AGNCY",
+            "ACCESS_TYP",
+            "COUNTY",
+            "ACRES"
+          ]
+        }
+      ]
+    },
+    {
+      "collection_id": "cpad-units-2025b",
+      "collection_url": "https://s3-west.nrp-nautilus.io/public-cpad/cpad-units-stac-collection.json",
+      "group": {
+        "name": "Protected & Conserved Lands",
+        "collapsed": true
+      },
+      "assets": [
+        {
+          "id": "units-pmtiles",
+          "display_name": "CA Protected Areas (CPAD Units)",
+          "visible": false,
+          "tooltip_fields": [
+            "UNIT_NAME",
+            "AGNCY_NAME",
+            "COUNTY",
+            "ACRES"
+          ]
+        }
+      ]
+    },
+    {
+      "collection_id": "pad-us-4.1-easement",
+      "collection_url": "https://s3-west.nrp-nautilus.io/public-padus/padus-4-1/easement/stac-collection.json",
+      "group": {
+        "name": "Protected & Conserved Lands",
+        "collapsed": true
+      },
+      "assets": [
+        {
+          "id": "easement-pmtiles",
+          "display_name": "Conservation Easements (PAD-US)",
+          "visible": false,
+          "default_filter": [
+            "==",
+            [
+              "get",
+              "State_Nm"
+            ],
+            "CA"
+          ],
+          "tooltip_fields": [
+            "Unit_Nm",
+            "EsmtHldr",
+            "Mang_Name",
+            "GAP_Sts",
+            "GIS_Acres"
+          ]
+        }
+      ]
+    },
+    {
+      "collection_id": "landvote",
+      "collection_url": "https://s3-west.nrp-nautilus.io/public-tpl/landvote/stac-collection.json",
+      "group": {
+        "name": "Protected & Conserved Lands",
+        "collapsed": true
+      },
+      "assets": [
+        {
+          "id": "landvote-pmtiles",
+          "display_name": "Conservation Ballot Measures (LandVote)",
+          "visible": false,
+          "default_filter": [
+            "==",
+            [
+              "get",
+              "state"
+            ],
+            "CA"
+          ],
+          "tooltip_fields": [
+            "jurisdiction",
+            "year",
+            "status",
+            "purpose",
+            "conservation_funds_approved",
+            "percent_yes"
+          ]
+        }
+      ]
+    },
+    {
+      "collection_id": "ca30x30-conserved-areas-terrestrial-2025",
+      "collection_url": "https://s3-west.nrp-nautilus.io/public-ca30x30/conserved-areas-terrestrial-2025/stac-collection.json",
+      "group": {
+        "name": "Protected & Conserved Lands",
+        "collapsed": true
+      },
+      "assets": [
+        {
+          "id": "conserved-areas-terrestrial-2025-pmtiles",
+          "display_name": "30x30 Conserved Areas (2025)",
+          "visible": false,
+          "tooltip_fields": [
+            "UNIT_NAME",
+            "MNG_AGENCY",
+            "MNG_AG_LEV",
+            "reGAP",
+            "ACCESS_TYP",
+            "Acres"
+          ]
+        }
+      ]
+    },
+    {
+      "collection_id": "fmmp-2022",
+      "collection_url": "https://s3-west.nrp-nautilus.io/public-ca30x30/fmmp-2022/stac-collection.json",
+      "group": {
+        "name": "Working Lands",
+        "collapsed": true
+      },
+      "assets": [
+        {
+          "id": "fmmp-2022-pmtiles",
+          "display_name": "Important Farmland & Grazing Land (FMMP 2022)",
+          "visible": false,
+          "tooltip_fields": [
+            "polygon_ty",
+            "County",
+            "polygon_ac",
+            "upd_year"
+          ]
+        }
+      ]
+    },
+    {
+      "collection_id": "calfire-2025-firep",
+      "collection_url": "https://s3-west.nrp-nautilus.io/public-fire/calfire-2025/firep/stac-collection.json",
+      "group": {
+        "name": "Wildfire",
+        "collapsed": true
+      },
+      "assets": [
+        {
+          "id": "firep-pmtiles",
+          "display_name": "CAL FIRE Wildfire Perimeters (2025)",
+          "visible": false,
+          "tooltip_fields": [
+            "FIRE_NAME",
+            "YEAR_",
+            "GIS_ACRES",
+            "AGENCY",
+            "CAUSE",
+            "ALARM_DATE"
+          ]
+        }
+      ]
+    },
+    {
+      "collection_id": "calfire-2025-rxburn",
+      "collection_url": "https://s3-west.nrp-nautilus.io/public-fire/calfire-2025/rxburn/stac-collection.json",
+      "group": {
+        "name": "Wildfire",
+        "collapsed": true
+      },
+      "assets": [
+        {
+          "id": "rxburn-pmtiles",
+          "display_name": "CAL FIRE Prescribed Burns (2025)",
+          "visible": false,
+          "tooltip_fields": [
+            "TREATMENT_NAME",
+            "YEAR_",
+            "GIS_ACRES",
+            "AGENCY",
+            "START_DATE",
+            "END_DATE"
+          ]
+        }
+      ]
+    },
+    {
+      "collection_id": "american-rivers-nri-2024",
+      "collection_url": "https://s3-west.nrp-nautilus.io/public-rivers/american-rivers/nri-2024/stac-collection.json",
+      "group": {
+        "name": "Hydrology",
+        "collapsed": true
+      },
+      "assets": [
+        {
+          "id": "nri-2024-pmtiles",
+          "display_name": "Nationwide Rivers Inventory (2024)",
+          "visible": false,
+          "layer_type": "line",
+          "tooltip_fields": [
+            "River",
+            "Classifica",
+            "GIS_Miles",
+            "State1",
+            "County",
+            "ORV"
+          ]
+        }
+      ]
+    },
+    {
+      "collection_id": "american-rivers-wild-scenic-designated",
+      "collection_url": "https://s3-west.nrp-nautilus.io/public-rivers/american-rivers/wild-scenic-designated/stac-collection.json",
+      "group": {
+        "name": "Hydrology",
+        "collapsed": true
+      },
+      "assets": [
+        {
+          "id": "wild-scenic-designated-pmtiles",
+          "display_name": "Wild & Scenic Rivers (Designated)",
+          "visible": false,
+          "layer_type": "line",
+          "tooltip_fields": [
+            "GNIS_NAME",
+            "CLASSIFICA",
+            "STATE",
+            "AGENCY",
+            "TOTAL_MILE"
+          ]
+        }
+      ]
+    },
+    {
+      "collection_id": "usgs-nhd-perennial-streams",
+      "collection_url": "https://s3-west.nrp-nautilus.io/public-usgs-nhd/perennial-streams/stac-collection.json",
+      "group": {
+        "name": "Hydrology",
+        "collapsed": true
+      },
+      "assets": [
+        {
+          "id": "perennial-streams-pmtiles",
+          "display_name": "Perennial Streams (USGS NHD)",
+          "visible": false,
+          "layer_type": "line",
+          "tooltip_fields": [
+            "GNIS_NAME",
+            "LENGTHKM",
+            "REACHCODE"
+          ]
+        }
+      ]
+    },
+    {
+      "collection_id": "freshwater-species-richness",
+      "collection_url": "https://s3-west.nrp-nautilus.io/public-ca30x30/freshwater-species-richness/stac-collection.json",
+      "group": {
+        "name": "Hydrology",
+        "collapsed": true
+      },
+      "assets": [
+        {
+          "id": "freshwater-species-richness-pmtiles",
+          "display_name": "Freshwater Species Richness (Howard 2015)",
+          "visible": false,
+          "tooltip_fields": [
+            "Watershed_Name",
+            "Freshwater_Species_Count",
+            "Vulnerable_Species_Count",
+            "Listed_Species_Count"
+          ]
+        }
+      ]
+    },
+    {
+      "collection_id": "usgs-wbd-hu4",
+      "collection_url": "https://s3-west.nrp-nautilus.io/public-usgs-wbd/wbd/hu4/stac-collection.json",
+      "group": {
+        "name": "Hydrology",
+        "collapsed": true
+      },
+      "assets": [
+        {
+          "id": "hu4-pmtiles",
+          "display_name": "Watershed Subregions (HUC4, USGS WBD)",
+          "visible": false,
+          "tooltip_fields": [
+            "name",
+            "huc4",
+            "states",
+            "areasqkm"
+          ]
+        }
+      ]
+    },
+    {
+      "collection_id": "usgs-wbd-hu8",
+      "collection_url": "https://s3-west.nrp-nautilus.io/public-usgs-wbd/wbd/hu8/stac-collection.json",
+      "group": {
+        "name": "Hydrology",
+        "collapsed": true
+      },
+      "assets": [
+        {
+          "id": "hu8-pmtiles",
+          "display_name": "Watershed Subbasins (HUC8, USGS WBD)",
+          "visible": false,
+          "tooltip_fields": [
+            "name",
+            "huc8",
+            "states",
+            "areasqkm"
+          ]
+        }
+      ]
+    },
+    {
+      "collection_id": "federal-trails-2026",
+      "collection_url": "https://s3-west.nrp-nautilus.io/public-trails/federal-trails-2026/stac-collection.json",
+      "group": {
+        "name": "Recreation",
+        "collapsed": true
+      },
+      "assets": [
+        {
+          "id": "federal-trails-2026-pmtiles",
+          "display_name": "Federal Trails (USFS / NPS / BLM)",
+          "visible": false,
+          "layer_type": "line",
+          "tooltip_fields": [
+            "trail_name",
+            "admin_agency",
+            "admin_unit",
+            "trail_type",
+            "length_miles"
+          ]
+        }
+      ]
+    },
+    {
+      "collection_id": "present-day-connectivity-flow",
+      "collection_url": "https://s3-west.nrp-nautilus.io/public-connectivity/present-day-connectivity/flow/stac-collection.json",
+      "group": {
+        "name": "Connectivity",
+        "collapsed": true
+      },
+      "assets": [
+        {
+          "id": "present-day-connectivity-flow-cog",
+          "display_name": "Present-day Connectivity — Current Flow (Cameron 2022)",
+          "visible": false,
+          "legend_label": "Current flow (0 low – 100 high)"
+        }
+      ]
+    },
+    {
+      "collection_id": "present-day-connectivity-categories",
+      "collection_url": "https://s3-west.nrp-nautilus.io/public-connectivity/present-day-connectivity/categories/stac-collection.json",
+      "group": {
+        "name": "Connectivity",
+        "collapsed": true
+      },
+      "assets": [
+        {
+          "id": "present-day-connectivity-categories-cog",
+          "display_name": "Connectivity Categories (Cameron 2022)",
+          "visible": false,
+          "legend_label": "Connectivity category"
+        }
+      ]
+    },
+    {
+      "collection_id": "climate-migration-routes",
+      "collection_url": "https://s3-west.nrp-nautilus.io/public-connectivity/climate-migration-routes/stac-collection.json",
+      "group": {
+        "name": "Connectivity",
+        "collapsed": true
+      },
+      "assets": [
+        {
+          "id": "climate-migration-routes-cog",
+          "display_name": "Climate Migration Routes (Schloss 2022)",
+          "visible": false,
+          "legend_label": "Climate connectivity class"
+        }
+      ]
+    },
+    {
+      "collection_id": "usgs-ungulate-migration-routes",
+      "collection_url": "https://s3-west.nrp-nautilus.io/public-usgs-ungulate-migration/ungulate-routes/stac-collection.json",
+      "group": {
+        "name": "Wildlife Habitat",
+        "collapsed": true
+      },
+      "assets": [
+        {
+          "id": "ungulate-routes-pmtiles",
+          "display_name": "Ungulate Migration Routes",
+          "visible": false,
+          "layer_type": "line",
+          "tooltip_fields": [
+            "species",
+            "herd",
+            "state",
+            "ind_year"
+          ]
+        }
+      ]
+    },
+    {
+      "collection_id": "usfws-critical-habitat-final",
+      "collection_url": "https://s3-west.nrp-nautilus.io/public-usfws/critical-habitat/final/stac-collection.json",
+      "group": {
+        "name": "Wildlife Habitat",
+        "collapsed": true
+      },
+      "assets": [
+        {
+          "id": "final-pmtiles",
+          "display_name": "Critical Habitat — Final (USFWS)",
+          "visible": false,
+          "tooltip_fields": [
+            "comname",
+            "sciname",
+            "status",
+            "listing_st",
+            "pubdate"
+          ]
+        }
+      ]
+    },
+    {
+      "collection_id": "usfws-critical-habitat-proposed",
+      "collection_url": "https://s3-west.nrp-nautilus.io/public-usfws/critical-habitat/proposed/stac-collection.json",
+      "group": {
+        "name": "Wildlife Habitat",
+        "collapsed": true
+      },
+      "assets": [
+        {
+          "id": "proposed-pmtiles",
+          "display_name": "Critical Habitat — Proposed (USFWS)",
+          "visible": false,
+          "tooltip_fields": [
+            "comname",
+            "sciname",
+            "status",
+            "listing_st",
+            "pubdate"
+          ]
+        }
+      ]
+    },
+    {
+      "collection_id": "mobi-species-richness-all",
+      "collection_url": "https://s3-west.nrp-nautilus.io/public-mobi/mobi-species-richness-all/stac-collection.json",
+      "group": {
+        "name": "Wildlife Habitat",
+        "collapsed": true
+      },
+      "assets": [
+        {
+          "id": "species-richness-all-cog",
+          "display_name": "Imperiled Species Richness (MOBI)",
+          "visible": false,
+          "legend_label": "Imperiled species (count)"
+        }
+      ]
+    },
+    {
+      "collection_id": "cwhr13",
+      "collection_url": "https://s3-west.nrp-nautilus.io/public-ca30x30/cwhr13/stac-collection.json",
+      "group": {
+        "name": "Wildlife Habitat",
+        "collapsed": true
+      },
+      "assets": [
+        {
+          "id": "cwhr13-cog",
+          "display_name": "CWHR Major Habitat Types (CAL FIRE FVEG)",
+          "visible": false,
+          "legend_label": "CWHR major habitat type"
+        }
+      ]
+    },
+    {
+      "collection_id": "cwhr",
+      "collection_url": "https://s3-west.nrp-nautilus.io/public-ca30x30/cwhr/stac-collection.json",
+      "group": {
+        "name": "Wildlife Habitat",
+        "collapsed": true
+      },
+      "assets": [
+        {
+          "id": "cwhr-cog",
+          "display_name": "CWHR Habitat Types — Detailed (60-class)",
+          "visible": false,
+          "legend_label": "CWHR habitat type (60-class)"
+        }
+      ]
+    },
+    {
+      "collection_id": "ace-terrestrial-biodiversity-summary",
+      "collection_url": "https://s3-west.nrp-nautilus.io/public-cdfw/ace/terrestrial-biodiversity-summary/stac-collection.json",
+      "group": {
+        "name": "Biodiversity",
+        "collapsed": true
+      },
+      "assets": [
+        {
+          "id": "terrestrial-biodiversity-summary-pmtiles",
+          "display_name": "Terrestrial Biodiversity Rank (CDFW ACE)",
+          "visible": false,
+          "tooltip_fields": [
+            "BioRankSW",
+            "NativeCoun",
+            "RareCount",
+            "County"
+          ]
+        }
+      ]
+    },
+    {
+      "collection_id": "plant-richness",
+      "collection_url": "https://s3-west.nrp-nautilus.io/public-ca30x30/plant-richness/stac-collection.json",
+      "group": {
+        "name": "Biodiversity",
+        "collapsed": true
+      },
+      "assets": [
+        {
+          "id": "plant-richness-cog",
+          "display_name": "Plant Species Richness (Kling 2018)",
+          "visible": false,
+          "legend_label": "Modeled plant species (count)"
+        }
+      ]
+    },
+    {
+      "collection_id": "ca-wolves",
+      "collection_url": "https://s3-west.nrp-nautilus.io/public-ca-wolves/stac-collection.json",
+      "group": {
+        "name": "Wolf Activity"
+      },
+      "assets": [
+        {
+          "id": "territories",
+          "display_name": "Pack Territories (approximate, Feb 2025)",
+          "visible": true,
+          "default_style": {
+            "fill-color": [
+              "match",
+              [
+                "get",
+                "pack"
+              ],
+              "Whaleback",
+              "#E65100",
+              "Harvey",
+              "#1565C0",
+              "Ice Cave",
+              "#2E7D32",
+              "Lassen",
+              "#8B4FD0",
+              "Diamond/Beyem Seyo",
+              "#AD1457",
+              "Yowlumni",
+              "#EDA100",
+              "#8A8A85"
+            ],
+            "fill-opacity": 0.55
+          },
+          "outline_style": {
+            "line-color": "#333333",
+            "line-width": 1.2
+          },
+          "tooltip_fields": [
+            "pack",
+            "note",
+            "source"
+          ]
+        },
+        {
+          "id": "bins-latest",
+          "display_name": "Latest Reported Cells (~7 km hexes)",
+          "visible": false,
+          "default_style": {
+            "fill-color": [
+              "match",
+              [
+                "get",
+                "pack_origin"
+              ],
+              "Whaleback",
+              "#E65100",
+              "Harvey",
+              "#1565C0",
+              "Ice Cave",
+              "#2E7D32",
+              "Lassen",
+              "#8B4FD0",
+              "Diamond/Beyem Seyo",
+              "#AD1457",
+              "Diamond",
+              "#AD1457",
+              "Beyem Seyo",
+              "#AD1457",
+              "Yowlumni",
+              "#EDA100",
+              "Grizzly",
+              "#0097A7",
+              "#8A8A85"
+            ],
+            "fill-opacity": 0.7
+          },
+          "outline_style": {
+            "line-color": "#333333",
+            "line-width": 1
+          },
+          "tooltip_fields": [
+            "pack",
+            "pack_origin",
+            "most_recent_adj"
+          ]
+        },
+        {
+          "id": "tracks",
+          "display_name": "Cell-to-Cell Movement (animated)",
+          "visible": true,
+          "animation": {
+            "type": "trajectory",
+            "timestamp_field": "timestamps",
+            "end_timestamp_field": "end_timestamps",
+            "id_field": "pack",
+            "duration_seconds": 30,
+            "static_positions_asset": "bins-latest",
+            "mode": "stepped",
+            "mode_toggle": true,
+            "hex_resolution": 6,
+            "show_track_line": false,
+            "show_labels": true
+          },
+          "default_style": {
+            "line-color": [
+              "match",
+              [
+                "get",
+                "pack_origin"
+              ],
+              "Whaleback",
+              "#E65100",
+              "Harvey",
+              "#1565C0",
+              "Ice Cave",
+              "#2E7D32",
+              "Lassen",
+              "#8B4FD0",
+              "Diamond/Beyem Seyo",
+              "#AD1457",
+              "Diamond",
+              "#AD1457",
+              "Beyem Seyo",
+              "#AD1457",
+              "Yowlumni",
+              "#EDA100",
+              "Grizzly",
+              "#0097A7",
+              "#8A8A85"
+            ],
+            "circle-color": [
+              "match",
+              [
+                "get",
+                "pack_origin"
+              ],
+              "Whaleback",
+              "#E65100",
+              "Harvey",
+              "#1565C0",
+              "Ice Cave",
+              "#2E7D32",
+              "Lassen",
+              "#8B4FD0",
+              "Diamond/Beyem Seyo",
+              "#AD1457",
+              "Diamond",
+              "#AD1457",
+              "Beyem Seyo",
+              "#AD1457",
+              "Yowlumni",
+              "#EDA100",
+              "Grizzly",
+              "#0097A7",
+              "#8A8A85"
+            ],
+            "fill-color": [
+              "match",
+              [
+                "get",
+                "pack_origin"
+              ],
+              "Whaleback",
+              "#E65100",
+              "Harvey",
+              "#1565C0",
+              "Ice Cave",
+              "#2E7D32",
+              "Lassen",
+              "#8B4FD0",
+              "Diamond/Beyem Seyo",
+              "#AD1457",
+              "Diamond",
+              "#AD1457",
+              "Beyem Seyo",
+              "#AD1457",
+              "Yowlumni",
+              "#EDA100",
+              "Grizzly",
+              "#0097A7",
+              "#8A8A85"
+            ],
+            "fill-outline-color": "#333333"
+          }
+        }
+      ]
+    },
+    {
+      "collection_id": "swap-2025-provinces",
+      "collection_url": "https://s3-west.nrp-nautilus.io/public-swap/california/swap-2025/provinces/stac-collection.json",
+      "group": {
+        "name": "California SWAP 2025",
+        "collapsed": true
+      },
+      "assets": [
+        {
+          "id": "provinces-pmtiles",
+          "display_name": "SWAP · Provinces",
+          "visible": false,
+          "tooltip_fields": [
+            "Province",
+            "ProvinceID"
+          ]
+        }
+      ]
+    },
+    {
+      "collection_id": "swap-2025-conservation-units",
+      "collection_url": "https://s3-west.nrp-nautilus.io/public-swap/california/swap-2025/conservation-units/stac-collection.json",
+      "group": {
+        "name": "California SWAP 2025",
+        "collapsed": true
+      },
+      "assets": [
+        {
+          "id": "conservation-units-pmtiles",
+          "display_name": "SWAP · Conservation Units",
+          "visible": false,
+          "tooltip_fields": [
+            "Name",
+            "ConsUnitType",
+            "ParentProvinceID"
+          ]
+        }
+      ]
+    },
+    {
+      "collection_id": "swap-2025-bay-delta-conservation-unit",
+      "collection_url": "https://s3-west.nrp-nautilus.io/public-swap/california/swap-2025/bay-delta-conservation-unit/stac-collection.json",
+      "group": {
+        "name": "California SWAP 2025",
+        "collapsed": true
+      },
+      "assets": [
+        {
+          "id": "bay-delta-conservation-unit-pmtiles",
+          "display_name": "SWAP · Bay-Delta Conservation Unit",
+          "visible": false,
+          "tooltip_fields": [
+            "Bay_Delta"
+          ]
+        }
+      ]
+    },
+    {
+      "collection_id": "swap-2025-sgcn-ranges",
+      "collection_url": "https://s3-west.nrp-nautilus.io/public-swap/california/swap-2025/sgcn-ranges/stac-collection.json",
+      "group": {
+        "name": "California SWAP 2025",
+        "collapsed": true
+      },
+      "assets": [
+        {
+          "id": "sgcn-ranges-pmtiles",
+          "display_name": "SWAP · SGCN Species Ranges",
+          "visible": false,
+          "tooltip_fields": [
+            "SWAP_Common",
+            "SWAP_Scientific",
+            "Taxonomic_Group"
+          ]
+        }
+      ]
+    },
+    {
+      "collection_id": "swap-2025-noaa-esu-dps",
+      "collection_url": "https://s3-west.nrp-nautilus.io/public-swap/california/swap-2025/noaa-esu-dps/stac-collection.json",
+      "group": {
+        "name": "California SWAP 2025",
+        "collapsed": true
+      },
+      "assets": [
+        {
+          "id": "noaa-esu-dps-pmtiles",
+          "display_name": "SWAP · Salmonid ESU / DPS (NOAA)",
+          "visible": false,
+          "tooltip_fields": [
+            "ESU_DPS",
+            "ESU_or_DPS",
+            "Class",
+            "Status"
+          ]
+        }
+      ]
+    },
+    {
+      "collection_id": "swap-2025-marine-bioregions",
+      "collection_url": "https://s3-west.nrp-nautilus.io/public-swap/california/swap-2025/marine-bioregions/stac-collection.json",
+      "group": {
+        "name": "California SWAP 2025",
+        "collapsed": true
+      },
+      "assets": [
+        {
+          "id": "marine-bioregions-pmtiles",
+          "display_name": "SWAP · Marine Bioregions",
+          "visible": false,
+          "tooltip_fields": [
+            "Name"
+          ]
+        }
+      ]
+    },
+    {
+      "collection_id": "swap-2025-sgcn-species",
+      "collection_url": "https://s3-west.nrp-nautilus.io/public-swap/california/swap-2025/sgcn-species/stac-collection.json",
+      "assets": []
+    },
+    {
+      "collection_id": "swap-2025-sgcn-species-units",
+      "collection_url": "https://s3-west.nrp-nautilus.io/public-swap/california/swap-2025/sgcn-species-units/stac-collection.json",
+      "assets": []
+    },
+    {
+      "collection_id": "swap-2025-targets",
+      "collection_url": "https://s3-west.nrp-nautilus.io/public-swap/california/swap-2025/targets/stac-collection.json",
+      "assets": []
+    },
+    {
+      "collection_id": "swap-2025-strategies",
+      "collection_url": "https://s3-west.nrp-nautilus.io/public-swap/california/swap-2025/strategies/stac-collection.json",
+      "assets": []
+    },
+    {
+      "collection_id": "gbif-derived",
+      "collection_url": "https://s3-west.nrp-nautilus.io/public-gbif/stac-collection.json",
+      "assets": []
+    }
+  ],
+  "plugins": [
+    {
+      "url": "https://cdn.jsdelivr.net/gh/SchmidtDSE/glen@v4.0.0/core/plugins/mcp.js",
+      "options": {
+        "url": "https://duckdb-mcp.nrp-nautilus.io/mcp",
+        "prompt": "geospatial-analyst"
+      }
+    },
+    "https://cdn.jsdelivr.net/gh/SchmidtDSE/glen@v4.0.0/core/plugins/hex.js",
+    "https://cdn.jsdelivr.net/gh/SchmidtDSE/glen@v4.0.0/core/plugins/draw.js"
+  ]
 }
