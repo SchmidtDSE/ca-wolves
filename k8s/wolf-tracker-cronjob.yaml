@@ -53,13 +53,174 @@ data:
       echo "Updated: s3://${BUCKET}/wolf_bins_latest.geojson"
     fi
 
+    # Fold any snapshot the history table does not hold yet into
+    # wolf_bins_history.parquet; assemble.py reads that table, not the files.
+    python3 /scripts/consolidate.py
+
     # Always rebuild the trail hex parquet and tracks geojson — even with no
     # new snapshot, day-31 features age out of the 30-day window.
     python3 /scripts/assemble.py
 
+  consolidate.py: |
+    #!/usr/bin/env python3
+    """Fold CDFW's wolf_bins snapshots into one GeoParquet table.
+
+    CDFW publishes one overwritten file and keeps no history, so our snapshots
+    are the only record of what it published. This keeps that record losslessly
+    in one table, wolf_bins_history.parquet, instead of one GeoJSON per poll:
+
+      snapshot_ts      TIMESTAMP  upstream Last-Modified (UTC) of the snapshot
+      feature_index    INTEGER    the feature's position in that snapshot
+      pack             VARCHAR    wolf id; upstream called it `name` 2026-10-30..11-02
+      pack_origin      VARCHAR    NULL before upstream added it
+      most_recent_adj  VARCHAR    upstream date string, as published
+      properties       JSON       every upstream property, verbatim and in order
+      geometry         GEOMETRY   the hexbin polygon, as published
+
+    `properties` is the record; the typed columns are conveniences. A field that
+    upstream adds or renames lands in `properties` with no schema change. Grouping
+    by snapshot_ts and ordering by feature_index rebuilds any snapshot exactly.
+
+    Each run appends every snapshot under snapshots/ that the table does not yet
+    hold, so a run that fails is caught up by the next one. The table is
+    rewritten whole (it is small) and is never uploaded with fewer rows than it
+    had. The local copy is left at LOCAL for assemble.py.
+    """
+    import json, os, subprocess, sys
+
+    import duckdb
+
+    EP = os.environ.get("S3_ENDPOINT", "http://rook-ceph-rgw-nautiluss3.rook")
+    BUCKET = os.environ.get("BUCKET", "public-ca-wolves")
+    KEY = "wolf_bins_history.parquet"
+    LOCAL = "/tmp/wolf_bins_history.parquet"
+
+
+    def aws(*args):
+        return subprocess.run(
+            ["aws"] + list(args) + ["--endpoint-url", EP, "--region", "us-east-1"],
+            capture_output=True, text=True,
+        )
+
+
+    def die(msg):
+        print(f"ERROR: {msg}", file=sys.stderr)
+        sys.exit(1)
+
+
+    def snapshot_ts(fname):
+        """'wolf_bins_2026-04-10T21:00:35.geojson' -> '2026-04-10T21:00:35'."""
+        if not (fname.startswith("wolf_bins_") and fname.endswith(".geojson")):
+            return None
+        return fname[len("wolf_bins_"):-len(".geojson")]
+
+
+    con = duckdb.connect()
+    con.execute("INSTALL spatial; LOAD spatial;")
+    con.execute("SET TimeZone='UTC';")
+
+    # ---- The table so far -----------------------------------------------------
+    head = aws("s3api", "head-object", "--bucket", BUCKET, "--key", KEY)
+    if head.returncode == 0:
+        r = aws("s3", "cp", f"s3://{BUCKET}/{KEY}", LOCAL)
+        if r.returncode != 0:
+            die(f"downloading {KEY}: {r.stderr}")
+        con.execute(f"CREATE TABLE history AS SELECT * FROM read_parquet('{LOCAL}')")
+    elif "Not Found" in head.stderr or "404" in head.stderr:
+        print(f"{KEY} does not exist yet; building it from every snapshot.")
+        con.execute("""
+            CREATE TABLE history (
+                snapshot_ts TIMESTAMP, feature_index INTEGER, pack VARCHAR,
+                pack_origin VARCHAR, most_recent_adj VARCHAR, properties JSON,
+                geometry GEOMETRY)
+        """)
+    else:
+        die(f"checking for {KEY}: {head.stderr}")
+
+    before = con.execute("SELECT count(*) FROM history").fetchone()[0]
+    have = {r[0] for r in con.execute(
+        "SELECT DISTINCT strftime(snapshot_ts, '%Y-%m-%dT%H:%M:%S') FROM history"
+    ).fetchall()}
+
+    # ---- Snapshots it does not hold yet ---------------------------------------
+    r = aws("s3", "ls", f"s3://{BUCKET}/snapshots/")
+    if r.returncode != 0:
+        die(f"listing snapshots: {r.stderr}")
+    pending = []
+    for line in r.stdout.splitlines():
+        if not line.strip():
+            continue
+        fname = line.split()[-1]
+        ts = snapshot_ts(fname)
+        if ts and ts not in have:
+            pending.append((ts, fname))
+    pending.sort()
+
+    if not pending:
+        print(f"{KEY}: up to date, {before} rows.")
+        if not os.path.exists(LOCAL):
+            die(f"{KEY} has no local copy")  # cannot happen: no table means pending
+        sys.exit(0)
+
+    rows = []
+    for ts, fname in pending:
+        r = aws("s3", "cp", f"s3://{BUCKET}/snapshots/{fname}", "-")
+        if r.returncode != 0:
+            # Not in the table, so the next run retries it.
+            print(f"WARNING: could not read {fname}: {r.stderr}", file=sys.stderr)
+            continue
+        try:
+            data = json.loads(r.stdout)
+        except ValueError as e:
+            print(f"WARNING: {fname} is not JSON: {e}", file=sys.stderr)
+            continue
+        for i, feat in enumerate(data["features"]):
+            p = feat["properties"]
+            rows.append((
+                ts, i, p.get("pack", p.get("name")), p.get("pack_origin"),
+                p.get("most_recent_adj"),
+                json.dumps(p, ensure_ascii=False, separators=(",", ":")),
+                json.dumps(feat["geometry"], separators=(",", ":")),
+            ))
+
+    con.execute("""
+        CREATE TEMP TABLE incoming (
+            snapshot_ts VARCHAR, feature_index INTEGER, pack VARCHAR,
+            pack_origin VARCHAR, most_recent_adj VARCHAR, properties VARCHAR,
+            geometry VARCHAR)
+    """)
+    if rows:
+        con.executemany("INSERT INTO incoming VALUES (?, ?, ?, ?, ?, ?, ?)", rows)
+    con.execute("""
+        INSERT INTO history
+        SELECT CAST(snapshot_ts AS TIMESTAMP), feature_index, pack, pack_origin,
+               most_recent_adj, CAST(properties AS JSON),
+               ST_GeomFromGeoJSON(geometry)
+        FROM incoming
+    """)
+
+    after = con.execute("SELECT count(*) FROM history").fetchone()[0]
+    if after != before + len(rows) or after < before:
+        die(f"row count {after} != {before} + {len(rows)}; not uploading")
+
+    tmp = LOCAL + ".new"
+    con.execute(f"""
+        COPY (SELECT * FROM history ORDER BY snapshot_ts, feature_index)
+        TO '{tmp}' (FORMAT PARQUET, COMPRESSION ZSTD, ROW_GROUP_SIZE 100000)
+    """)
+    con.close()
+    os.replace(tmp, LOCAL)
+
+    r = aws("s3", "cp", LOCAL, f"s3://{BUCKET}/{KEY}",
+            "--content-type", "application/vnd.apache.parquet")
+    if r.returncode != 0:
+        die(f"uploading {KEY}: {r.stderr}")
+    print(f"{KEY}: added {len(rows)} rows from {len(pending)} snapshots, now {after} rows.")
+
   assemble.py: |
     #!/usr/bin/env python3
-    """Rebuild the queryable trail and the map's UI geojson from raw snapshots.
+    """Rebuild the queryable trail and the map's UI geojson from the snapshot
+    history table (wolf_bins_history.parquet, kept by consolidate.py).
 
     Outputs (all overwritten in place each run):
 
@@ -109,24 +270,29 @@ data:
             capture_output=True, text=True,
         )
 
-    # List snapshots
-    result = s3("ls", f"s3://{BUCKET}/snapshots/")
-    if result.returncode != 0:
-        print("ERROR listing snapshots:", result.stderr, file=sys.stderr)
-        sys.exit(1)
+    # Snapshots in the lookback window, rebuilt from the history table that
+    # consolidate.py keeps (and leaves at HISTORY) rather than one GET per file.
+    HISTORY = "/tmp/wolf_bins_history.parquet"
+    hcon = duckdb.connect()
+    hcon.execute("INSTALL spatial; LOAD spatial;")
+    hrows = hcon.execute(f"""
+        SELECT strftime(snapshot_ts, '%Y-%m-%dT%H:%M:%S'), properties,
+               ST_AsGeoJSON(geometry)
+        FROM read_parquet('{HISTORY}')
+        WHERE snapshot_ts >= ?
+        ORDER BY snapshot_ts, feature_index
+    """, [cutoff]).fetchall()
+    hcon.close()
 
-    files = sorted(l.split()[-1] for l in result.stdout.strip().split("\n") if l.strip())
-
-    # Filter to lookback window
-    recent = []
-    for f in files:
-        ts_str = f.replace("wolf_bins_", "").replace(".geojson", "")
-        try:
-            ts = datetime.fromisoformat(ts_str)
-        except ValueError:
-            continue
-        if ts >= cutoff:
-            recent.append((f, ts_str, ts))
+    recent = []  # [(ts_str, FeatureCollection)], oldest first
+    for ts_str, props, geom in hrows:
+        if not recent or recent[-1][0] != ts_str:
+            recent.append((ts_str, {"type": "FeatureCollection", "features": []}))
+        recent[-1][1]["features"].append({
+            "type": "Feature",
+            "properties": json.loads(props),
+            "geometry": json.loads(geom),
+        })
 
     trail_features = []
     tracks = {}          # pack -> [{"coords": [lon, lat], "ts", "end_ts"}]
@@ -135,11 +301,7 @@ data:
     last_snap_idx = {}   # pack -> index in `recent` where it was last reported
     latest_snapshot = None  # most recent snapshot's parsed GeoJSON
 
-    for snap_idx, (fname, ts_str, _) in enumerate(recent):
-        r = s3("cp", f"s3://{BUCKET}/snapshots/{fname}", "-")
-        if r.returncode != 0:
-            continue
-        data = json.loads(r.stdout)
+    for snap_idx, (ts_str, data) in enumerate(recent):
         latest_snapshot = data  # `recent` is sorted; final iteration wins
         ts = ts_str + "Z"
 
