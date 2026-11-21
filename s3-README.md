@@ -1,8 +1,8 @@
-# CA Wolves — NRP S3 Bucket (`ca-wolves`)
+# CA Wolves — S3 bucket (`public-ca-wolves`)
 
 Public data repository for California gray wolf monitoring, maintained by the Boettiger Lab (UC Berkeley).
 
-**Bucket URL:** `https://s3-west.nrp-nautilus.io/ca-wolves/`
+**Bucket URL:** `https://rustfs.nrp-nautilus.io/public-ca-wolves/` (path-style)
 
 ---
 
@@ -106,10 +106,10 @@ All files are publicly readable. No authentication required.
 
 ```bash
 # Download territories GeoJSON
-curl -O https://s3-west.nrp-nautilus.io/public-ca-wolves/wolf_territories_feb2025.geojson
+curl -O https://rustfs.nrp-nautilus.io/public-ca-wolves/wolf_territories_feb2025.geojson
 
 # Download the most recent version
-curl -O https://s3-west.nrp-nautilus.io/public-ca-wolves/wolf_bins_latest.geojson
+curl -O https://rustfs.nrp-nautilus.io/public-ca-wolves/wolf_bins_latest.geojson
 ```
 
 **DuckDB:**
@@ -117,7 +117,7 @@ curl -O https://s3-west.nrp-nautilus.io/public-ca-wolves/wolf_bins_latest.geojso
 -- Every published version, one row per feature
 INSTALL httpfs; LOAD httpfs; INSTALL spatial; LOAD spatial;
 SELECT snapshot_ts, pack, pack_origin, most_recent_adj, geometry
-FROM 'https://s3-west.nrp-nautilus.io/public-ca-wolves/wolf_bins_history.parquet'
+FROM 'https://rustfs.nrp-nautilus.io/public-ca-wolves/wolf_bins_history.parquet'
 ORDER BY snapshot_ts, feature_index;
 ```
 

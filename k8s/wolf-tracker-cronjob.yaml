@@ -11,7 +11,6 @@ data:
 
     SOURCE_URL="https://storage.googleapis.com/cdfw-wolf-tracker/wolf_bins.geojson"
     BUCKET="public-ca-wolves"
-    S3_ENDPOINT="http://rook-ceph-rgw-nautiluss3.rook"
     BODY=/tmp/wolf_bins.geojson
     HEADERS=/tmp/wolf_bins.headers
 
@@ -66,7 +65,7 @@ data:
 
     import duckdb
 
-    EP = os.environ.get("S3_ENDPOINT", "http://rook-ceph-rgw-nautiluss3.rook")
+    EP = os.environ["S3_ENDPOINT"]
     BUCKET = os.environ.get("BUCKET", "public-ca-wolves")
     KEY = "wolf_bins_history.parquet"
     LATEST = "wolf_bins_latest.geojson"
@@ -203,7 +202,7 @@ data:
 
     import duckdb
 
-    EP = os.environ.get("S3_ENDPOINT", "http://rook-ceph-rgw-nautiluss3.rook")
+    EP = os.environ["S3_ENDPOINT"]
     BUCKET = "public-ca-wolves"
     LOOKBACK_DAYS = 30
     H3_RES = 8  # working resolution; matches public-ecoregion
@@ -443,14 +442,17 @@ spec:
                   cpu: "1"
                   memory: "1Gi"
               env:
+                # Key scoped to public-ca-wolves on rustfs (glen-ops#292).
                 - name: AWS_ACCESS_KEY_ID
                   valueFrom:
-                    secretKeyRef: {name: aws, key: AWS_ACCESS_KEY_ID}
+                    secretKeyRef: {name: rustfs-ca-wolves-write, key: AWS_ACCESS_KEY_ID}
                 - name: AWS_SECRET_ACCESS_KEY
                   valueFrom:
-                    secretKeyRef: {name: aws, key: AWS_SECRET_ACCESS_KEY}
+                    secretKeyRef: {name: rustfs-ca-wolves-write, key: AWS_SECRET_ACCESS_KEY}
                 - name: AWS_DEFAULT_REGION
                   value: "us-east-1"
+                - name: S3_ENDPOINT
+                  value: "https://rustfs.nrp-nautilus.io"
               volumeMounts:
                 - name: script
                   mountPath: /scripts

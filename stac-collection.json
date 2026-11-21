@@ -28,7 +28,7 @@
     "links": [
         {
             "rel": "self",
-            "href": "https://s3-west.nrp-nautilus.io/public-ca-wolves/stac-collection.json",
+            "href": "https://rustfs.nrp-nautilus.io/public-ca-wolves/stac-collection.json",
             "type": "application/json"
         },
         {
@@ -43,7 +43,7 @@
         },
         {
             "rel": "describedby",
-            "href": "https://s3-west.nrp-nautilus.io/public-ca-wolves/README.md",
+            "href": "https://rustfs.nrp-nautilus.io/public-ca-wolves/README.md",
             "type": "text/markdown",
             "title": "Dataset documentation"
         },
@@ -88,7 +88,7 @@
     ],
     "assets": {
         "territories": {
-            "href": "https://s3-west.nrp-nautilus.io/public-ca-wolves/wolf_territories_feb2025.geojson",
+            "href": "https://rustfs.nrp-nautilus.io/public-ca-wolves/wolf_territories_feb2025.geojson",
             "type": "application/geo+json",
             "title": "Wolf pack territory polygons (February 2025)",
             "description": "Six pack territory polygons digitized from the CDFW Approximate Area of Gray Wolf Activity map (Feb 2025): Whaleback, Harvey, Ice Cave, Lassen, Diamond/Beyem Seyo, Yowlumni. Our own convex-hull approximations from image georeferencing, accurate to roughly 5\u201310 miles (8\u201316 km) \u2014 our estimate, not a CDFW figure. These are approximate areas of activity, not territory boundaries, home ranges, or administrative limits. Static February 2025 reference layer, superseded by later editions of the CDFW map \u2014 CDFW has recognized further packs since (see California's Known Wolves, linked in the collection); areas and overlaps computed from them are approximate, and differences between packs are not measured differences.",
@@ -124,7 +124,7 @@
             ]
         },
         "bins-latest": {
-            "href": "https://s3-west.nrp-nautilus.io/public-ca-wolves/wolf_bins_latest.geojson",
+            "href": "https://rustfs.nrp-nautilus.io/public-ca-wolves/wolf_bins_latest.geojson",
             "type": "application/geo+json",
             "title": "Latest reported wolf cells (~7 km hexes, visualization)",
             "description": "Most recent CDFW snapshot of reported wolf positions as H3 resolution-6 hexagonal polygons (~37 km\u00b2 / 14 square miles, roughly 7 km / 4 miles flat-to-flat) in GeoJSON. Used by the map's latest-cells layer. Each feature is the cell containing one collar's most recent reported location, carrying the individual wolf id (`pack`), its origin \u2014 birth \u2014 pack (`pack_origin`, which is not necessarily where it is now), and CDFW's last-fix date (`most_recent_adj`). For SQL queries use trail-hex with `WHERE last_seen_ts = (SELECT MAX(last_seen_ts) FROM trail-hex)` instead \u2014 it has H3 cells for fast joins.",
@@ -133,7 +133,7 @@
             ]
         },
         "tracks": {
-            "href": "https://s3-west.nrp-nautilus.io/public-ca-wolves/wolf_tracks.geojson",
+            "href": "https://rustfs.nrp-nautilus.io/public-ca-wolves/wolf_tracks.geojson",
             "type": "application/geo+json",
             "title": "Wolf cell-to-cell sequences (map playback, visualization)",
             "description": "Per-wolf LineStrings through the centroids of consecutively reported hexbin cells over the past 30 days, used by the map's playback layer. THE LINE GEOMETRY IS NOT AN OBSERVED PATH \u2014 it connects cell centroids in reporting order and no part of it between two vertices was observed. Each vertex carries the window its cell was reported over: `timestamps` (first reported) and `end_timestamps` (last reported) are arrays parallel to the coordinates, which lets the map show each cell only while it was actually being reported instead of sliding a dot between them. `pack` is the individual wolf; `pack_origin` is the pack it came from, not where it is now. Visualization only \u2014 for SQL movement queries, use trail-hex.",
@@ -142,7 +142,7 @@
             ]
         },
         "history": {
-            "href": "https://s3-west.nrp-nautilus.io/public-ca-wolves/wolf_bins_history.parquet",
+            "href": "https://rustfs.nrp-nautilus.io/public-ca-wolves/wolf_bins_history.parquet",
             "type": "application/vnd.apache.parquet",
             "title": "Every published CDFW version (GeoParquet history)",
             "description": "Every distinct version of the CDFW wolf-bins file seen by the hourly fetcher since 10 April 2026, one row per feature per version. CDFW overwrites its one file and keeps no history, so this table is the only record of what it published. Grouping by snapshot_ts and ordering by feature_index rebuilds any version exactly. Provenance and replay; for analysis use trail-hex. Rewritten in place when a new version is appended.",
@@ -188,7 +188,7 @@
             ]
         },
         "trail-hex": {
-            "href": "https://s3-west.nrp-nautilus.io/public-ca-wolves/wolf_trail/hex/h0=*/data_0.parquet",
+            "href": "https://rustfs.nrp-nautilus.io/public-ca-wolves/wolf_trail/hex/h0=*/data_0.parquet",
             "type": "application/vnd.apache.parquet",
             "title": "Wolf movement trail (H3 res-8 tiled, h0-partitioned, 30-day rolling)",
             "description": "PRIMARY ANALYTICAL ASSET. Past 30 days of reported wolf positions, polyfilled to H3 resolution 8 cells. One row per (wolf, reported cell, reporting window, h8): CDFW republishes a wolf's cell in every snapshot until it moves, so consecutive republications of the same cell collapse into a single row spanning `snapshot_ts` (first reported) to `last_seen_ts` (last reported); a wolf missing from intervening snapshots breaks the window, so gaps in reporting survive into the data. Current positions are `WHERE last_seen_ts = (SELECT MAX(last_seen_ts) FROM trail)` \u2014 keying off MAX(snapshot_ts) instead drops every wolf that hasn't changed cells lately. Note the source cell is CDFW's H3 resolution-6 hexbin (~37 km\u00b2); the resolution-8 cells here are a tiling of it for joining, not a finer measurement, so COUNT(*) counts index cells \u2014 count DISTINCT _cng_fid for observations. Hive-partitioned by h0 \u2014 California fits in a single h0 cell, but the column is exposed so dynamic partition pruning works when joining against globally-partitioned catalog datasets. Hash-join on h8 with any other catalog hex asset; prune time windows on snapshot_ts / last_seen_ts (UTC TIMESTAMP). Rebuilt hourly by overwriting the file in place.",
