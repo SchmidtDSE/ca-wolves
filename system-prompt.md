@@ -111,7 +111,11 @@ two give different answers.
   strategies join targets on `ParentTargetID` = `TargetID`, so a strategy reaches a unit
   only through a target. Each SGCN range record carries its species' listing status,
   other conservation designations, climate vulnerability, and its provinces and
-  conservation units (`Province_CU`), as comma-separated text to filter with `LIKE`.
+  conservation units (`Province_CU`), as comma-separated text. Filter `ListingStatus`
+  and `ConsStatus` with `LIKE`. `Province_CU` names only the 19 terrestrial ecoregion
+  units, without their ` Ecoregion` suffix, and one name can contain another, so match
+  a unit as a whole item:
+  `regexp_matches(Province_CU, '[(,] *Central California Coast *[,)]')`.
   Records with `Range = 'No Range'` hold a placeholder polygon in the Pacific, not a
   range; leave them out of spatial analysis.
 - **GBIF occurrences** are where someone reported a species, so they are densest near
