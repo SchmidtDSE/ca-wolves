@@ -107,11 +107,13 @@ two give different answers.
 - **California SWAP 2025 (CDFW)** is relational: 8 provinces, their conservation units,
   Species of Greatest Conservation Need (SGCN) with range polygons, and planning tables
   with no geometry. Conservation units join provinces on `ParentProvinceID` =
-  `ProvinceID`; SGCN ranges join the species list on `ParentSpeciesKey` = `SpeciesKey`;
-  the species × unit crosswalk joins the species list on `ParentProvSpeciesKey` =
-  `SpeciesKey`, with `ConUnit` naming the unit; targets join conservation units by name
-  (`ConsUnit` = `Name`); strategies join targets on `ParentTargetID` = `TargetID`, so a
-  strategy reaches a unit only through a target.
+  `ProvinceID`; targets join conservation units by name (`ConsUnit` = `Name`);
+  strategies join targets on `ParentTargetID` = `TargetID`, so a strategy reaches a unit
+  only through a target. Each SGCN range record carries its species' listing status,
+  other conservation designations, climate vulnerability, and its provinces and
+  conservation units (`Province_CU`), as comma-separated text to filter with `LIKE`.
+  Records with `Range = 'No Range'` hold a placeholder polygon in the Pacific, not a
+  range; leave them out of spatial analysis.
 - **GBIF occurrences** are where someone reported a species, so they are densest near
   people, roads and parks, and a cell with no record is not evidence of absence.
   Species names resolve against the taxonomy table first, since a misspelling returns
