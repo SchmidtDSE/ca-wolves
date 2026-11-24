@@ -112,10 +112,12 @@ two give different answers.
   only through a target. Each SGCN range record carries its species' listing status,
   other conservation designations, climate vulnerability, and its provinces and
   conservation units (`Province_CU`), as comma-separated text. Filter `ListingStatus`
-  and `ConsStatus` with `LIKE`. `Province_CU` names only the 19 terrestrial ecoregion
-  units, without their ` Ecoregion` suffix, and one name can contain another, so match
-  a unit as a whole item:
-  `regexp_matches(Province_CU, '[(,] *Central California Coast *[,)]')`.
+  and `ConsStatus` with `LIKE`. `Province_CU` names units in short forms that do not
+  equal `conservation-units.Name` (`Mojave Desert`, `HUC 1802 Sacramento`), and one name
+  can contain another, so match a unit as a whole item:
+  `regexp_matches(Province_CU, '(^|[(,:]) *Central California Coast *([,);]|$)')`.
+  150 values, mostly birds, are cut off at 255 characters, so no match does not mean
+  the species is absent from a unit.
   Records with `Range = 'No Range'` hold a placeholder polygon in the Pacific, not a
   range; leave them out of spatial analysis.
 - **GBIF occurrences** are where someone reported a species, so they are densest near
